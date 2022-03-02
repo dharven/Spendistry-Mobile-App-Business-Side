@@ -4,83 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.CreateInventory">
+    tools:context=".Activities.CreateInventoryActivity">
 
     <com.journeyapps.barcodescanner.DecoratedBarcodeView
         android:id="@+id/barcodeScanner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         />
-
-    <TextView
-        android:id="@+id/barcode_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Barcode number: "
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/scan_inventory_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="9"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <EditText
-            android:id="@+id/itemNameScan"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight=".7"
-            android:ems="10"
-            android:hint="Item Name"
-            android:inputType="textPersonName"
-            android:minHeight="48dp" />
-
-        <EditText
-            android:id="@+id/itemPriceScan"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight=".3"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="price"
-            android:inputType="numberDecimal"
-            android:minHeight="48dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"
-        android:maxHeight="49dp"
-        android:gravity="bottom"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_done"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_margin="2dp"
-            android:layout_weight="1"
-            android:minHeight="48dp"
-            android:maxHeight="49dp"
-            android:text="list"
-            tools:ignore="NestedWeights"/>
-
-        <Button
-            android:id="@+id/btn_scan"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_margin="2dp"
-            android:layout_weight="1"
-            android:minHeight="48dp"
-            android:maxHeight="49dp"
-            android:text="add to the list"
-            tools:ignore="NestedWeights" />
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

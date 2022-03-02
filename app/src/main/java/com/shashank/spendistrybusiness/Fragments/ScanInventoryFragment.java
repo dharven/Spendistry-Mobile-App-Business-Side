@@ -1,10 +1,12 @@
 package com.shashank.spendistrybusiness.Fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -25,6 +27,10 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.shashank.spendistrybusiness.Constants.Constants;
+import com.shashank.spendistrybusiness.Constants.GlobalVariables;
+import com.shashank.spendistrybusiness.DialogFragment.EditDialog;
+import com.shashank.spendistrybusiness.DialogFragment.ScanEntryDialog;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InventoryViewModel;
@@ -32,14 +38,15 @@ import com.shashank.spendistrybusiness.ViewModels.InventoryViewModel;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ScanInventoryFragment extends Fragment {
+public class ScanInventoryFragment extends Fragment implements EditDialog.OnEditConfirmationListener {
 
     private String barcode;
     private DecoratedBarcodeView barcodeView;
-    private EditText itemName, itemPrice;
-    private TextView barcodeText;
-    private LinearLayout scan_inventory_layout;
+    private String email;
+    private List<ItemPrices> itemPricesList;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,17 +59,19 @@ public class ScanInventoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_scan_inventory, container, false);
+
         barcodeView = rootView.findViewById(R.id.barcodeScanner);
-        Button next = rootView.findViewById(R.id.btn_scan);
-        itemName = rootView.findViewById(R.id.itemNameScan);
-        itemPrice = rootView.findViewById(R.id.itemPriceScan);
-        barcodeText = rootView.findViewById(R.id.barcode_tv);
-        scan_inventory_layout = rootView.findViewById(R.id.scan_inventory_layout);
         //
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("loggedIn", getActivity().MODE_PRIVATE);
-        String email = sharedPreferences.getString("email", "");
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
+        email = sharedPreferences.getString("email", "");
         //
         InventoryViewModel inventoryViewModel = new ViewModelProvider(requireActivity()).get(InventoryViewModel.class);
+        inventoryViewModel.getInventory(email).observe(requireActivity(), new Observer<List<ItemPrices>>() {
+            @Override
+            public void onChanged(List<ItemPrices> itemPrices) {
+                itemPricesList = itemPrices;
+            }
+        });
         Dexter.withContext(requireContext())
                 .withPermission(Manifest.permission.CAMERA).withListener(new PermissionListener() {
                     @Override
@@ -81,19 +90,6 @@ public class ScanInventoryFragment extends Fragment {
                     }
                 }).check();
 
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ObjectId id = new ObjectId();
-                ArrayList<ItemPrices> itemPrices = new ArrayList<>();
-                ItemPrices item = new ItemPrices(id.toString(),barcode, itemName.getText().toString() , itemPrice.getText().toString());
-                itemPrices.add(item);
-                inventoryViewModel.setInventory(email,itemPrices);
-                barcodeText.setVisibility(View.GONE);
-                barcodeView.setVisibility(View.VISIBLE);
-                scan_inventory_layout.setVisibility(View.GONE);
-            }
-        });
         return rootView;
     }
 
@@ -102,12 +98,37 @@ public class ScanInventoryFragment extends Fragment {
         barcodeView.decodeContinuous(new BarcodeCallback() {
             @Override
             public void barcodeResult(BarcodeResult result) {
+                barcodeView.pause();
                 barcode = result.getText();
-                Toast.makeText(requireContext(), ""+barcode, Toast.LENGTH_SHORT).show();
-                barcodeText.setVisibility(View.VISIBLE);
-                barcodeText.setText("barcode number " +barcode);
-                barcodeView.setVisibility(View.GONE);
-                scan_inventory_layout.setVisibility(View.VISIBLE);
+                boolean exists = false;
+                for (int i =0; i < itemPricesList.size(); i++) {
+                    if (itemPricesList.get(i).getBarcode().equals(barcode)) {
+                        Bundle bundle = new Bundle();
+                        exists = true;
+                        bundle.putString("barcode", barcode);
+                        bundle.putString("email", email);
+                        bundle.putString("name", itemPricesList.get(i).getItemName());
+                        bundle.putString("price", itemPricesList.get(i).getPrice());
+                        bundle.putString("frag", "scan");
+                        bundle.putString("id", itemPricesList.get(i).getId());
+                        EditDialog editDialog = new EditDialog();
+                        editDialog.setArguments(bundle);
+                        editDialog.setTargetFragment(ScanInventoryFragment.this, 1);
+                        editDialog.show(getParentFragmentManager(), "EditDialog");
+                    }
+                }
+                if (!exists) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("barcode", barcode);
+                    bundle.putString("email", email);
+                    ScanEntryDialog scanEntryDialog = new ScanEntryDialog();
+                    scanEntryDialog.setArguments(bundle);
+                    scanEntryDialog.setTargetFragment(ScanInventoryFragment.this, 1);
+                    scanEntryDialog.show(getParentFragmentManager(), "scanEntryDialog");
+                }
+//                Toast.makeText(requireContext(), ""+barcode, Toast.LENGTH_SHORT).show();
+//                barcodeText.setText("barcode number " +barcode);
+
             }
         });
         barcodeView.setOnClickListener(new View.OnClickListener() {
@@ -127,4 +148,10 @@ public class ScanInventoryFragment extends Fragment {
         });
     }
 
+    @Override
+    public void sendEditConfirmation(boolean send) {
+        if (send) {
+            barcodeView.resume();
+        }
+    }
 }

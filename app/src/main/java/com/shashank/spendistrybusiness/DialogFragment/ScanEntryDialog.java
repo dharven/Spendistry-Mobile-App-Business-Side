@@ -1,6 +1,5 @@
 package com.shashank.spendistrybusiness.DialogFragment;
 
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,20 +21,22 @@ import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InventoryViewModel;
 
-public class EditDialog extends DialogFragment {
+import org.bson.types.ObjectId;
 
-    private static final String TAG = "EditDialog";
+import java.util.ArrayList;
+
+public class ScanEntryDialog extends DialogFragment {
+    private static final String TAG = "ScanEntryDialog";
     private final Bundle b = new Bundle();
 
-    public interface OnEditConfirmationListener {
-        void sendEditConfirmation(boolean send);
+    public interface OnScanEntryDialogListener {
+        void sendEntryConfirmation(boolean send);
     }
-    OnEditConfirmationListener mOnSentListener;
+    OnScanEntryDialogListener mOnScanEntryDialogListener;
 
     @Override
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
-        mOnSentListener.sendEditConfirmation(true);
     }
 
 
@@ -44,35 +45,32 @@ public class EditDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.edit_dialog,container, false);
+        View rootView = inflater.inflate(R.layout.scan_entry_dialog,container, false);
         Bundle bundle = getArguments();
         //
-        final String id = bundle.getString("id");
         final String barcodeString = bundle.getString("barcode");
-        final String nameString = bundle.getString("name");
-        final String priceString = bundle.getString("price");
         final String emailString = bundle.getString("email");
-        final String frag = bundle.getString("frag");
         //
-        TextView barcode = rootView.findViewById(R.id.barcode_edit);
-        EditText itemName = rootView.findViewById(R.id.item_name_edit);
-        EditText itemPrice = rootView.findViewById(R.id.price_edit);
-        Button update = rootView.findViewById(R.id.update_btn);
-        Button cancel = rootView.findViewById(R.id.cancel_btn);
+        TextView barcode = rootView.findViewById(R.id.barcode_scan);
+        EditText itemName = rootView.findViewById(R.id.item_name_scan);
+        EditText itemPrice = rootView.findViewById(R.id.price_scan);
+        Button add = rootView.findViewById(R.id.add_btn_scan);
+        Button cancel = rootView.findViewById(R.id.cancel_btn_scan);
         //
         barcode.setText("barcode: "+barcodeString);
-        itemName.setText(nameString);
-        itemPrice.setText(priceString);
         //
+
+
         InventoryViewModel inventoryViewModel = new ViewModelProvider(requireActivity()).get(InventoryViewModel.class);
         //
-        update.setOnClickListener(new View.OnClickListener() {
+        add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (frag.equals("scan")) {
-                    mOnSentListener.sendEditConfirmation(true);
-                }
-                inventoryViewModel.updateElement(emailString, id, new ItemPrices(id,barcodeString, itemName.getText().toString(), itemPrice.getText().toString()));
+                ObjectId id = new ObjectId();
+                ArrayList<ItemPrices> itemPrices = new ArrayList<>();
+                ItemPrices item = new ItemPrices(id.toString(),barcodeString, itemName.getText().toString() , itemPrice.getText().toString());
+                itemPrices.add(item);
+                inventoryViewModel.setInventory(emailString,itemPrices);
                 requireDialog().dismiss();
             }
         });
@@ -80,7 +78,6 @@ public class EditDialog extends DialogFragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnSentListener.sendEditConfirmation(true);
                 requireDialog().dismiss();
             }
         });
@@ -92,7 +89,7 @@ public class EditDialog extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            mOnSentListener = (OnEditConfirmationListener) getTargetFragment();
+            mOnScanEntryDialogListener = (OnScanEntryDialogListener) getTargetFragment();
         } catch (ClassCastException e) {
             Log.e(TAG, "onAttach: ClassCastException: " + e.getMessage());
         }

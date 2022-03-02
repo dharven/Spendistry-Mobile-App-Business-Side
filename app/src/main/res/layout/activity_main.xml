@@ -8,18 +8,24 @@
     android:layout_gravity="center"
     tools:context=".Activities.MainActivity">
 
-    <com.journeyapps.barcodescanner.DecoratedBarcodeView
-        android:id="@+id/barcodeView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight=".9" />
 
-    <Button
-        android:id="@+id/logout"
+    <com.budiyev.android.codescanner.CodeScannerView
+        android:id="@+id/scannerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="log out" />
+        android:layout_height="match_parent"
+        app:autoFocusButtonColor="@android:color/white"
+        app:autoFocusButtonVisible="false"
+        app:flashButtonColor="@android:color/white"
+        app:flashButtonVisible="true"
+        app:frameColor="@android:color/white"
+        app:frameCornersSize="50dp"
+        app:frameCornersRadius="0dp"
+        app:frameAspectRatioWidth="1"
+        app:frameAspectRatioHeight="1"
+        app:frameSize="0.75"
+        app:frameThickness="2dp"
+        app:maskColor="#77000000"/>
+
 
 
 </LinearLayout>

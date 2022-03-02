@@ -6,21 +6,27 @@
     android:orientation="vertical"
     tools:context=".Fragments.ManualInventoryFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_inventory"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="5dp"
-        android:layout_weight=".8"
-        tools:itemCount="2"
-        tools:listitem="@layout/items_recyclerview" >
+        android:layout_weight="1">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_inventory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight=".8"
+            tools:itemCount="2"
+            tools:listitem="@layout/items_recyclerview" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".1"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <EditText

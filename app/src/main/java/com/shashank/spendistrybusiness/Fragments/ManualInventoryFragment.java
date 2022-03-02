@@ -1,5 +1,6 @@
 package com.shashank.spendistrybusiness.Fragments;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
@@ -10,11 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +27,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.shashank.spendistrybusiness.Adapters.InventoryAdapter;
+import com.shashank.spendistrybusiness.Constants.Constants;
+import com.shashank.spendistrybusiness.Constants.GlobalVariables;
 import com.shashank.spendistrybusiness.DialogFragment.DeleteDialog;
 import com.shashank.spendistrybusiness.DialogFragment.EditDialog;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
@@ -40,7 +45,11 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
     private String email;
     private ItemPrices recentlyRemoved;
     private int recentPosition;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView itemList;
+    private InventoryViewModel inventoryViewModel;
+    private LinearLayoutManager layoutManager;
+    private SharedPreferences sharedPreferences;
 
 
     @Override
@@ -50,25 +59,31 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
         EditText itemPrice = rootView.findViewById(R.id.itemPrice);
         EditText itemName = rootView.findViewById(R.id.itemName);
         Button addItem = rootView.findViewById(R.id.add_btn);
-        RecyclerView itemList = rootView.findViewById(R.id.rv_inventory);
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("loggedIn", getActivity().MODE_PRIVATE);
+        itemList = rootView.findViewById(R.id.rv_inventory);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
+        inventoryViewModel = new ViewModelProvider(requireActivity()).get(InventoryViewModel.class);
+        sharedPreferences = requireActivity().getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
         email = sharedPreferences.getString("email", "");
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
+        layoutManager = new LinearLayoutManager(requireContext());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
-        itemList.setLayoutManager(layoutManager);
 
-        InventoryViewModel inventoryViewModel = new ViewModelProvider(requireActivity()).get(InventoryViewModel.class);
-
-
-        inventoryViewModel.getInventory(email).observe(requireActivity(), new Observer<List<ItemPrices>>() {
-
+        inventoryViewModel.getInventory(email).observe(getViewLifecycleOwner(), new Observer<List<ItemPrices>>() {
             @Override
             public void onChanged(List<ItemPrices> itemPrices) {
                 inventoryAdapter = new InventoryAdapter(itemPrices, requireContext(), getActivity());
                 itemList.setLayoutManager(new LinearLayoutManager(requireContext()));
                 itemList.setAdapter(inventoryAdapter);
-                itemList.animate().alpha(1.0f);
+                itemList.setLayoutManager(layoutManager);
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                sharedPreferences.edit().putBoolean("hasData", false).apply();
+                inventoryViewModel.getInventory(email);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -100,34 +115,35 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-              if (direction == ItemTouchHelper.LEFT) {
-                  Bundle bundle = new Bundle();
-                  bundle.putString("id", inventoryAdapter.getId(viewHolder.getBindingAdapterPosition()));
-                  bundle.putString("barcode", inventoryAdapter.getBarcode(viewHolder.getBindingAdapterPosition()));
-                  bundle.putString("name", inventoryAdapter.getItemName(viewHolder.getBindingAdapterPosition()));
-                  bundle.putString("price", inventoryAdapter.getPrice(viewHolder.getBindingAdapterPosition()));
-                  bundle.putString("email", email);
-                  recentPosition = viewHolder.getBindingAdapterPosition();
-                  recentlyRemoved = inventoryAdapter.recentRemove(viewHolder.getBindingAdapterPosition());
-                  DeleteDialog deleteDialog = new DeleteDialog();
-                  deleteDialog.setArguments(bundle);
-                  deleteDialog.setTargetFragment(ManualInventoryFragment.this, 1);
-                  deleteDialog.show(getParentFragmentManager(), "DeleteDialog");
-              } else if (direction == ItemTouchHelper.RIGHT) {
+                if (direction == ItemTouchHelper.LEFT) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id", inventoryAdapter.getId(viewHolder.getBindingAdapterPosition()));
+                    bundle.putString("barcode", inventoryAdapter.getBarcode(viewHolder.getBindingAdapterPosition()));
+                    bundle.putString("name", inventoryAdapter.getItemName(viewHolder.getBindingAdapterPosition()));
+                    bundle.putString("price", inventoryAdapter.getPrice(viewHolder.getBindingAdapterPosition()));
+                    bundle.putString("email", email);
+                    recentPosition = viewHolder.getBindingAdapterPosition();
+                    recentlyRemoved = inventoryAdapter.recentRemove(viewHolder.getBindingAdapterPosition());
+                    DeleteDialog deleteDialog = new DeleteDialog();
+                    deleteDialog.setArguments(bundle);
+                    deleteDialog.setTargetFragment(ManualInventoryFragment.this, 1);
+                    deleteDialog.show(getParentFragmentManager(), "DeleteDialog");
+                } else if (direction == ItemTouchHelper.RIGHT) {
 
-                  Bundle bundle = new Bundle();
-                  bundle.putString("id", inventoryAdapter.getId(viewHolder.getBindingAdapterPosition()));
-                  bundle.putString("barcode", inventoryAdapter.getBarcode(viewHolder.getBindingAdapterPosition()));
-                  bundle.putString("name", inventoryAdapter.getItemName(viewHolder.getBindingAdapterPosition()));
-                  bundle.putString("price", inventoryAdapter.getPrice(viewHolder.getBindingAdapterPosition()));
-                  bundle.putString("email", email);
-                  recentPosition = viewHolder.getBindingAdapterPosition();
-                  recentlyRemoved = inventoryAdapter.recentRemove(viewHolder.getBindingAdapterPosition());
-                  EditDialog editDialog = new EditDialog();
-                  editDialog.setArguments(bundle);
-                  editDialog.setTargetFragment(ManualInventoryFragment.this, 1);
-                  editDialog.show(getParentFragmentManager(), "EditDialog");
-              }
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id", inventoryAdapter.getId(viewHolder.getBindingAdapterPosition()));
+                    bundle.putString("barcode", inventoryAdapter.getBarcode(viewHolder.getBindingAdapterPosition()));
+                    bundle.putString("name", inventoryAdapter.getItemName(viewHolder.getBindingAdapterPosition()));
+                    bundle.putString("price", inventoryAdapter.getPrice(viewHolder.getBindingAdapterPosition()));
+                    bundle.putString("frag", "manual");
+                    bundle.putString("email", email);
+                    recentPosition = viewHolder.getBindingAdapterPosition();
+                    recentlyRemoved = inventoryAdapter.recentRemove(viewHolder.getBindingAdapterPosition());
+                    EditDialog editDialog = new EditDialog();
+                    editDialog.setArguments(bundle);
+                    editDialog.setTargetFragment(ManualInventoryFragment.this, 1);
+                    editDialog.show(getParentFragmentManager(), "EditDialog");
+                }
 
             }
 
@@ -135,7 +151,7 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
             public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                         .addSwipeLeftBackgroundColor(ContextCompat.getColor(requireContext(), R.color.teal_200))
-                        .addSwipeLeftActionIcon(R.drawable.close)
+                        .addSwipeLeftActionIcon(R.drawable.delete)
                         .addSwipeLeftLabel("DELETE")
                         .addSwipeRightBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
                         .addSwipeRightActionIcon(R.drawable.edit)
@@ -147,20 +163,20 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
         }).attachToRecyclerView(itemList);
 
 
-            return rootView;
+        return rootView;
     }
 
     @Override
     public void sendDeleteConfirmation(boolean send) {
         if (send) {
-            inventoryAdapter.undoRecent(recentPosition,recentlyRemoved);
+            inventoryAdapter.undoRecent(recentPosition, recentlyRemoved);
         }
     }
 
     @Override
     public void sendEditConfirmation(boolean send) {
         if (send) {
-            inventoryAdapter.undoRecent(recentPosition,recentlyRemoved);
+            inventoryAdapter.undoRecent(recentPosition, recentlyRemoved);
         }
     }
 }

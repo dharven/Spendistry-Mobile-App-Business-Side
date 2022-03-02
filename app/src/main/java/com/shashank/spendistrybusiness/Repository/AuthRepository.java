@@ -99,7 +99,6 @@ public class AuthRepository {
         return vendor1;
     }
 
-
     public MutableLiveData<Auth> deleteAccount(String email){
         MutableLiveData<Auth> auth = new MutableLiveData<>();
         Call<Auth> call = api.deleteAccount(email);

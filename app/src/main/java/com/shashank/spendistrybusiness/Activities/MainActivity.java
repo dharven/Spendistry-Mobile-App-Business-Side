@@ -1,15 +1,24 @@
 package com.shashank.spendistrybusiness.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.budiyev.android.codescanner.CodeScanner;
+import com.budiyev.android.codescanner.CodeScannerView;
+import com.budiyev.android.codescanner.DecodeCallback;
+import com.google.zxing.Result;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
@@ -25,15 +34,16 @@ import com.shashank.spendistrybusiness.R;
 import java.security.GeneralSecurityException;
 
 public class MainActivity extends AppCompatActivity {
-    private DecoratedBarcodeView barcodeView;
-    private Button logout;
+    //    private DecoratedBarcodeView barcodeView;
+    private CodeScannerView scannerView;
+    private CodeScanner codeScanner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        barcodeView = findViewById(R.id.barcodeView);
-        logout = findViewById(R.id.logout);
-
+        scannerView = findViewById(R.id.scannerView);
+        codeScanner = new CodeScanner(this, scannerView);
         Dexter.withContext(getApplicationContext())
                 .withPermission(Manifest.permission.CAMERA).withListener(new PermissionListener() {
                     @Override
@@ -54,46 +64,71 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void ScanCamera() {
-        barcodeView.resume();
-        barcodeView.decodeSingle(new BarcodeCallback() {
+        codeScanner.startPreview();
+        codeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
-            public void barcodeResult(BarcodeResult result) {
-                barcodeView.pause();
-                Intent intent = new Intent(MainActivity.this, CreateInventory.class);
-                intent.putExtra("SCAN_RESULT", result.getText());
-                startActivity(intent);
-            }
-        });
-        barcodeView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                barcodeView.pause();
-                barcodeView.resume();
-                return true;
-            }
-        });
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
-                sharedPreferences.edit().putBoolean("loggedIn", false).apply();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+            public void onDecoded(@NonNull Result result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String decrypted = getID(result.getText());
+                        if (!decrypted.equals("")) {
+                            Intent intent = new Intent(MainActivity.this, CreateInvoiceActivity.class);
+                            intent.putExtra("SCAN_RESULT", getID(result.getText()));
+                            startActivity(intent);
+                        } else {
+                                codeScanner.startPreview();
+                        }
+                    }
+                });
             }
         });
     }
 
-    public String getID(String id){
+    public String getID(String id) {
         String password = "Spendistryqasdertgbvcxz";
-        String messageAfterDecrypt ="";
+        String messageAfterDecrypt = "";
         try {
             messageAfterDecrypt = AESCrypt.decrypt(password, id);
-        }catch (GeneralSecurityException e){
+        } catch (GeneralSecurityException e) {
             //handle error - could be due to incorrect password or tampered encryptedMsg
-        } catch (IllegalArgumentException e){
-            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+            messageAfterDecrypt = "";
+            Toast.makeText(this, "Wrong QR Code", Toast.LENGTH_SHORT).show();
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(this, "QR Codes Only", Toast.LENGTH_SHORT).show();
         }
         return messageAfterDecrypt;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            SharedPreferences sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
+            sharedPreferences.edit().putBoolean("loggedIn", false).apply();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        codeScanner.startPreview();
+    }
+
+    @Override
+    protected void onPause() {
+        codeScanner.releaseResources();
+        super.onPause();
     }
 }

@@ -49,7 +49,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             Toast.makeText(SplashScreenActivity.this, "Internet is available", Toast.LENGTH_SHORT).show();
                             if (sharedPreferences.getBoolean("loggedIn", false)) {
                                 String email = sharedPreferences.getString("email", "not");
-                                Intent intent = new Intent(SplashScreenActivity.this, CreateInventory.class);
+                                Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                                 intent.putExtra("email", email);
                                 startActivity(intent);
                             } else {
@@ -60,7 +60,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             Toast.makeText(SplashScreenActivity.this, "Internet is not available", Toast.LENGTH_SHORT).show();
                             if (sharedPreferences.getBoolean("loggedIn", false)) {
                                 String email = sharedPreferences.getString("email", "not");
-                                Intent intent = new Intent(SplashScreenActivity.this, CreateInventory.class);
+                                Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                                 intent.putExtra("email", email);
                                 startActivity(intent);
                             } else {

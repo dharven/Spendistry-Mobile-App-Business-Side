@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.shashank.spendistrybusiness.Models.Auth;
-import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.AuthViewModel;
 
@@ -65,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                                          editor.putString("email", email.getText().toString());
                                          editor.apply();
                                          //
-                                         Intent intent = new Intent(LoginActivity.this, CreateInventory.class);
+                                         Intent intent = new Intent(LoginActivity.this, CreateInvoiceActivity.class);
                                          startActivity(intent);
                                      }
 //                                  else {

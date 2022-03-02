@@ -54,9 +54,18 @@ dependencies {
 
     //QR
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.1.1'
+
+    //SearchableSpinner
+    implementation 'com.github.leoncydsilva:SearchableSpinner:1.0.1'
+    implementation 'com.github.captain-miao:optroundcardview:1.0.0'
+
+    //SwipeRefreshLayout
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     //mongo bson
     implementation'org.mongodb:bson:3.0.4'
+
     //AES
     implementation'com.scottyab:aescrypt:0.0.1'
 

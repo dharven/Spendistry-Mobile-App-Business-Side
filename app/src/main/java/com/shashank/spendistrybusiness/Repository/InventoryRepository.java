@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.shashank.spendistrybusiness.Constants.Constants;
+import com.shashank.spendistrybusiness.Constants.GlobalVariables;
 import com.shashank.spendistrybusiness.Dao.InventoryDao;
 import com.shashank.spendistrybusiness.Database.SpendistryBusinessDB;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
@@ -31,7 +32,7 @@ public class InventoryRepository {
     private final Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.URL_API).addConverterFactory(GsonConverterFactory.create()).build();
     SpendistryAPI api = retrofit.create(SpendistryAPI.class);
     private SpendistryBusinessDB businessDB;
-    private MutableLiveData<List<ItemPrices>> mutableLiveData;
+    private MutableLiveData<List<ItemPrices>> mutableLiveData = new MutableLiveData<>();
 
     public InventoryRepository(Application application) {
         this.application = application;
@@ -43,9 +44,7 @@ public class InventoryRepository {
         new InsertAsyncTask(businessDB).execute(itemPrices);
     }
 
-
     public void setInventory(String email, ArrayList<ItemPrices> prices) {
-//        Toast.makeText(application, ""+mutableLiveData.getValue().size(), Toast.LENGTH_SHORT).show();
         Call<ItemPricesArrayList> call = api.updateInventory(email, new ItemPricesArrayList(prices));
             call.enqueue(new Callback<ItemPricesArrayList>() {
                 @Override
@@ -55,11 +54,6 @@ public class InventoryRepository {
                         return;
                     }
                     if (prices.get(0).getItemName() != null && prices.get(0).getPrice() != null) {
-//                        List<ItemPrices> itemPrices = mutableLiveData.getValue();
-//                        for (int i = 0; i < prices.size(); i++) {
-//                            itemPrices.add(prices.get(i));
-//                        }
-
                         insertItemPrices(prices);
                     }
                 }
@@ -70,7 +64,6 @@ public class InventoryRepository {
     }
 
     public LiveData<List<ItemPrices>> getInventory(String email) {
-        mutableLiveData = Constants.itemPricesArrayList;
         SharedPreferences sharedPreferences = application.getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean("hasData", true)) {
             Call<ItemPricesArrayList> call = api.getInventory(email);
@@ -81,8 +74,8 @@ public class InventoryRepository {
                         Toast.makeText(application, "notWorking: " + response.code(), Toast.LENGTH_SHORT).show();
                         return;
                     }
+
                     mutableLiveData.setValue(response.body().getItemPrices());
-                    Toast.makeText(application, "", Toast.LENGTH_SHORT).show();
                     new AddAllDataAsyncTask(businessDB).execute(response.body().getItemPrices());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("hasData", false);
@@ -95,7 +88,6 @@ public class InventoryRepository {
                 }
             });
         } else {
-            Toast.makeText(application, "offline", Toast.LENGTH_SHORT).show();
            return businessDB.inventoryDao().getAllItems();
         }
         return mutableLiveData;
@@ -138,7 +130,6 @@ public class InventoryRepository {
                 Toast.makeText(application, "error", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     static class UpdateElementAsyncTask extends AsyncTask<ItemPrices, Void, Void> {
@@ -198,7 +189,6 @@ public class InventoryRepository {
             return null;
         }
     }
-
 
     static class AddAllDataAsyncTask extends AsyncTask<List<ItemPrices>, Void, Void> {
         private final InventoryDao inventoryDao;

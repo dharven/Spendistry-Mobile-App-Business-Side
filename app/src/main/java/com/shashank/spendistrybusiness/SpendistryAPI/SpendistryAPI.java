@@ -1,6 +1,9 @@
 package com.shashank.spendistrybusiness.SpendistryAPI;
 
 import com.shashank.spendistrybusiness.Models.Auth;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessArray;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.UserInvoices;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.Models.Vendor;
@@ -35,6 +38,9 @@ public interface SpendistryAPI {
 
     @POST("itemsPrices")
     Call<ItemPricesArrayList> CreateInventory(@Body ItemPricesArrayList itemPricesList);
+
+    @POST("invoice/addEle/{email}/{businessEmail}")
+    Call<BusinessArray> addInvoice(@Path("email") String email, @Path("businessEmail") String businessEmail , @Body BusinessArray invoice);
 
     //DELETE
     @DELETE("authBusiness/{email}")

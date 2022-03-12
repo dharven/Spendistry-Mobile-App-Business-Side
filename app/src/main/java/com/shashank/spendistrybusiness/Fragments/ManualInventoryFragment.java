@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,9 +82,15 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                sharedPreferences.edit().putBoolean("hasData", false).apply();
-                inventoryViewModel.getInventory(email);
-                swipeRefreshLayout.setRefreshing(false);
+                sharedPreferences.edit().putBoolean("hasData", true).apply();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        inventoryViewModel.getInventory(email);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                },1500);
+
             }
         });
 
@@ -129,7 +136,6 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
                     deleteDialog.setTargetFragment(ManualInventoryFragment.this, 1);
                     deleteDialog.show(getParentFragmentManager(), "DeleteDialog");
                 } else if (direction == ItemTouchHelper.RIGHT) {
-
                     Bundle bundle = new Bundle();
                     bundle.putString("id", inventoryAdapter.getId(viewHolder.getBindingAdapterPosition()));
                     bundle.putString("barcode", inventoryAdapter.getBarcode(viewHolder.getBindingAdapterPosition()));

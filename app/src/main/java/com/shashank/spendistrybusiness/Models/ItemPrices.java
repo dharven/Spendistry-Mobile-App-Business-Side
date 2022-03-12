@@ -29,20 +29,27 @@ public class ItemPrices {
     @ColumnInfo(name = "price")
     private final String price;
 
+    private String total;
+
+    private String quantity;
+
 
     public ItemPrices(String id,String barcode, String itemName, String price) {
         this.id = id;
         this.barcode = barcode;
         this.itemName = itemName;
         this.price = price;
+        this.total = price;
     }
 
     @Ignore
-    public ItemPrices(String barcode, String itemName, String price) {
+    public ItemPrices(String barcode, String itemName, int quantity, String price) {
         this.id = new ObjectId().toString();
         this.barcode = barcode;
         this.itemName = itemName;
         this.price = price;
+        this.total = String.valueOf(Integer.parseInt(price) * quantity);
+        this.quantity = quantity + "";
     }
 
     public String getId() {
@@ -53,11 +60,27 @@ public class ItemPrices {
         return barcode;
     }
 
+    public String getTotal() {
+        return total;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
     public String getItemName() {
         return itemName;
     }
 
     public String getPrice() {
         return price;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
     }
 }

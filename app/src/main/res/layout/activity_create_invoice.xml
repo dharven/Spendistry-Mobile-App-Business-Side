@@ -8,47 +8,17 @@
     tools:context=".Activities.CreateInvoiceActivity">
 
 
-    <TextView
-        android:id="@+id/dropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="@android:drawable/editbox_background"
-        android:drawableEnd="@drawable/ic_arrow"
-        android:gravity="center_vertical"
-        android:hint="Select Item"
-        android:padding="12dp"
-        android:textColorHint="#757575" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/invoiceList"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/InvoicePager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:ignore="SpeakableTextPresentCheck" />
 
-    <LinearLayout
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigationViewInvoice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-
-        <Button
-            android:id="@+id/cancel_invoice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:layout_weight="1"
-            android:text="cancel" />
-
-        <Button
-            android:id="@+id/send_invocie"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:layout_weight="1"
-            android:text="send invoice" />
-    </LinearLayout>
-
+        app:menu="@menu/bottom_navigation" />
 
 </LinearLayout>

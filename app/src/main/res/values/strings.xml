@@ -8,4 +8,7 @@
     <string name="done">Done</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="don_t_have_an_account_register">
+     <font color="#6D6767">Don\'t have an account? </font><font color="#03045E">Register</font>
+    </string>
 </resources>

@@ -1,6 +1,7 @@
 package com.shashank.spendistrybusiness.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -34,10 +36,16 @@ public class LoginActivity extends AppCompatActivity {
          loginButton = findViewById(R.id.login);
          reg = findViewById(R.id.reg);
 
+
          AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
          sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
          SharedPreferences.Editor editor = sharedPreferences.edit();
+
+         Window window = getWindow();
+         window.setNavigationBarColor(ContextCompat.getColor(this,R.color.windowBlue));
+         window.setBackgroundDrawableResource(R.color.cardBlue);
+         window.setStatusBarColor(ContextCompat.getColor(this,R.color.cardBlue));
 
 
          reg.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                                          editor.putString("email", email.getText().toString());
                                          editor.apply();
                                          //
-                                         Intent intent = new Intent(LoginActivity.this, CreateInvoiceActivity.class);
+                                         Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                                          startActivity(intent);
                                      }
 //                                  else {

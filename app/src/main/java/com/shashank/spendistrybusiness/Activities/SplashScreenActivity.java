@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.shashank.spendistrybusiness.R;
@@ -23,7 +24,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
-
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //        authViewModel.getAuth(email).observe(this, new Observer<Auth>() {
 //            @Override
 //            public void onChanged(Auth auth) {
@@ -49,7 +50,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             Toast.makeText(SplashScreenActivity.this, "Internet is available", Toast.LENGTH_SHORT).show();
                             if (sharedPreferences.getBoolean("loggedIn", false)) {
                                 String email = sharedPreferences.getString("email", "not");
-                                Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                                Intent intent = new Intent(SplashScreenActivity.this, DashboardActivity.class);
                                 intent.putExtra("email", email);
                                 startActivity(intent);
                             } else {

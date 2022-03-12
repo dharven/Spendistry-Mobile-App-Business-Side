@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                         String decrypted = getID(result.getText());
                         if (!decrypted.equals("")) {
                             Intent intent = new Intent(MainActivity.this, CreateInvoiceActivity.class);
-                            intent.putExtra("SCAN_RESULT", getID(result.getText()));
+                            intent.putExtra("SCAN_RESULT", decrypted);
+//                            Toast.makeText(MainActivity.this, ""+decrypted, Toast.LENGTH_SHORT).show();
                             startActivity(intent);
                         } else {
                                 codeScanner.startPreview();
@@ -110,14 +111,26 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.logout) {
+        switch (item.getItemId()) {
+            case R.id.logout:
             SharedPreferences sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
             sharedPreferences.edit().putBoolean("loggedIn", false).apply();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             return true;
+            case R.id.inventory:
+            Intent intent1 = new Intent(MainActivity.this, CreateInventoryActivity.class);
+            startActivity(intent1);
+            return true;
+            case R.id.temp:
+                Intent intent2 = new Intent(MainActivity.this, CreateInvoiceActivity.class);
+                intent2.putExtra("SCAN_RESULT", "shashank@gmail.com");
+//                            Toast.makeText(MainActivity.this, ""+decrypted, Toast.LENGTH_SHORT).show();
+                startActivity(intent2);
+            return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

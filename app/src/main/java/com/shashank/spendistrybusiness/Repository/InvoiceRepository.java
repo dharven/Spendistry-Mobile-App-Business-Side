@@ -1,12 +1,17 @@
 package com.shashank.spendistrybusiness.Repository;
 
+import android.app.Activity;
 import android.app.Application;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.shashank.spendistrybusiness.Adapters.InventoryAdapter;
 import com.shashank.spendistrybusiness.Constants.Constants;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessArray;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.UserInvoices;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.SpendistryAPI.SpendistryAPI;
@@ -26,16 +31,33 @@ public class InvoiceRepository {
     SpendistryAPI api = retrofit.create(SpendistryAPI.class);
 
 
+
     public InvoiceRepository(Application application) {
         this.application = application;
     }
 
-    public LiveData<List<ItemPrices>> setInvoice(ItemPrices itemPrices) {
-        MutableLiveData<List<ItemPrices>> data = new MutableLiveData<>();
-        ArrayList<ItemPrices> itemPricesArrayList = new ArrayList<>();
-        itemPricesArrayList.add(itemPrices);
-        data.setValue(itemPricesArrayList);
-        return data;
+
+
+
+
+    public void addInvoice(String email, String businessEmail, BusinessArray invoice) {
+
+        Call<BusinessArray> call = api.addInvoice(email,businessEmail,invoice);
+        call.enqueue(new Callback<BusinessArray>() {
+            @Override
+            public void onResponse(Call<BusinessArray> call, Response<BusinessArray> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(application, ""+response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<BusinessArray> call, Throwable t) {
+
+            }
+        });
     }
 
 

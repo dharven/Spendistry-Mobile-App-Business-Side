@@ -2,6 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <item
+        android:id="@+id/inventory"
+        android:title="Create Inventory"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/temp"
+        android:title="shashank invoice"
+        app:showAsAction="never" />
     <item
         android:id="@+id/logout"
         android:title="Logout"

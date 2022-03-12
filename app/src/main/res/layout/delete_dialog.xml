@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="14dp"
+    app:cardBackgroundColor="@color/material_white"
+    android:layout_height="wrap_content">
+
+<LinearLayout
+    android:layout_margin="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -58,3 +66,4 @@
             android:text="delete" />
     </LinearLayout>
 </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -13,7 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.shashank.spendistrybusiness.Dao.InventoryDao;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 
-@Database(entities = {ItemPrices.class}, version = 7, exportSchema = false)
+@Database(entities = {ItemPrices.class}, version = 8, exportSchema = false)
 public abstract class SpendistryBusinessDB extends RoomDatabase {
     private static final String DATABASE_NAME = "SpendistryBusinessDB";
     public abstract InventoryDao inventoryDao();
@@ -23,7 +23,7 @@ public abstract class SpendistryBusinessDB extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (SpendistryBusinessDB.class) {
                 if (INSTANCE == null) {
-                    INSTANCE= Room.databaseBuilder(context, SpendistryBusinessDB.class, DATABASE_NAME).addCallback(callback).build();
+                    INSTANCE= Room.databaseBuilder(context, SpendistryBusinessDB.class, DATABASE_NAME).addCallback(callback).fallbackToDestructiveMigration().build();
                 }
             }
         }

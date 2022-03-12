@@ -6,6 +6,8 @@
     android:orientation="vertical"
     tools:context=".Fragments.ManualInventoryFragment">
 
+
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
@@ -49,10 +51,9 @@
 
         <Button
             android:id="@+id/add_btn"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:layout_weight=".2"
             android:text="add" />
 
     </LinearLayout>

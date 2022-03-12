@@ -15,7 +15,7 @@
             android:layout_weight=".70"
             android:padding="6dp"
             android:textSize="16sp"
-            android:background="#222121"
+            android:background="@color/material_white"
             android:foreground="?attr/selectableItemBackground"
             tools:text="Item Name" />
 
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".30"
             android:padding="6dp"
-            android:background="#222121"
+            android:background="@color/material_white"
             android:foreground="?attr/selectableItemBackground"
             android:textSize="16sp"
             tools:text="Price" />

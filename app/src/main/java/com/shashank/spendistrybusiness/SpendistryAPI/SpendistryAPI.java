@@ -2,13 +2,10 @@ package com.shashank.spendistrybusiness.SpendistryAPI;
 
 import com.shashank.spendistrybusiness.Models.Auth;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessArray;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.UserInvoices;
+import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.Models.Vendor;
-
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -16,7 +13,6 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface SpendistryAPI {
@@ -24,6 +20,9 @@ public interface SpendistryAPI {
     //GET
     @GET("itemsPrices/{email}")
     Call<ItemPricesArrayList> getInventory(@Path("email") String email);
+
+    @GET("mvd/{email}")
+    Call<Dashboard> getDashboardData(@Path("email") String email);
 
     //POST
 

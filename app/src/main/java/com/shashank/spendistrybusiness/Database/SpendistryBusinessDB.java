@@ -8,15 +8,21 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.shashank.spendistrybusiness.Dao.Converters;
 import com.shashank.spendistrybusiness.Dao.InventoryDao;
+import com.shashank.spendistrybusiness.Dao.dashboardDao;
+import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 
-@Database(entities = {ItemPrices.class}, version = 8, exportSchema = false)
+@Database(entities = {ItemPrices.class, Dashboard.class}, version = 13, exportSchema = false)
+@TypeConverters({Converters.class})
 public abstract class SpendistryBusinessDB extends RoomDatabase {
     private static final String DATABASE_NAME = "SpendistryBusinessDB";
     public abstract InventoryDao inventoryDao();
+    public abstract dashboardDao dashboardDao();
     private static volatile SpendistryBusinessDB INSTANCE;
 
     public static SpendistryBusinessDB getInstance(Context context) {
@@ -40,9 +46,11 @@ public abstract class SpendistryBusinessDB extends RoomDatabase {
 
     static class AddItemsAsyncTask extends AsyncTask<Void, Void, Void> {
         private final InventoryDao inventoryDao;
+        private final dashboardDao dashboardDao;
 
         AddItemsAsyncTask(SpendistryBusinessDB businessDB) {
             inventoryDao = businessDB.inventoryDao();
+            dashboardDao = businessDB.dashboardDao();
             Log.i("Test", "PopulateAsyncTask: test");
 
         }
@@ -50,6 +58,7 @@ public abstract class SpendistryBusinessDB extends RoomDatabase {
         @Override
         protected Void doInBackground(Void... voids) {
             inventoryDao.deleteAll();
+            dashboardDao.deleteAll();
             Log.w("main123", "doInBackground: bg working");
             return null;
         }

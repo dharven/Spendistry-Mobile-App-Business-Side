@@ -364,20 +364,24 @@ public class ManualInvoiceFragment extends Fragment {
         final TextView barcode = dialog.findViewById(R.id.barcode_edit);
         final EditText itemName = dialog.findViewById(R.id.item_name_edit);
         final EditText itemPrice = dialog.findViewById(R.id.price_edit);
+        final EditText itemQuantity = dialog.findViewById(R.id.edit_quantity);
+        itemQuantity.setVisibility(View.VISIBLE);
         edit.setText("Edit");
         cancel.setText("Cancel");
         barcode.setText("Barcode: " + recentlyRemoved.getBarcode());
         itemName.setText(recentlyRemoved.getItemName());
         itemPrice.setText(recentlyRemoved.getPrice());
+        itemQuantity.setText(String.valueOf(recentlyRemoved.getQuantity()));
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String newItemName = itemName.getText().toString();
                 String newItemPrice = itemPrice.getText().toString();
-                if (newItemName.isEmpty() || newItemPrice.isEmpty()) {
+                int newItemQuantity = Integer.parseInt(itemQuantity.getText().toString());
+                if (newItemName.isEmpty() && newItemPrice.isEmpty() && itemQuantity.getText().toString().isEmpty()) {
                     Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    invoiceAdapter.updateItem(recentPosition, recentlyRemoved.getId(), recentlyRemoved.getBarcode(), newItemName, newItemPrice);
+                    invoiceAdapter.updateItem(recentPosition,new ItemPrices(recentlyRemoved.getBarcode(),newItemName, newItemQuantity, newItemPrice));
                     dialog.dismiss();
                 }
             }

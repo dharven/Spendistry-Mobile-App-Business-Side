@@ -10,32 +10,50 @@
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="34dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
+        android:gravity="center_vertical"
         android:textColor="@color/mainBlue"
         android:text="Welcome!"
-        android:textSize="28sp" />
+        android:layout_weight=".6"
+        android:textSize="40sp" />
 
+<!--    <com.google.android.material.card.MaterialCardView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginStart="30dp"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:layout_marginEnd="30dp"-->
+<!--        android:layout_marginBottom="15dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:theme="@style/login_card_custom_corners"-->
+<!--        app:cardBackgroundColor="@color/windowBlue"-->
+<!--        app:strokeWidth="0dp"-->
+<!--        android:elevation="16dp"-->
+<!--        app:cardCornerRadius="16dp">-->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="15dp"
         android:layout_weight="1"
+        android:theme="@style/loginCard"
         app:cardBackgroundColor="@color/windowBlue"
-        app:strokeWidth="0dp"
-        android:elevation="16dp"
-        app:cardCornerRadius="16dp">
+
+        app:cardElevation="16dp"
+        app:strokeWidth="0dp">
 <!--remove scrollbar-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical">
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:scrollbars="none"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,7 +83,8 @@
                         android:ems="10"
                         android:inputType="textPersonName"
                         android:minHeight="48dp"
-                        android:textCursorDrawable="@drawable/cursor_drawable" />
+                        android:textCursorDrawable="@drawable/cursor_drawable"
+                        tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
                 </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.textfield.TextInputLayout
@@ -210,8 +229,9 @@
                         android:layout_margin="2dp"
                         android:ems="10"
                         android:inputType="textPostalAddress"
+                        android:minHeight="48dp"
                         android:textCursorDrawable="@drawable/cursor_drawable"
-                        android:minHeight="48dp" />
+                        tools:ignore="SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/cityField"
@@ -389,17 +409,19 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </ScrollView>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reg_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:backgroundTint="@color/mainBlue"
+            android:layout_marginBottom="30dp"
+            android:minHeight="48dp"
+            android:text="Next" />
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/reg_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:backgroundTint="@color/mainBlue"
-        android:layout_marginBottom="30dp"
-        android:minHeight="48dp"
-        android:text="Next" />
+
 
 </LinearLayout>

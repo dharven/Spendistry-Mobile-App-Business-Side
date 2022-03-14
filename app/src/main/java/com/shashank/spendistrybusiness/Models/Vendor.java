@@ -1,5 +1,7 @@
 package com.shashank.spendistrybusiness.Models;
 
+import androidx.room.Ignore;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Vendor {
@@ -29,6 +31,9 @@ public class Vendor {
     private String lat;
     private String lng;
 
+    @Ignore
+    public Vendor() {
+    }
 
     public Vendor(String firstName, String lastName, String email, String businessName, String mobileNumber, String panNumber, String gstNumber, String address, String city, String state, String tollFreeNumber, String website) {
         this.firstName = firstName;

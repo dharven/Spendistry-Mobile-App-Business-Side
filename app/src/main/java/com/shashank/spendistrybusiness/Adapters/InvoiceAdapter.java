@@ -100,9 +100,7 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHo
         return (ArrayList<ItemPrices>) itemPricesList;
     }
 
-    public ItemPrices updateItem(int position,String barcode, String itemName,String quantity, String price){
-        String total = String.valueOf(Integer.parseInt(quantity)*Integer.parseInt(price));
-        ItemPrices itemPrices = new ItemPrices(barcode, itemName,quantity, price);
+    public ItemPrices updateItem(int position,ItemPrices itemPrices){
         itemPricesList.add(position, itemPrices);
         notifyItemInserted(position);
         return itemPrices;

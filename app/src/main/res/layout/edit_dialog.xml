@@ -39,11 +39,21 @@
         android:minHeight="48dp" />
 
     <EditText
+        android:id="@+id/edit_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Quantity"
+        android:inputType="number"
+        android:selectAllOnFocus="true"
+        android:visibility="gone" />
+
+    <EditText
         android:id="@+id/price_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="price"
+        android:hint="Price"
         android:inputType="numberDecimal"
         android:minHeight="48dp" />
 

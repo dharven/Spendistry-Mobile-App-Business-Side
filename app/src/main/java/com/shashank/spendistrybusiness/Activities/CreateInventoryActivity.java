@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import android.Manifest;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.shashank.spendistrybusiness.Fragments.ManualInventoryFragment;
 import com.shashank.spendistrybusiness.Fragments.ScanInventoryFragment;
@@ -76,5 +77,14 @@ public class CreateInventoryActivity extends AppCompatActivity {
 
 
 
+    }
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            navigationView.getMenu().getItem(0).setChecked(true);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

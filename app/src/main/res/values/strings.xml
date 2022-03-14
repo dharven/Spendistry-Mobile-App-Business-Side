@@ -11,4 +11,7 @@
     <string name="don_t_have_an_account_register">
      <font color="#6D6767">Don\'t have an account? </font><font color="#03045E">Register</font>
     </string>
+    <string name="monthly_income_n18000">Monthly Income:</string>
+    <string name="yearly_income_n180000000">Yearly Income:</string>
+    <string name="issued_invoices_n180">Issued Invoices:</string>
 </resources>

@@ -2,13 +2,16 @@ package com.shashank.spendistrybusiness.Fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +84,11 @@ public class ScanInventoryFragment extends Fragment implements EditDialog.OnEdit
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                        Toast.makeText(requireActivity(), "Please grant this permission to use this app", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "Please grant this permission to use this app", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", requireActivity().getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
                     }
 
                     @Override

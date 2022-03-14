@@ -5,6 +5,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.broooapps.graphview.CurveGraphConfig;
 import com.broooapps.graphview.CurveGraphView;
@@ -27,7 +30,9 @@ import com.broooapps.graphview.models.GraphData;
 import com.broooapps.graphview.models.PointMap;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
+import com.shashank.spendistrybusiness.Models.Vendor;
 import com.shashank.spendistrybusiness.R;
+import com.shashank.spendistrybusiness.ViewModels.DashboardViewModel;
 
 import ru.nikartm.support.BadgePosition;
 import ru.nikartm.support.ImageBadgeView;
@@ -35,27 +40,77 @@ import ru.nikartm.support.ImageBadgeView;
 public class DashboardActivity extends AppCompatActivity {
     private Toolbar toolbar;
     ImageBadgeView imageBadgeView;
+    private CurveGraphView curveGraphView;
+    private String email, yearlyIncome, monthlyIncome, totalIncome, issuedInvoices, roundoff;
+    private int reportCount;
+    private Vendor vendorDetails;
+    private TextView monthlyIncomeTextView, yearlyIncomeTextView, issuedInvoicesTextView, nameTextView, emailTextView;
+    private SharedPreferences sharedPreferences;
+    private DashboardViewModel dashboardViewModel;
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are <em>not</em> resumed.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+//
+        dashboardViewModel.getDashboardData(email);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         toolbar = findViewById(R.id.toolbar_dashboard);
+        monthlyIncomeTextView = findViewById(R.id.monthly_income);
+        yearlyIncomeTextView = findViewById(R.id.yearly_income);
+        issuedInvoicesTextView = findViewById(R.id.issued_invoices);
+        nameTextView = findViewById(R.id.name);
+        emailTextView = findViewById(R.id.email);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+        setGraph();
         if (actionBar != null) {
             actionBar.setTitle("");
         }
         ImageButton imageButton = findViewById(R.id.edit_profile);
+        curveGraphView = findViewById(R.id.cgv);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
-                                       });
+        });
+        sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
+        email = sharedPreferences.getString("email", "");
+        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        dashboardViewModel.getDashboardData(email).observe(this, dashboardData -> {
+            if (dashboardData != null) {
 
+                monthlyIncome = String.valueOf(dashboardData.getMonthlyIncome());
+                yearlyIncome = String.valueOf(dashboardData.getYearlyIncome());
+                totalIncome = String.valueOf(dashboardData.getTotalIncome());
+                issuedInvoices = String.valueOf(dashboardData.getIssuedInvoices());
+                roundoff = String.valueOf(dashboardData.getRoundoff());
+                vendorDetails = dashboardData.getVendorDetails();
+                reportCount = dashboardData.getReportCount();
+                imageBadgeView.setBadgeValue(reportCount);
+                nameTextView.setText(vendorDetails.getFirstName()+ " " + vendorDetails.getLastName());
+                emailTextView.setText(vendorDetails.getEmail());
+                monthlyIncomeTextView.setText(monthlyIncome);
+                yearlyIncomeTextView.setText(yearlyIncome);
+                issuedInvoicesTextView.setText(issuedInvoices);
+//                curveGraphView.setData(new GraphData(new PointMap(dashboardData.getMonthlyIncome(), "Monthly Income"), new PointMap(dashboardData.getYearlyIncome(), "Yearly Income")));
+            }
+        });
 
-        CurveGraphView curveGraphView = findViewById(R.id.cgv);
 
         curveGraphView.configure(
                 new CurveGraphConfig.Builder(this)
@@ -95,6 +150,11 @@ public class DashboardActivity extends AppCompatActivity {
 
 
 
+
+    }
+
+    private void setGraph(){
+
     }
 
     @Override
@@ -103,7 +163,7 @@ public class DashboardActivity extends AppCompatActivity {
         inflater.inflate(R.menu.dashboard_menu, menu);
         FrameLayout badgeLayout = (FrameLayout) menu.findItem(R.id.reports).getActionView();
         imageBadgeView = badgeLayout.findViewById(R.id.badge);
-        imageBadgeView.setBadgeValue(4);
+//        imageBadgeView.setBadgeValue(4);
         imageBadgeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,5 +197,6 @@ public class DashboardActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
 }

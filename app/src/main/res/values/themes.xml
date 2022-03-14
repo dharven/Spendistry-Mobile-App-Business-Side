@@ -13,7 +13,8 @@
         <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="android:windowBackground">#E7F5F8</item>
+        <item name="android:windowBackground">@color/windowBlue</item>
+        <item name="android:navigationBarColor">@color/windowBlue</item>
         <item name="fontFamily">@font/alata</item>
     </style>
 
@@ -31,6 +32,7 @@
         <item name="cardElevation">16dp</item>
         <item name="android:ambientShadowAlpha">1</item>
         <item name="android:spotShadowAlpha">1</item>
+        <item name="cardBackgroundColor">@color/windowBlue</item>
     </style>
 
     <style name="loginCard" parent="@style/Widget.MaterialComponents.CardView">

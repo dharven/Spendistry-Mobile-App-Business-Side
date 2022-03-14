@@ -1,6 +1,5 @@
 package com.shashank.spendistrybusiness.Dao;
 
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
@@ -15,24 +14,16 @@ import com.shashank.spendistrybusiness.Models.Vendor;
 
 import java.util.List;
 
+import com.shashank.spendistrybusiness.Models.Dashboard;
+
 @Dao
-public interface InventoryDao {
-
-    @Query("SELECT * FROM inventory")
-    LiveData<List<ItemPrices>> getAllItems();
-
-    @Query("DELETE FROM inventory")
-    void deleteAll();
-
-    @Query("DELETE FROM inventory WHERE id== :id")
-    void deleteItem(String id);
+public interface dashboardDao {
+    @Query("SELECT * FROM dashboard WHERE email== :id")
+    LiveData<Dashboard> getDashboardData(String id);
 
     @Insert
-    void addItems(List<ItemPrices> itemPrices);
+    void addDashboardData(Dashboard dashboard);
 
-    @Update
-    void updateItem(ItemPrices itemPrices);
-
-
-
+    @Query("DELETE FROM dashboard")
+    void deleteAll();
 }

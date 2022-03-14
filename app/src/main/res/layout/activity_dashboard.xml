@@ -28,7 +28,7 @@
                 android:fontFamily="@font/alata"
                 android:paddingTop="16dp"
                 android:text="Spendistry Business"
-                android:textColor="@color/material_white"
+                android:textColor="@color/windowBlue"
                 android:textSize="36sp" />
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -68,7 +68,7 @@
                     android:layout_marginTop="25dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="25dp"
-                    app:cardBackgroundColor="#00B4D8"
+                    app:cardBackgroundColor="#00ADB5"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="8dp"
                     app:strokeWidth="0dp">
@@ -83,7 +83,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/alata"
-                            android:text="Monthly Income: \n18000"
+                            android:text="@string/monthly_income_n18000"
+                            android:textColor="#03045E"
+                            android:textSize="24sp" />
+                        <TextView
+                            android:id="@+id/monthly_income"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/alata"
                             android:textColor="@color/material_white"
                             android:textSize="24sp" />
 
@@ -91,37 +98,58 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/alata"
-                            android:text="Yearly Income: \n180000000"
+                            android:text="@string/yearly_income_n180000000"
+                            android:textColor="#03045E"
+                            android:textSize="16sp" />
+                        <TextView
+                            android:id="@+id/yearly_income"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/alata"
                             android:textColor="@color/material_white"
                             android:textSize="16sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="25dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="25dp"
                     android:padding="16dp"
-                    app:cardBackgroundColor="#00B4D8"
+                    app:cardBackgroundColor="#00ADB5"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:strokeWidth="0dp">
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
+                        android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:fontFamily="@font/alata"
-                        android:text="Issued invoices: \n180"
-                        android:textColor="@color/material_white"
+                        android:text="@string/issued_invoices_n180"
+                        android:textColor="#03045E"
                         android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/issued_invoices"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/alata"
+                            android:textColor="@color/material_white"
+                            android:textSize="20sp" />
+                    </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -132,7 +160,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="25dp"
-                app:cardBackgroundColor="#00B4D8"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#00ADB5"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -141,7 +170,7 @@
                 app:strokeWidth="0dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:gravity="center"
@@ -155,16 +184,35 @@
                         android:src="@drawable/thanos"
                         app:riv_corner_radius="34dp" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
                         android:layout_weight="1"
-                        android:ellipsize="end"
-                        android:fontFamily="@font/alata"
-                        android:maxLines="2"
-                        android:text="Shashank Mistry \nshashank@gmail.com"
-                        android:textColor="@color/material_white"
-                        android:textSize="20sp" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/alata"
+                            android:maxLines="1"
+                            android:textColor="#03045E"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/alata"
+                            android:maxLines="1"
+                            android:textColor="@color/material_white"
+                            android:textSize="18sp"
+                            tools:text="shashankmistry30@gmail.com" />
+
+                    </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/edit_profile"
@@ -181,13 +229,13 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/materialCardView3"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="270dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
                 android:padding="12dp"
-                app:cardBackgroundColor="#00B4D8"
+                app:cardBackgroundColor="#00ADB5"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="6dp"
                 app:strokeWidth="0dp">

@@ -39,16 +39,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         findViews();
 
-//        Window window = getWindow();
-//        window.setNavigationBarColor(ContextCompat.getColor(this,R.color.windowBlue));
-//        window.setStatusBarColor(ContextCompat.getColor(this,R.color.windowBlue));
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//            window.getDecorView().getWindowInsetsController().setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS, APPEARANCE_LIGHT_STATUS_BARS);
-//        } else {
-//            window.setStatusBarColor(ContextCompat.getColor(this,R.color.cardBlue));
-//        }
         Window window = getWindow();
-        window.setNavigationBarColor(ContextCompat.getColor(this, R.color.cardBlue));
+        window.setNavigationBarColor(ContextCompat.getColor(this, R.color.windowBlue));
         window.setBackgroundDrawableResource(R.color.cardBlue);
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.cardBlue));
 

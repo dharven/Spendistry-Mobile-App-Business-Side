@@ -39,7 +39,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull InventoryAdapter.MyViewHolder holder, int position) {
-            holder.itemPrice.setText(itemPricesList.get(position).getPrice());
+            holder.itemPrice.setText("₹"+itemPricesList.get(position).getPrice());
             holder.itemName.setText(itemPricesList.get(position).getItemName());
     }
 

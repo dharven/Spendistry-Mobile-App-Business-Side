@@ -1,11 +1,13 @@
 package com.shashank.spendistrybusiness.SpendistryAPI;
 
 import com.shashank.spendistrybusiness.Models.Auth;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessArray;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
 import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.Models.Vendor;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -17,6 +19,7 @@ import retrofit2.http.Path;
 
 public interface SpendistryAPI {
 
+
     //GET
     @GET("itemsPrices/{email}")
     Call<ItemPricesArrayList> getInventory(@Path("email") String email);
@@ -24,8 +27,11 @@ public interface SpendistryAPI {
     @GET("mvd/{email}")
     Call<Dashboard> getDashboardData(@Path("email") String email);
 
-    //POST
+    @GET("invoice/vendor/{email}")
+    Call<ArrayList<BusinessInvoices>> getBusinessInvoices(@Path("email") String email);
 
+
+    //POST
     @POST("authBusiness/vendorLogin")
     Call<String> getAuth(@Body Auth auth);
 
@@ -39,7 +45,8 @@ public interface SpendistryAPI {
     Call<ItemPricesArrayList> CreateInventory(@Body ItemPricesArrayList itemPricesList);
 
     @POST("invoice/addEle/{email}/{businessEmail}")
-    Call<BusinessArray> addInvoice(@Path("email") String email, @Path("businessEmail") String businessEmail , @Body BusinessArray invoice);
+    Call<BusinessInvoices> addInvoice(@Path("email") String email, @Path("businessEmail") String businessEmail , @Body BusinessInvoices invoice);
+
 
     //DELETE
     @DELETE("authBusiness/{email}")
@@ -55,6 +62,9 @@ public interface SpendistryAPI {
 
     @PATCH("itemsPrices/patchEle/{email}/{itemId}")
     Call<ItemPrices> updateElement(@Path("email") String email, @Path("itemId") String itemId, @Body ItemPrices itemPrices);
+
+    @PATCH("authBusiness/{email}")
+    Call<Auth> setNewPassword(@Path("email") String email, @Body Auth auth);
 
 
 

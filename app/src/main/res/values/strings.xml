@@ -14,4 +14,13 @@
     <string name="monthly_income_n18000">Monthly Income:</string>
     <string name="yearly_income_n180000000">Yearly Income:</string>
     <string name="issued_invoices_n180">Issued Invoices:</string>
+    <string name="didnt_receive_otp"><font color="#6D6767">Didn\'t receive OTP? </font><font color="#003045E">Resend</font></string>
+    <string name="email_sent">Email sent!</string>
+    <string name="some_thing_went_wrong">Something went wrong!</string>
+    <string name="context_title"><font color="#03045E"><b>Select The Action</b></font></string>
+    <string name="delete"><font color="#03045E">"DELETE"</font></string>
+    <string name="item"><u><b>Item</b></u></string>
+    <string name="qnt"><u><b>Qnt</b></u></string>
+    <string name="price"><u><b>Price</b></u></string>
+    <string name="total"><u><b>Total</b></u></string>
 </resources>

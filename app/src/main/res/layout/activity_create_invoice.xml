@@ -5,19 +5,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="top"
     tools:context=".Activities.CreateInvoiceActivity">
 
+    <com.google.android.material.card.MaterialCardView
+        style="@style/editPageCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/mainBlue"
+        android:id="@+id/action_bar_inventory_card"
+        android:layout_alignParentTop="true"
+        app:cardElevation="16dp"
+        app:strokeWidth="0dp">
 
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_invoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:theme="@style/ActionBarStyle">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="35dp"
+                android:gravity="center"
+                android:text="Create Invoice"
+                android:textColor="@color/windowBlue"
+                android:textSize="30sp" />
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.card.MaterialCardView>
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-50dp"
         android:layout_weight="1"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigationViewInvoice"
         android:layout_width="match_parent"
+        style="@style/Widget.App.BottomNavigationView"
+        app:itemIconTint="@color/windowBlue"
+        app:itemTextColor="@color/windowBlue"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_navigation" />
 

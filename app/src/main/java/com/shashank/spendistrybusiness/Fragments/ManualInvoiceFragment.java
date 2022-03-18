@@ -17,8 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,21 +33,24 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.shashank.spendistrybusiness.Activities.MainActivity;
 import com.shashank.spendistrybusiness.Adapters.InvoiceAdapter;
 import com.shashank.spendistrybusiness.Adapters.SearchableSpinnerAdapter;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessArray;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
+import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InvoiceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -63,9 +68,10 @@ public class ManualInvoiceFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private ItemPrices recentlyRemoved;
     private int recentPosition;
-    private String businessEmail;
+    private String businessEmail, businessName, description, city;
     private LinearLayoutManager layoutManager;
     private TextView searchItem;
+    private LinearLayout linearLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,6 +85,7 @@ public class ManualInvoiceFragment extends Fragment {
         EditText itemName = rootView.findViewById(R.id.itemName_invoice);
         EditText itemPrice = rootView.findViewById(R.id.itemPrice_invoice);
         EditText itemQuantity = rootView.findViewById(R.id.quantity_invoice);
+        linearLayout = rootView.findViewById(R.id.manual_invoice);
         itemQuantity.setText("1");
         Button addItem = rootView.findViewById(R.id.add_btn_invoice);
         sharedPreferences = requireContext().getSharedPreferences("loggedIn", MODE_PRIVATE);
@@ -130,10 +137,10 @@ public class ManualInvoiceFragment extends Fragment {
             @Override
             public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(requireContext(), R.color.teal_200))
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(requireContext(), R.color.windowBlue))
                         .addSwipeLeftActionIcon(R.drawable.delete)
                         .addSwipeLeftLabel("DELETE")
-                        .addSwipeRightBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+                        .addSwipeRightBackgroundColor(ContextCompat.getColor(requireContext(), R.color.windowBlue))
                         .addSwipeRightActionIcon(R.drawable.edit)
                         .addSwipeRightLabel("EDIT")
                         .create()
@@ -141,6 +148,17 @@ public class ManualInvoiceFragment extends Fragment {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         }).attachToRecyclerView(invoiceList);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                invoiceList.getContext(),
+                layoutManager.getOrientation()
+        );
+
+        dividerItemDecoration.setDrawable(
+                Objects.requireNonNull(ContextCompat.getDrawable(requireContext(), R.drawable.divider))
+        );
+        invoiceList.addItemDecoration(dividerItemDecoration);
+
 
 
         addItem.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +173,8 @@ public class ManualInvoiceFragment extends Fragment {
             }
         });
 
+
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,14 +184,12 @@ public class ManualInvoiceFragment extends Fragment {
                 }
 
                 double finalPrice = total - (total * (10.0 / 100.0));
-
-                Toast.makeText(requireContext(), "total: " + total + "\n final: " + finalPrice, Toast.LENGTH_SHORT).show();
-                Invoice invoice = new Invoice(invoiceAdapter.getItemPricesList(), "1", total, "amul anand",
+                Invoice invoice = new Invoice(invoiceAdapter.getItemPricesList(), "1", total, businessName,
                         "lorem impsum", 10, finalPrice, 0.0, 0.0, 0.0, 0.0, email,
-                        businessEmail, "cash", Math.round(finalPrice), "anand");
+                        businessEmail, "cash", Math.round(finalPrice), city);
                 ArrayList<Invoice> invoiceList = new ArrayList<>();
                 invoiceList.add(invoice);
-                BusinessArray businessArray = new BusinessArray(businessEmail, invoiceList);
+                BusinessInvoices businessArray = new BusinessInvoices(businessEmail, invoiceList);
                 invoiceViewModel.addInvoice(email, businessEmail, businessArray);
                 invoiceViewModel.setInvoice(new ItemPrices("", null, null, null));
             }
@@ -311,10 +329,20 @@ public class ManualInvoiceFragment extends Fragment {
         invoiceViewModel.getItemPrices(businessEmail).observe(requireActivity(), new Observer<List<ItemPrices>>() {
             @Override
             public void onChanged(List<ItemPrices> itemPrices) {
-
+                sharedPreferences.edit().putBoolean("hasData",true).apply();
                 adapter = new SearchableSpinnerAdapter(requireContext(), (ArrayList<ItemPrices>) itemPrices);
                 itemPricesListFilter = itemPrices;
                 itemPricesListTemp = itemPrices;
+            }
+        });
+
+        invoiceViewModel.getDashBoardFromDB(businessEmail).observe(getViewLifecycleOwner(),new Observer<Dashboard>() {
+
+            @Override
+            public void onChanged(Dashboard dashboard) {
+                businessName = dashboard.getVendorDetails().getBusinessName();
+                city = dashboard.getVendorDetails().getCity();
+
             }
         });
 
@@ -379,7 +407,10 @@ public class ManualInvoiceFragment extends Fragment {
                 String newItemPrice = itemPrice.getText().toString();
                 int newItemQuantity = Integer.parseInt(itemQuantity.getText().toString());
                 if (newItemName.isEmpty() && newItemPrice.isEmpty() && itemQuantity.getText().toString().isEmpty()) {
-                    Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                    Snackbar snackbar = Snackbar.make(linearLayout, "Please fill all the fields", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(),R.color.red));
+                    snackbar.show();
                 } else {
                     invoiceAdapter.updateItem(recentPosition,new ItemPrices(recentlyRemoved.getBarcode(),newItemName, newItemQuantity, newItemPrice));
                     dialog.dismiss();

@@ -1,5 +1,7 @@
 package com.shashank.spendistrybusiness.Models.CreateInvoice;
 
+import androidx.room.Ignore;
+
 import com.google.gson.annotations.SerializedName;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 
@@ -65,6 +67,19 @@ public class Invoice {
 
     private String city;
 
+    private String invoiceTime;
+
+    private String businessName;
+
+    private String businessAddress;
+
+    private String businessContactNo;
+
+    private String gstNumber;
+
+    @Ignore
+    private boolean isExpanded;
+
     public Invoice(ArrayList<ItemPrices> totalItems, String invoiceNumber,
                    double total, String title, String description, double discount, double finalPrice,double IGST,
                    double CGST, double SGST, double UTGST, String sentTo, String sentBy, String paymentMode,
@@ -86,6 +101,84 @@ public class Invoice {
         PaymentMode = paymentMode;
         this.roundOff = roundOff;
         this.city = city;
+    }
+
+    @Ignore
+    public Invoice(ArrayList<ItemPrices> totalItems, String invoiceNumber,
+                   double total, String title, String description, double discount, double finalPrice,double IGST,
+                   double CGST, double SGST, double UTGST, String sentTo, String sentBy, String paymentMode,
+                   double roundOff, String city, String invoiceTime, String businessName, String businessAddress,
+                    String businessContactNo, String gstNumber){
+
+        this.totalItems = totalItems;
+        this.invoiceNumber = invoiceNumber;
+        Total = total;
+        Title = title;
+        Description = description;
+        this.discount = discount;
+        this.finalPrice = finalPrice;
+        this.IGST = IGST;
+        this.CGST = CGST;
+        this.SGST = SGST;
+        this.UTGST = UTGST;
+        SentTo = sentTo;
+        SentBy = sentBy;
+        PaymentMode = paymentMode;
+        this.roundOff = roundOff;
+        this.city = city;
+        this.invoiceTime = invoiceTime;
+        this.businessName = businessName;
+        this.businessAddress = businessAddress;
+        this.businessContactNo = businessContactNo;
+        this.gstNumber = gstNumber;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
+    }
+
+    public String getGstNumber() {
+        return gstNumber;
+    }
+
+    public void setGstNumber(String gstNumber) {
+        this.gstNumber = gstNumber;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public String getBusinessAddress() {
+        return businessAddress;
+    }
+
+    public void setBusinessAddress(String businessAddress) {
+        this.businessAddress = businessAddress;
+    }
+
+    public String getBusinessContactNo() {
+        return businessContactNo;
+    }
+
+    public void setBusinessContactNo(String businessContactNo) {
+        this.businessContactNo = businessContactNo;
+    }
+
+    public String getInvoiceTime() {
+        return invoiceTime;
+    }
+
+    public void setInvoiceTime(String invoiceTime) {
+        this.invoiceTime = invoiceTime;
     }
 
     public String getInvoiceId() {

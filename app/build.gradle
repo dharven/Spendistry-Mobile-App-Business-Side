@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.shashank.spendistrybusiness"
-        minSdk 21
+        minSdk 24
         targetSdk 31
         versionCode 1
         versionName "1.0"
@@ -75,6 +75,13 @@ dependencies {
 
     //badge
     implementation 'io.github.nikartm:image-support:2.0.0'
+
+    //otpEditText
+    implementation 'com.github.KevinSchildhorn:OTPView:0.2.2'
+
+    //Email
+    implementation 'com.github.ShashankMistry:GmailBackground:1.0.0'
+    //    implementation 'com.github.yesidlazaro:GmailBackground:1.2.0'
 
     //mongo bson
     implementation'org.mongodb:bson:3.0.4'

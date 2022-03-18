@@ -42,6 +42,7 @@ public class DeleteDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.delete_dialog,container, false);
+        requireDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         Bundle bundle = getArguments();
         //
         final String id = bundle.getString("id");

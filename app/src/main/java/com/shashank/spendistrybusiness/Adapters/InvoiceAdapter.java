@@ -1,11 +1,11 @@
 package com.shashank.spendistrybusiness.Adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,22 +32,23 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHo
     @NonNull
     @Override
     public InvoiceAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(activity).inflate(R.layout.invoice_recycleview, parent, false);
+        View view = LayoutInflater.from(activity).inflate(R.layout.invoice_recyclerview, parent, false);
         return new MyViewHolder(view);
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull InvoiceAdapter.MyViewHolder holder, int position) {
-        holder.itemPrice.setText(itemPricesList.get(position).getPrice());
+        holder.itemPrice.setText("₹"+itemPricesList.get(position).getPrice());
         holder.itemName.setText(itemPricesList.get(position).getItemName());
         if (itemPricesList.get(position).getQuantity()!=null){
             holder.itemQuantity.setText(itemPricesList.get(position).getQuantity());
-            holder.itemTotal.setText(String.valueOf(Integer.parseInt(itemPricesList.get(position).getPrice())*Integer.parseInt(itemPricesList.get(position).getQuantity())));
+            holder.itemTotal.setText("₹"+ Integer.parseInt(itemPricesList.get(position).getPrice()) * Integer.parseInt(itemPricesList.get(position).getQuantity()));
 
         } else {
             holder.itemQuantity.setText("1");
-            holder.itemTotal.setText(itemPricesList.get(position).getPrice());
+            holder.itemTotal.setText("₹"+itemPricesList.get(position).getPrice());
         }
     }
 

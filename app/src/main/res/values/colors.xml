@@ -21,4 +21,7 @@
     <color name="mainBlue">#03045E</color>
     <color name="windowBlue">#E7F5F8</color>
     <color name="cardBlue">#00B4D8</color>
+    <color name="red">#FF1100</color>
+    <color name="cardGreen">#00ADB5</color>
+
 </resources>

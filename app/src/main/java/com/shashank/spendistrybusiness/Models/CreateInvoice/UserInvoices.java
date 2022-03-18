@@ -8,9 +8,9 @@ public class UserInvoices {
 
     @SerializedName("_id")
     private String email;
-    private ArrayList<BusinessArray> businessName;
+    private ArrayList<BusinessInvoices> businessName;
 
-    public UserInvoices(String email, ArrayList<BusinessArray> businessName) {
+    public UserInvoices(String email, ArrayList<BusinessInvoices> businessName) {
         this.email = email;
         this.businessName = businessName;
     }
@@ -19,7 +19,7 @@ public class UserInvoices {
         return email;
     }
 
-    public ArrayList<BusinessArray> getBusinessName() {
+    public ArrayList<BusinessInvoices> getBusinessName() {
         return businessName;
     }
 }

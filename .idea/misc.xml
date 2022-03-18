@@ -3,17 +3,28 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/background.xml" value="0.2405" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/background_highlighted.xml" value="0.14" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/cursor_drawable.xml" value="0.2545" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/delete.xml" value="0.1305" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/divider_10dp.xml" value="0.1305" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/edit.xml" value="0.1745" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/edit_text_bg.xml" value="0.2545" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/edit_white.xml" value="0.1745" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/ic_add.xml" value="0.1" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/ic_report.xml" value="0.155" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/layour_bg.xml" value="0.231" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/navigation_view_colored.xml" value="0.155" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/spinner_bg.xml" value="0.1295" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_business_invoices.xml" value="0.264" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_create_inventory.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_create_invoice.xml" value="0.2" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_dashboard.xml" value="0.1" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_edit_profile.xml" value="0.2" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_forgot_password.xml" value="0.21920289855072464" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_otp.xml" value="0.264" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_register.xml" value="0.6" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_reported_invoice.xml" value="0.21829710144927536" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/activity_splash_screen.xml" value="0.1" />
@@ -23,8 +34,11 @@
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/fragment_manual_invoice.xml" value="0.152" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/fragment_scan_inventory.xml" value="0.25" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/fragment_scan_invoice.xml" value="0.24583333333333332" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/invoice_layout.xml" value="0.2" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/invoice_recyclerview.xml" value="0.22192028985507245" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/invoice_recycleview.xml" value="0.14427083333333332" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/items_recyclerview.xml" value="0.264" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/otp_dialog.xml" value="0.1453125" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/quantity_dialog.xml" value="0.21829710144927536" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/report_badge.xml" value="0.2078804347826087" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/scan_entry_dialog.xml" value="0.20833333333333334" />
@@ -33,6 +47,7 @@
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/menu/bottom_navigation.xml" value="0.20512820512820512" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/menu/dashboard_menu.xml" value="0.25" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/menu/main_activity_menu.xml" value="0.25" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/menu/profile_menu.xml" value="0.25" />
       </map>
     </option>
   </component>

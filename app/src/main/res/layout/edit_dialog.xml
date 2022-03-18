@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="14dp"
-    app:cardBackgroundColor="@color/material_white"
+    app:cardElevation="12dp"
+    app:strokeColor="@color/mainBlue"
+    app:cardBackgroundColor="@color/windowBlue"
+
     android:layout_height="wrap_content">
 <LinearLayout
     android:layout_width="match_parent"
@@ -33,6 +36,7 @@
         android:id="@+id/item_name_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textCursorDrawable="@drawable/cursor_drawable"
         android:ems="10"
         android:hint="Item name"
         android:inputType="textPersonName"
@@ -62,21 +66,23 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel_btn"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:layout_weight="50"
-            android:text="cancel" />
-
-        <Button
-            android:id="@+id/update_btn"
-            android:layout_width="0dp"
+            android:backgroundTint="@color/mainBlue"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="50"
-            android:text="update" />
+            android:text="Cancel" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/update_btn"
+            android:layout_width="0dp"
+            android:backgroundTint="@color/mainBlue"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="50"
+            android:text="Update" />
     </LinearLayout>
 </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         app:cardCornerRadius="10dp"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/teal_700"
+        app:cardBackgroundColor="@color/cardGreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,7 +29,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center"
-                android:textColor="@color/material_white"
+                android:textColor="@color/windowBlue"
                 android:text="Select Item"
                 android:textSize="20sp" />
 
@@ -37,7 +37,6 @@
                 android:id="@+id/search_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_margin="10dp"
                 android:background="@drawable/edit_text_bg"
                 android:hint="Search..."

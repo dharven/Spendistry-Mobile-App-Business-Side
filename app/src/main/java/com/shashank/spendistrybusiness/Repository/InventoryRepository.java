@@ -10,14 +10,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.shashank.spendistrybusiness.Constants.Constants;
-import com.shashank.spendistrybusiness.Constants.GlobalVariables;
 import com.shashank.spendistrybusiness.Dao.InventoryDao;
 import com.shashank.spendistrybusiness.Database.SpendistryBusinessDB;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.SpendistryAPI.SpendistryAPI;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

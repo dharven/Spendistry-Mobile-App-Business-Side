@@ -1,19 +1,16 @@
 package com.shashank.spendistrybusiness.ViewModels;
 
-import android.app.Activity;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.shashank.spendistrybusiness.Adapters.InventoryAdapter;
-import com.shashank.spendistrybusiness.Constants.GlobalVariables;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessArray;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
+import com.shashank.spendistrybusiness.Constants.Global;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
+import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
-import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
+import com.shashank.spendistrybusiness.Repository.DashboardRepository;
 import com.shashank.spendistrybusiness.Repository.InventoryRepository;
 import com.shashank.spendistrybusiness.Repository.InvoiceRepository;
 
@@ -24,19 +21,28 @@ public class InvoiceViewModel extends AndroidViewModel {
     // TODO: Implement the ViewModel
     InvoiceRepository invoiceRepository;
     InventoryRepository inventoryRepository;
-    MutableLiveData<List<ItemPrices>> data = GlobalVariables.data;
-    ArrayList<ItemPrices> itemPricesArrayList = GlobalVariables.itemPricesArrayList;
+    MutableLiveData<List<ItemPrices>> data = Global.data;
+    ArrayList<ItemPrices> itemPricesArrayList = Global.itemPricesArrayList;
+    DashboardRepository dashboardRepository;
 
     public InvoiceViewModel(Application application) {
         super(application);
         invoiceRepository = new InvoiceRepository(application);
         inventoryRepository = new InventoryRepository(application);
+        dashboardRepository = new DashboardRepository(application);
     }
 
+    public LiveData<Dashboard> getDashBoardFromDB(String email){
+        return dashboardRepository.getDashBoardFromDB(email);
+    }
 
 
     public LiveData<List<ItemPrices>> getItemPrices(String email) {
         return inventoryRepository.getInventory(email);
+    }
+
+    public LiveData<BusinessInvoices> getBusinessInvoices(String email){
+        return invoiceRepository.getBusinessInvoices(email);
     }
 
     public void setInvoice(ItemPrices itemPrices) {
@@ -55,7 +61,7 @@ public class InvoiceViewModel extends AndroidViewModel {
         return data;
     }
 
-    public void addInvoice(String email, String businessEmail, BusinessArray invoice) {
+    public void addInvoice(String email, String businessEmail, BusinessInvoices invoice) {
         invoiceRepository.addInvoice(email, businessEmail, invoice);
     }
 

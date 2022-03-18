@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.Observer;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.Result;
 import com.shashank.spendistrybusiness.Activities.CreateInvoiceActivity;
 import com.shashank.spendistrybusiness.Activities.MainActivity;
@@ -125,8 +127,10 @@ public class ScanInvoiceFragment extends Fragment {
                                     codeScanner.stopPreview();
                                 }
                                 if (!exists) {
-                                    Toast.makeText(requireContext(), "Item not found \nAdd it to the inventory", Toast.LENGTH_SHORT).show();
-
+                                    Snackbar snackbar = Snackbar.make(scannerView, "Item not found \nAdd it to the inventory", Snackbar.LENGTH_SHORT);
+                                    snackbar.setTextColor(Color.WHITE);
+                                    snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(),R.color.red));
+                                    snackbar.show();
                                 }
                                 new Handler().postDelayed(new Runnable() {
                                     @Override

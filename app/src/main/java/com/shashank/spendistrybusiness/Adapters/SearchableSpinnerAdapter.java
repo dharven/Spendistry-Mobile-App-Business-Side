@@ -44,7 +44,7 @@ public class SearchableSpinnerAdapter extends ArrayAdapter<ItemPrices> {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.itemName.setText(itemNameString);
-            holder.itemPrice.setText(itemPriceString);
+            holder.itemPrice.setText("₹"+itemPriceString);
             return convertView;
         }
 

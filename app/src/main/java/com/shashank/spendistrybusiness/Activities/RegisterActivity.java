@@ -1,15 +1,15 @@
 package com.shashank.spendistrybusiness.Activities;
 
-import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -17,21 +17,47 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.kevinschildhorn.otpview.OTPView;
+import com.shashank.spendistrybusiness.Constants.Global;
 import com.shashank.spendistrybusiness.Models.Auth;
 import com.shashank.spendistrybusiness.Models.Vendor;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.AuthViewModel;
 
+import java.net.InetAddress;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
 public class RegisterActivity extends AppCompatActivity {
     private EditText firstName, lastName, email, password, confirmPassword, phone, address, city, state, businessName, tollFree, website, panNumber, gstNumber;
     private Button registerButton;
-    private String firstNameString, lastNameString, emailString, passwordString, confirmPasswordString, phoneString, addressString, cityString, stateString, businessNameString, tollFreeString, websiteString, panNumberString, gstNumberString;
+    private String firstNameString, lastNameString, emailString, passwordString, confirmPasswordString, phoneString, addressString, cityString, stateString, businessNameString, tollFreeString, websiteString, panNumberString, gstNumberString, otp;
     private TextInputLayout firstNameField, lastNameField, emailField, passwordField, confirmPasswordField, phoneField, addressField, cityField, stateField, businessNameField, tollFreeField, websiteField, panNumberField, gstNumberField;
     private ScrollView scrollView;
+    private InetAddress ipAddr;
+    boolean isConnected = false;
+
+    /**
+     * Called when the activity has detected the user's press of the back
+     * key. The {@link #getOnBackPressedDispatcher() OnBackPressedDispatcher} will be given a
+     * chance to handle the back button before the default behavior of
+     * {@link Activity#onBackPressed()} is invoked.
+     *
+     * @see #getOnBackPressedDispatcher()
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
         window.setBackgroundDrawableResource(R.color.cardBlue);
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.cardBlue));
 
+        LinearLayout linearLayout = findViewById(R.id.activity_register);
 
         AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +167,15 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }, 1000);
 
+                } else if (panNumberString.equals("")) {
+                    panNumberField.setError("Pan Number is required");
+                    scrollView.smoothScrollTo(0, panNumberField.getTop());
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            panNumberField.setErrorEnabled(false);
+                        }
+                    }, 1000);
                 } else if (businessNameString.equals("")) {
                     businessNameField.setError("Business Name is required");
                     scrollView.smoothScrollTo(0, businessNameField.getTop());
@@ -150,28 +186,58 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }, 1000);
 
-                } else if(registerButton.getText().toString().equals("Next")) {
-                     scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                } else if (registerButton.getText().toString().equals("Next")) {
+                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
                     registerButton.setText("Register");
                 } else {
                     if (passwordString.equals(confirmPasswordString)) {
-                        authViewModel.createAccount(emailString, passwordString).observe(RegisterActivity.this, new Observer<Auth>() {
+
+                        otp = Global.sendOTP(RegisterActivity.this, linearLayout, emailString);
+                        Dialog dialog = new Dialog(RegisterActivity.this);
+                        dialog.setContentView(R.layout.otp_dialog);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.setCancelable(false);
+                        final OTPView otpField = dialog.findViewById(R.id.otp_field);
+                        final TextView resendOtp = dialog.findViewById(R.id.resend_dialog);
+                        dialog.show();
+                        otpField.setOnFinishListener(new Function1<String, Unit>() {
                             @Override
-                            public void onChanged(Auth auth) {
-                                if (!auth.getEmail().equals("")) {
-                                    authViewModel.CreateInventory(emailString);
-                                    authViewModel.createVendorData(new Vendor(firstNameString, lastNameString, emailString, businessNameString,
-                                            phoneString, panNumberString, gstNumberString, addressString,
-                                            cityString, stateString, tollFreeString, websiteString)).observe(RegisterActivity.this, new Observer<Vendor>() {
-                                        @Override
-                                        public void onChanged(Vendor vendor) {
-                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                                }
+                            public Unit invoke(String s) {
+                                if (s.equals(otp)) {
+                                        authViewModel.createAccount(emailString, passwordString).observe(RegisterActivity.this, new Observer<Auth>() {
+                                            @Override
+                                            public void onChanged(Auth auth) {
+                                                if (!auth.getEmail().equals("")) {
+                                                    authViewModel.CreateInventory(emailString);
+                                                    authViewModel.createVendorData(new Vendor(firstNameString, lastNameString, emailString, businessNameString,
+                                                            phoneString, panNumberString, gstNumberString, addressString,
+                                                            cityString, stateString, tollFreeString, websiteString)).observe(RegisterActivity.this, new Observer<Vendor>() {
+                                                        @Override
+                                                        public void onChanged(Vendor vendor) {
+                                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                                            startActivity(intent);
+                                                            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        Snackbar snackbar = Snackbar.make(linearLayout, "Wrong OTP!", Snackbar.LENGTH_LONG);
+                                        snackbar.setBackgroundTint(ContextCompat.getColor(RegisterActivity.this, R.color.red));
+                                        snackbar.setTextColor(ContextCompat.getColor(RegisterActivity.this, R.color.material_white));
+                                        snackbar.show();
+                                    }
+                                return null;
                             }
                         });
+                        resendOtp.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                    otp = Global.sendOTP(RegisterActivity.this, linearLayout, emailString);
+                            }
+                        });
+
                     }
                 }
             }
@@ -187,11 +253,11 @@ public class RegisterActivity extends AppCompatActivity {
                     registerButton.setText("Next");
                 }
             }
-                                                                    });
+        });
 
         scrollView.setSmoothScrollingEnabled(true);
 
-        }
+    }
 
     private void setStrings() {
         firstNameString = firstName.getText().toString();
@@ -230,8 +296,8 @@ public class RegisterActivity extends AppCompatActivity {
         //
         firstNameField = findViewById(R.id.firstNameField);
         lastNameField = findViewById(R.id.lastNameField);
-        emailField = findViewById(R.id.emailField);
-        passwordField = findViewById(R.id.passField);
+        emailField = findViewById(R.id.pass_forgot);
+        passwordField = findViewById(R.id.repass_forgot);
         confirmPasswordField = findViewById(R.id.confirmPassField);
         phoneField = findViewById(R.id.phoneField);
         addressField = findViewById(R.id.addressField);
@@ -246,4 +312,27 @@ public class RegisterActivity extends AppCompatActivity {
         scrollView = findViewById(R.id.scrollView);
 
     }
+
+//    public boolean isInternetAvailable() {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    ipAddr = InetAddress.getByName("google.com");
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        isConnected = ipAddr != null;
+//                    }
+//                });
+//
+//                    }
+//
+//        }).start();
+//        return isConnected;
+//    }
 }

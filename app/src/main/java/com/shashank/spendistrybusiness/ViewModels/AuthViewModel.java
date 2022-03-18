@@ -1,6 +1,8 @@
 package com.shashank.spendistrybusiness.ViewModels;
 
 import android.app.Application;
+import android.content.Context;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -18,8 +20,12 @@ public class AuthViewModel extends AndroidViewModel {
         authRepository = new AuthRepository(application);
     }
 
-    public MutableLiveData<String> getAuth(String email, String password) {
-        return authRepository.getAuth(email, password);
+    public void setNewPassword(Context context, LinearLayout linearLayout, String email, String newPassword){
+        authRepository.setNewPassword(context,linearLayout,email,newPassword);
+    }
+
+    public MutableLiveData<String> getAuth(Context context,LinearLayout linearLayout,String email, String password) {
+        return authRepository.getAuth(context, linearLayout, email, password);
     }
 
     public MutableLiveData<Auth> createAccount(String email, String password) {

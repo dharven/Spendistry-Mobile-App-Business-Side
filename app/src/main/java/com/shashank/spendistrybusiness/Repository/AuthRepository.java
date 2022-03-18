@@ -1,18 +1,28 @@
 package com.shashank.spendistrybusiness.Repository;
 
+
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Handler;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shashank.spendistrybusiness.Activities.ForgotPasswordActivity;
+import com.shashank.spendistrybusiness.Activities.LoginActivity;
 import com.shashank.spendistrybusiness.Constants.Constants;
 import com.shashank.spendistrybusiness.Models.Auth;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.Models.Vendor;
+import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.SpendistryAPI.SpendistryAPI;
 
 import java.lang.reflect.Array;
@@ -34,7 +44,7 @@ public class AuthRepository {
         this.application = application;
     }
 
-    public MutableLiveData<String> getAuth(String email, String password) {
+    public MutableLiveData<String> getAuth(Context context, LinearLayout linearLayout,String email, String password) {
         MutableLiveData<String> auth = new MutableLiveData<>();
         Auth auth1 = new Auth(email, password);
         Call<String> call = api.getAuth(auth1);
@@ -42,7 +52,11 @@ public class AuthRepository {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(application, "notWorking: " + response.code(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(application, "notWorking: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Snackbar snackbar = Snackbar.make(linearLayout, "Email or Password is incorrect", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(context.getResources().getColor(R.color.red));
+                    snackbar.show();
                     return;
                 }
                 auth.setValue(response.headers().get("auth-token-vendor"));
@@ -99,7 +113,7 @@ public class AuthRepository {
         return vendor1;
     }
 
-    public MutableLiveData<Auth> deleteAccount(String email){
+    public MutableLiveData<Auth> deleteAccount(String email) {
         MutableLiveData<Auth> auth = new MutableLiveData<>();
         Call<Auth> call = api.deleteAccount(email);
         call.enqueue(new Callback<Auth>() {
@@ -121,7 +135,7 @@ public class AuthRepository {
         return auth;
     }
 
-    public MutableLiveData<ItemPricesArrayList> CreateInventory (String email) {
+    public MutableLiveData<ItemPricesArrayList> CreateInventory(String email) {
         MutableLiveData<ItemPricesArrayList> itemPricesListMutableLiveData = new MutableLiveData<>();
         ArrayList<ItemPrices> itemPricesArrayList = new ArrayList<>();
         Call<ItemPricesArrayList> call = api.CreateInventory(new ItemPricesArrayList(email, itemPricesArrayList));
@@ -130,7 +144,7 @@ public class AuthRepository {
             @Override
             public void onResponse(Call<ItemPricesArrayList> call, Response<ItemPricesArrayList> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(application, "error in creation of inventory" + response.body() + " \n"+ response.message()+ " \n"+ response.code() + " \n"+ response.errorBody(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(application, "error in creation of inventory" + response.body() + " \n" + response.message() + " \n" + response.code() + " \n" + response.errorBody(), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -142,5 +156,41 @@ public class AuthRepository {
             }
         });
         return itemPricesListMutableLiveData;
+    }
+
+
+    public void setNewPassword(Context context, LinearLayout linearLayout, String email, String password) {
+        Auth auth = new Auth(email, password);
+        Call<Auth> call = api.setNewPassword(email, auth);
+        call.enqueue(new Callback<Auth>() {
+            @Override
+            public void onResponse(Call<Auth> call, Response<Auth> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(application, "error in setting new password: " + response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Snackbar snackbar = Snackbar.make(linearLayout, "Password changed successfully", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(context.getResources().getColor(R.color.mainBlue));
+                snackbar.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        context.startActivity(new Intent(context, LoginActivity.class));
+                        //animation
+                    }
+                }, 1500);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Auth> call, Throwable t) {
+                Snackbar snackbar = Snackbar.make(linearLayout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(context.getResources().getColor(R.color.red));
+                snackbar.show();
+            }
+        });
     }
 }

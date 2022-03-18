@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/manual_invoice"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".Fragments.ManualInvoiceFragment">
 
@@ -11,13 +13,75 @@
         android:id="@+id/dropDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="@android:drawable/editbox_background"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="58dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/spinner_bg"
         android:drawableEnd="@drawable/ic_arrow"
         android:gravity="center_vertical"
         android:hint="Select Item"
         android:padding="12dp"
-        android:textColorHint="#757575" />
+        android:textColorHint="@color/mainBlue" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_nested_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="@string/item"
+            android:textColor="@color/mainBlue"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/quantity_nested_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight=".6"
+
+            android:gravity="start"
+            android:textColor="@color/mainBlue"
+            android:textSize="16sp"
+            android:text="@string/qnt" />
+
+        <TextView
+            android:id="@+id/price_nested_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+
+            android:layout_weight=".8"
+            android:gravity="center"
+            android:textColor="@color/mainBlue"
+            android:textSize="16sp"
+            android:text="@string/price" />
+
+        <TextView
+            android:id="@+id/total_nested_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+
+            android:layout_weight=".8"
+            android:gravity="end"
+            android:textColor="@color/mainBlue"
+            android:textSize="16sp"
+            android:text="@string/total" />
+
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/invoiceList"
@@ -25,51 +89,97 @@
         android:layout_height="0dp"
         android:layout_margin="8dp"
         android:layout_weight="1"
-        tools:listitem="@layout/items_recyclerview" />
+        tools:listitem="@layout/invoice_recyclerview" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/itemName_invoice"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/name_invoice"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight=".4"
             android:hint="Item Name"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeColor="@color/mainBlue"
+            app:hintTextColor="@color/mainBlue">
+
+
+        <EditText
+            android:id="@+id/itemName_invoice"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textCursorDrawable="@drawable/cursor_drawable"
             android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/quantity_field_invoice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight=".3"
+            android:hint="Quantity"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeColor="@color/mainBlue"
+            app:hintTextColor="@color/mainBlue">
 
         <EditText
             android:id="@+id/quantity_invoice"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:layout_weight=".3"
             android:gravity="center"
-            android:hint="quantity"
             android:inputType="numberDecimal"
             android:selectAllOnFocus="true" />
 
-        <EditText
-            android:id="@+id/itemPrice_invoice"
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/price_inventory"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:layout_weight=".2"
             android:hint="price"
-            android:inputType="numberDecimal" />
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeColor="@color/mainBlue"
+            app:hintTextColor="@color/mainBlue">
+
+            <EditText
+                android:id="@+id/itemPrice_invoice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:text="0"
+                android:textCursorDrawable="@drawable/cursor_drawable" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/add_btn_invoice"
+            android:backgroundTint="@color/mainBlue"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:text="add" />
+            android:text="Add" />
 
     </LinearLayout>
 
@@ -79,16 +189,18 @@
         android:orientation="horizontal">
 
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel_invoice"
             android:layout_width="0dp"
+            android:backgroundTint="@color/mainBlue"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
             android:layout_weight="1"
-            android:text="cancel" />
+            android:text="Cancel" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/send_invoice"
+            android:backgroundTint="@color/mainBlue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"

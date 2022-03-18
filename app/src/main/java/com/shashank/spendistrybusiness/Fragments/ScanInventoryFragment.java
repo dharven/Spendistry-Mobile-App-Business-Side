@@ -4,9 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,12 +17,9 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
@@ -30,17 +29,13 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.shashank.spendistrybusiness.Constants.Constants;
-import com.shashank.spendistrybusiness.Constants.GlobalVariables;
+import com.shashank.spendistrybusiness.Activities.SplashScreenActivity;
 import com.shashank.spendistrybusiness.DialogFragment.EditDialog;
 import com.shashank.spendistrybusiness.DialogFragment.ScanEntryDialog;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InventoryViewModel;
 
-import org.bson.types.ObjectId;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ScanInventoryFragment extends Fragment implements EditDialog.OnEditConfirmationListener {
@@ -84,8 +79,10 @@ public class ScanInventoryFragment extends Fragment implements EditDialog.OnEdit
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                        Toast.makeText(requireActivity(), "Please grant this permission to use this app", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Snackbar snackbar = Snackbar.make(barcodeView, "Please grant this permission!", Snackbar.LENGTH_SHORT);
+                        snackbar.setTextColor(Color.WHITE);
+                        snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(),R.color.red));
+                        snackbar.show();                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", requireActivity().getPackageName(), null);
                         intent.setData(uri);
                         startActivity(intent);
@@ -133,8 +130,6 @@ public class ScanInventoryFragment extends Fragment implements EditDialog.OnEdit
                     scanEntryDialog.setTargetFragment(ScanInventoryFragment.this, 1);
                     scanEntryDialog.show(getParentFragmentManager(), "scanEntryDialog");
                 }
-//                Toast.makeText(requireContext(), ""+barcode, Toast.LENGTH_SHORT).show();
-//                barcodeText.setText("barcode number " +barcode);
 
             }
         });

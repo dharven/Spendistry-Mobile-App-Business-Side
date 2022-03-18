@@ -9,7 +9,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/temp"
-        android:title="shashank invoice"
+        android:title="remove_this"
         app:showAsAction="never" />
     <item
         android:id="@+id/logout"

@@ -3,9 +3,13 @@ package com.shashank.spendistrybusiness.Dao;
 import androidx.room.TypeConverter;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
 import com.shashank.spendistrybusiness.Models.Vendor;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Converters {
     //convert ArrayList<Integer> to String
@@ -45,4 +49,21 @@ public class Converters {
     public static Vendor convertStringToVendor(String s) {
         return new Gson().fromJson(s, Vendor.class);
     }
+
+    //convert ArrayList<Invoices> object to String
+    @TypeConverter
+    public static String convertInvoices(ArrayList<Invoice> invoices) {
+        Gson gson = new Gson();
+        return gson.toJson(invoices);
+    }
+
+    //convert String to ArrayList<Invoice> object
+    @TypeConverter
+    public static ArrayList<Invoice> convertStringToInvoices(String s) {
+        Type typeMyType = new TypeToken<ArrayList<Invoice>>(){}.getType();
+        Gson gson = new Gson();
+        return gson.fromJson(s, typeMyType);
+    }
+
+
 }

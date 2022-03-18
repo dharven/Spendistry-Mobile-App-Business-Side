@@ -3,6 +3,8 @@ package com.shashank.spendistrybusiness.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import org.bson.types.ObjectId;
@@ -11,9 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,11 +27,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.shashank.spendistrybusiness.Activities.SplashScreenActivity;
 import com.shashank.spendistrybusiness.Adapters.InventoryAdapter;
-import com.shashank.spendistrybusiness.Constants.Constants;
-import com.shashank.spendistrybusiness.Constants.GlobalVariables;
 import com.shashank.spendistrybusiness.DialogFragment.DeleteDialog;
 import com.shashank.spendistrybusiness.DialogFragment.EditDialog;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
@@ -38,6 +40,7 @@ import com.shashank.spendistrybusiness.ViewModels.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -68,6 +71,7 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
         layoutManager = new LinearLayoutManager(requireContext());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
+        LinearLayout linearLayout = rootView.findViewById(R.id.manual_inventory);
 
         inventoryViewModel.getInventory(email).observe(getViewLifecycleOwner(), new Observer<List<ItemPrices>>() {
             @Override
@@ -99,7 +103,10 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
             public void onClick(View view) {
                 ObjectId id = new ObjectId();
                 if (itemPrice.getText().toString().isEmpty() || itemName.getText().toString().isEmpty()) {
-                    Toast.makeText(requireContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
+                    Snackbar snackbar = Snackbar.make(linearLayout, "Please enter all details", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(),R.color.red));
+                    snackbar.show();
                 } else {
                     ArrayList<ItemPrices> itemPrices = new ArrayList<>();
                     ItemPrices item = new ItemPrices(id.toString(), "", itemName.getText().toString(), itemPrice.getText().toString());
@@ -132,6 +139,7 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
                     recentPosition = viewHolder.getBindingAdapterPosition();
                     recentlyRemoved = inventoryAdapter.recentRemove(viewHolder.getBindingAdapterPosition());
                     DeleteDialog deleteDialog = new DeleteDialog();
+                    //remove bg
                     deleteDialog.setArguments(bundle);
                     deleteDialog.setTargetFragment(ManualInventoryFragment.this, 1);
                     deleteDialog.show(getParentFragmentManager(), "DeleteDialog");
@@ -156,10 +164,10 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
             @Override
             public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(requireContext(), R.color.teal_200))
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(requireContext(), R.color.windowBlue))
                         .addSwipeLeftActionIcon(R.drawable.delete)
-                        .addSwipeLeftLabel("DELETE")
-                        .addSwipeRightBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+                        .addSwipeLeftLabel(getResources().getString(R.string.delete))
+                        .addSwipeRightBackgroundColor(ContextCompat.getColor(requireContext(), R.color.windowBlue))
                         .addSwipeRightActionIcon(R.drawable.edit)
                         .addSwipeRightLabel("EDIT")
                         .create()
@@ -167,6 +175,16 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         }).attachToRecyclerView(itemList);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                itemList.getContext(),
+                layoutManager.getOrientation()
+        );
+
+        dividerItemDecoration.setDrawable(
+                Objects.requireNonNull(ContextCompat.getDrawable(requireContext(), R.drawable.divider))
+        );
+        itemList.addItemDecoration(dividerItemDecoration);
 
 
         return rootView;

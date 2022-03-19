@@ -262,6 +262,7 @@ public class AuthRepository {
 
     public MutableLiveData<Vendor> updateProfile(RelativeLayout layout,String email, Vendor vendor){
         MutableLiveData<Vendor> mutableLiveData = new MutableLiveData<>();
+        Toast.makeText(application, ""+email, Toast.LENGTH_SHORT).show();
         Call<Vendor> call = api.updateProfile(email,vendor);
         call.enqueue(new Callback<Vendor>() {
             @Override
@@ -273,6 +274,7 @@ public class AuthRepository {
                     snackbar.show();
                     return;
                 }
+
                 Snackbar snackbar = Snackbar.make(layout, "Profile Updated!", Snackbar.LENGTH_SHORT);
                 snackbar.setTextColor(Color.WHITE);
                 snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.windowBlue));

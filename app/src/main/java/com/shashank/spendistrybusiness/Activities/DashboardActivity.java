@@ -121,7 +121,7 @@ public class DashboardActivity extends AppCompatActivity {
                 reportCount = dashboardData.getReportCount();
                 imageBadgeView.setBadgeValue(reportCount);
                 nameTextView.setText(vendorDetails.getFirstName()+ " " + vendorDetails.getLastName());
-                emailTextView.setText(vendorDetails.getEmail());
+                emailTextView.setText(vendorDetails.getVendorId());
                 monthlyIncomeTextView.setText("₹"+monthlyIncome);
                 yearlyIncomeTextView.setText("₹"+yearlyIncome);
                 issuedInvoicesTextView.setText(issuedInvoices);

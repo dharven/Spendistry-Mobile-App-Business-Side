@@ -33,10 +33,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
         motionLayout = findViewById(R.id.motionLayout);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        getWindow().setNavigationBarColor(Color.WHITE);
-        getWindow().setStatusBarColor(Color.WHITE);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
         //change background colour from getWindow()
-        getWindow().setBackgroundDrawableResource(R.color.white);
+        getWindow().setBackgroundDrawableResource(R.color.windowBlue);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         isInternetAvailable();
     }

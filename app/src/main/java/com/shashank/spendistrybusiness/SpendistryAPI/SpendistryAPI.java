@@ -2,6 +2,7 @@ package com.shashank.spendistrybusiness.SpendistryAPI;
 
 import com.shashank.spendistrybusiness.Models.Auth;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.OTP;
 import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
@@ -47,6 +48,12 @@ public interface SpendistryAPI {
     @POST("invoice/addEle/{email}/{businessEmail}")
     Call<BusinessInvoices> addInvoice(@Path("email") String email, @Path("businessEmail") String businessEmail , @Body BusinessInvoices invoice);
 
+    @POST("otp/forgotPassword")
+    Call<String> sendOTP(@Body OTP otp);
+
+    @POST("otp/verifyOTP")
+    Call<String> verifyOTP(@Body OTP otp);
+
 
     //DELETE
     @DELETE("authBusiness/{email}")
@@ -65,6 +72,9 @@ public interface SpendistryAPI {
 
     @PATCH("authBusiness/{email}")
     Call<Auth> setNewPassword(@Path("email") String email, @Body Auth auth);
+
+    @PATCH("vendor/{email}")
+    Call<Vendor> updateProfile(@Path("email") String email, @Body Vendor vendor);
 
 
 

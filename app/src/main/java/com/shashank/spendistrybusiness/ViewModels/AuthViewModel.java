@@ -3,6 +3,7 @@ package com.shashank.spendistrybusiness.ViewModels;
 import android.app.Application;
 import android.content.Context;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -42,5 +43,17 @@ public class AuthViewModel extends AndroidViewModel {
 
     public MutableLiveData<ItemPricesArrayList> CreateInventory(String email) {
         return authRepository.CreateInventory(email);
+    }
+
+    public void sendOTP(LinearLayout linearLayout,String email) {
+         authRepository.sendOTP(linearLayout,email);
+    }
+
+    public MutableLiveData<String> verifyOTP(LinearLayout linearLayout,String email, int otp) {
+        return authRepository.verifyOTP(linearLayout,email,otp);
+    }
+
+    public MutableLiveData<Vendor> updateProfile(RelativeLayout layout,String email, Vendor vendor) {
+        return authRepository.updateProfile(layout,email, vendor);
     }
 }

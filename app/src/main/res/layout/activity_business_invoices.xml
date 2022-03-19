@@ -38,7 +38,7 @@
     </com.google.android.material.card.MaterialCardView>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+        android:id="@+id/swipeRefreshLayout_issued"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">

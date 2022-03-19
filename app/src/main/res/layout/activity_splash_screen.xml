@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/splash"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:cropToPadding="true"
         android:src="@drawable/spendistry"
         app:layout_constraintBottom_toBottomOf="parent"

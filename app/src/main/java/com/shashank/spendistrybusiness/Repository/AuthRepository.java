@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -19,6 +21,7 @@ import com.shashank.spendistrybusiness.Activities.ForgotPasswordActivity;
 import com.shashank.spendistrybusiness.Activities.LoginActivity;
 import com.shashank.spendistrybusiness.Constants.Constants;
 import com.shashank.spendistrybusiness.Models.Auth;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.OTP;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.Models.Vendor;
@@ -192,5 +195,99 @@ public class AuthRepository {
                 snackbar.show();
             }
         });
+    }
+
+    public void sendOTP(LinearLayout linearLayout,String email){
+        OTP otp1 = new OTP(email);
+        Call<String> call = api.sendOTP(otp1);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!response.isSuccessful()) {
+                    Snackbar snackbar = Snackbar.make(linearLayout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
+                    snackbar.show();
+                    return;
+                }
+                Snackbar snackbar = Snackbar.make(linearLayout, "OTP sent!", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.cardBlue));
+                snackbar.show();
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Snackbar snackbar = Snackbar.make(linearLayout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
+                snackbar.show();
+            }
+        });
+    }
+
+    public MutableLiveData<String> verifyOTP(LinearLayout linearLayout,String email,int otp){
+        OTP otp1 = new OTP(email,otp);
+        MutableLiveData<String> mutableLiveData = new MutableLiveData<>();
+        Call<String> call = api.verifyOTP(otp1);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!response.isSuccessful()) {
+                    Snackbar snackbar;
+                    if (response.code() == 401) {
+                        snackbar = Snackbar.make(linearLayout, "Incorrect OTP!", Snackbar.LENGTH_SHORT);
+                    } else {
+                        snackbar = Snackbar.make(linearLayout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+                    }
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
+                    snackbar.show();
+                    return;
+                }
+                mutableLiveData.setValue(response.code()+"");
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Snackbar snackbar = Snackbar.make(linearLayout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
+                snackbar.show();
+            }
+        });
+        return mutableLiveData;
+    }
+
+    public MutableLiveData<Vendor> updateProfile(RelativeLayout layout,String email, Vendor vendor){
+        MutableLiveData<Vendor> mutableLiveData = new MutableLiveData<>();
+        Call<Vendor> call = api.updateProfile(email,vendor);
+        call.enqueue(new Callback<Vendor>() {
+            @Override
+            public void onResponse(Call<Vendor> call, Response<Vendor> response) {
+                if (!response.isSuccessful()) {
+                    Snackbar snackbar = Snackbar.make(layout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
+                    snackbar.show();
+                    return;
+                }
+                Snackbar snackbar = Snackbar.make(layout, "Profile Updated!", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.windowBlue));
+                snackbar.show();
+                mutableLiveData.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Vendor> call, Throwable t) {
+                Snackbar snackbar = Snackbar.make(layout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
+                snackbar.show();
+            }
+        });
+        return mutableLiveData;
     }
 }

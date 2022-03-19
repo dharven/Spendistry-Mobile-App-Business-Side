@@ -33,7 +33,7 @@ public class Vendor implements Parcelable {
     private String website;
     private String lat;
     private String lng;
-    private String Description;
+    private String vendorDescription;
 
     public Vendor(String firstName, String lastName, String email, String vendorId, String businessName, String mobileNumber, String currentInvoiceNumber, String panNumber, String gstNumber, String address, String city, String state, String tollFreeNumber, String website, String description) {
         this.firstName = firstName;
@@ -50,7 +50,7 @@ public class Vendor implements Parcelable {
         this.state = state;
         this.tollFreeNumber = tollFreeNumber;
         this.website = website;
-        Description = description;
+        vendorDescription = description;
     }
 
     public Vendor(String lat, String lng) {
@@ -58,7 +58,7 @@ public class Vendor implements Parcelable {
         this.lng = lng;
     }
 
-    public Vendor(String firstName, String lastName, String email, String businessName, String mobileNumber, String panNumber, String gstNumber, String address, String city, String state, String tollFreeNumber, String website) {
+    public Vendor(String firstName, String lastName, String email, String businessName, String mobileNumber, String panNumber, String gstNumber, String address, String city, String state, String tollFreeNumber, String website,String description) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -72,6 +72,7 @@ public class Vendor implements Parcelable {
         this.tollFreeNumber = tollFreeNumber;
         this.website = website;
         this.vendorId = email;
+        vendorDescription = description;
     }
 
 
@@ -92,7 +93,7 @@ public class Vendor implements Parcelable {
         website = in.readString();
         lat = in.readString();
         lng = in.readString();
-        Description = in.readString();
+        vendorDescription = in.readString();
     }
 
     public static final Creator<Vendor> CREATOR = new Creator<Vendor>() {
@@ -116,7 +117,7 @@ public class Vendor implements Parcelable {
     }
 
     public String getDescription() {
-        return Description;
+        return vendorDescription;
     }
 
     public String getFirstName() {
@@ -198,6 +199,6 @@ public class Vendor implements Parcelable {
         parcel.writeString(website);
         parcel.writeString(lat);
         parcel.writeString(lng);
-        parcel.writeString(Description);
+        parcel.writeString(vendorDescription);
     }
 }

@@ -13,9 +13,7 @@
         style="@style/editPageCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/mainBlue"
         android:id="@+id/action_bar_inventory_card"
-        android:layout_alignParentTop="true"
         app:cardElevation="16dp"
         app:strokeWidth="0dp">
 

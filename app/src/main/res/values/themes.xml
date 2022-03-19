@@ -19,6 +19,7 @@
         <item name="popupMenuBackground">@color/windowBlue</item>
         <item name="android:actionMenuTextColor">@color/mainBlue</item>
         <item name="android:textSelectHandleWindowStyle">@style/Widget.App.TextSelectHandleWindow</item>
+        <item name="cardBackgroundColor">@color/cardBlue</item>
     </style>
 
     <style name="Widget.App.TextSelectHandleWindow" parent="">
@@ -26,8 +27,14 @@
         <item name="android:colorAccent">@color/mainBlue</item>
     </style>
 
+    <style name="cardViewTheme" parent="@style/Widget.MaterialComponents.CardView">
+            <item name="cardBackgroundColor">@color/cardBlue</item>
+    </style>
+
     <style name="dashBoardCard" parent="@style/Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
+        <item name="cardBackgroundColor">@color/mainBlue</item>
+
     </style>
 
 
@@ -40,11 +47,11 @@
         <item name="cardElevation">16dp</item>
         <item name="android:ambientShadowAlpha">1</item>
         <item name="android:spotShadowAlpha">1</item>
-        <item name="cardBackgroundColor">@color/windowBlue</item>
     </style>
 
     <style name="editPageCard" parent="@style/Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/edit_card_custom_corners</item>
+        <item name="cardBackgroundColor">@color/mainBlue</item>
     </style>
 
 
@@ -59,7 +66,7 @@
 
     <style name="loginCard" parent="@style/Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/login_card_custom_corners</item>
-
+        <item name="cardBackgroundColor">@color/cardBlue</item>
     </style>
 
     <style name="login_card_custom_corners" parent="">
@@ -100,8 +107,6 @@
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
         <item name="colorSurface">@color/cardBlue</item>
         <item name="colorOnSurfaceVariant">@color/windowBlue</item>
-<!--        <item name="tickColorActive">@color/mainBlue</item>-->
-<!--        <item name="tickColor">@color/mainBlue</item>-->
     </style>
 
     <style name="Widget.Material3.BottomNavigationView.ActiveIndicator" parent="">
@@ -114,5 +119,12 @@
 
     <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/mainBlue</item>
+    </style>
+
+
+    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:statusBarColor">@color/windowBlue</item>
+        <item name="android:navigationBarColor">@color/windowBlue</item>
     </style>
 </resources>

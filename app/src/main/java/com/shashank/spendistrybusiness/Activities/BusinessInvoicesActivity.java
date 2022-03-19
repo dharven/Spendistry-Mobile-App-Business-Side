@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -38,10 +40,27 @@ private BusinessInvoiceAdapter invoiceAdapter;
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("");
         }
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout_issued);
         RecyclerView recyclerView = findViewById(R.id.issued_invoices);
         InvoiceViewModel invoiceViewModel = new ViewModelProvider(this).get(InvoiceViewModel.class);
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            invoiceViewModel.getBusinessInvoices(email).observe(this, new Observer<BusinessInvoices>() {
+                @Override
+                public void onChanged(BusinessInvoices businessInvoices) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    },1500);
+                }
+            });
+        });
+
+
         invoiceViewModel.getBusinessInvoices(email).observe(this, new Observer<BusinessInvoices>() {
             @Override
             public void onChanged(BusinessInvoices businessInvoices) {

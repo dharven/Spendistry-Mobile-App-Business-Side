@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-android:id="@+id/relativeLayout"
+android:id="@+id/profile_layout"
     android:orientation="vertical"
     tools:context=".Activities.EditProfileActivity">
 
@@ -12,7 +12,6 @@ android:id="@+id/relativeLayout"
         style="@style/editPageCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/mainBlue"
         android:id="@+id/action_bar"
         android:layout_alignParentTop="true"
         app:cardElevation="16dp"
@@ -239,6 +238,7 @@ android:id="@+id/relativeLayout"
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/addressField_profile"
                     android:layout_width="match_parent"
@@ -262,8 +262,6 @@ android:id="@+id/relativeLayout"
                         android:id="@+id/address_profile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginEnd="6dp"
                         android:autofillHints=""
                         android:ems="10"
                         android:fontFamily="@font/alata"
@@ -273,6 +271,69 @@ android:id="@+id/relativeLayout"
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cityField_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:hint="City"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:textColorHint="@color/mainBlue"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/mainBlue"
+                    app:hintTextColor="@color/mainBlue">
+
+                    <!--this is the actual edit text which takes the input-->
+                    <EditText
+                        android:id="@+id/city_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints=""
+                        android:ems="10"
+                        android:fontFamily="@font/alata"
+                        android:inputType="textEmailAddress"
+                        android:minHeight="48dp"
+                        android:textCursorDrawable="@drawable/cursor_drawable" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/stateField_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:hint="State"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:textColorHint="@color/mainBlue"
+                    app:boxCornerRadiusBottomEnd="12dp"
+
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+
+                    app:boxStrokeColor="@color/mainBlue"
+                    app:hintTextColor="@color/mainBlue">
+
+                    <!--this is the actual edit text which takes the input-->
+                    <EditText
+                        android:id="@+id/state_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints=""
+                        android:ems="10"
+                        android:fontFamily="@font/alata"
+                        android:inputType="textEmailAddress"
+                        android:minHeight="48dp"
+                        android:textCursorDrawable="@drawable/cursor_drawable" />
+
+                </com.google.android.material.textfield.TextInputLayout>
                 <!--            for pan number-->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/panField_profile"
@@ -297,8 +358,6 @@ android:id="@+id/relativeLayout"
                         android:id="@+id/pan_number_profile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginEnd="6dp"
                         android:autofillHints=""
                         android:ems="10"
                         android:fontFamily="@font/alata"
@@ -333,8 +392,6 @@ android:id="@+id/relativeLayout"
                         android:id="@+id/gst_number_profile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginEnd="6dp"
                         android:autofillHints=""
                         android:ems="10"
                         android:fontFamily="@font/alata"
@@ -366,8 +423,6 @@ android:id="@+id/relativeLayout"
                         android:id="@+id/website_profile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginEnd="6dp"
                         android:autofillHints=""
                         android:ems="10"
                         android:fontFamily="@font/alata"
@@ -377,73 +432,7 @@ android:id="@+id/relativeLayout"
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/cityField_profile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:hint="City"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"
-                    android:textColorHint="@color/mainBlue"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxStrokeColor="@color/mainBlue"
-                    app:hintTextColor="@color/mainBlue">
 
-                    <!--this is the actual edit text which takes the input-->
-                    <EditText
-                        android:id="@+id/city_profile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginEnd="6dp"
-                        android:autofillHints=""
-                        android:ems="10"
-                        android:fontFamily="@font/alata"
-                        android:inputType="textEmailAddress"
-                        android:minHeight="48dp"
-                        android:textCursorDrawable="@drawable/cursor_drawable" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/stateField_profile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:hint="State"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"
-                    android:textColorHint="@color/mainBlue"
-                    app:boxCornerRadiusBottomEnd="12dp"
-
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
-
-                    app:boxStrokeColor="@color/mainBlue"
-                    app:hintTextColor="@color/mainBlue">
-
-                    <!--this is the actual edit text which takes the input-->
-                    <EditText
-                        android:id="@+id/state_profile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginEnd="6dp"
-                        android:autofillHints=""
-                        android:ems="10"
-                        android:fontFamily="@font/alata"
-                        android:inputType="textEmailAddress"
-                        android:minHeight="48dp"
-                        android:textCursorDrawable="@drawable/cursor_drawable" />
-
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/descriptionField_profile"
@@ -468,8 +457,6 @@ android:id="@+id/relativeLayout"
                         android:id="@+id/description_profile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginEnd="6dp"
                         android:autofillHints=""
                         android:ems="10"
                         android:fontFamily="@font/alata"
@@ -505,8 +492,6 @@ android:id="@+id/relativeLayout"
                         android:id="@+id/tollFree_profile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginEnd="6dp"
                         android:autofillHints=""
                         android:ems="10"
                         android:fontFamily="@font/alata"

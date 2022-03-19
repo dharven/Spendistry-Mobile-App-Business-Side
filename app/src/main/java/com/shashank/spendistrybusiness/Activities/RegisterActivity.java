@@ -211,7 +211,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                     authViewModel.CreateInventory(emailString);
                                                     authViewModel.createVendorData(new Vendor(firstNameString, lastNameString, emailString, businessNameString,
                                                             phoneString, panNumberString, gstNumberString, addressString,
-                                                            cityString, stateString, tollFreeString, websiteString)).observe(RegisterActivity.this, new Observer<Vendor>() {
+                                                            cityString, stateString, tollFreeString, websiteString, "")).observe(RegisterActivity.this, new Observer<Vendor>() {
                                                         @Override
                                                         public void onChanged(Vendor vendor) {
                                                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);

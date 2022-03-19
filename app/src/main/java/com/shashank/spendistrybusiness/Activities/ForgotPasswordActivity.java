@@ -1,12 +1,17 @@
 package com.shashank.spendistrybusiness.Activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +45,15 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         EditText password = findViewById(R.id.password_forgot);
         EditText confirmPassword = findViewById(R.id.repassword_forgot);
         TextInputLayout passwordLayout = findViewById(R.id.pass_forgot);
+        Toolbar toolbar = findViewById(R.id.forgot_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setTitle("");
+        }
+        getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.windowBlue));
         TextInputLayout confirmPasswordLayout = findViewById(R.id.repass_forgot);
         LinearLayout linearLayout = findViewById(R.id.linearlayout_forgot);
         Button submit = findViewById(R.id.update_password);
@@ -93,4 +107,16 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(ForgotPasswordActivity.this, DashboardActivity.class));
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

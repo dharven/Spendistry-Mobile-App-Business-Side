@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -18,6 +22,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -25,15 +30,17 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.shashank.spendistrybusiness.Models.Vendor;
 import com.shashank.spendistrybusiness.R;
+import com.shashank.spendistrybusiness.ViewModels.AuthViewModel;
 
 public class EditProfileActivity extends AppCompatActivity {
     private EditText firstName, lastName, phone, address, city, state, businessName, tollFree, website, panNumber, gstNumber, description;
     private Button update, change_pass, Add_location;
-    private String firstNameString, lastNameString, emailString, passwordString, confirmPasswordString, phoneString, addressString, cityString, stateString, businessNameString, tollFreeString, websiteString, panNumberString, gstNumberString, otp;
+    private String firstNameString, lastNameString, emailString, phoneString, addressString, cityString, stateString, businessNameString, tollFreeString, websiteString, panNumberString, gstNumberString, descriptionString;
     private TextInputLayout firstNameField, lastNameField, emailField, passwordField, confirmPasswordField, phoneField, addressField, cityField, stateField, businessNameField, tollFreeField, websiteField, panNumberField, gstNumberField;
     private ScrollView scrollView;
     private RoundedImageView profileImage;
     private TextView email;
+    private Vendor vendor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +57,11 @@ public class EditProfileActivity extends AppCompatActivity {
         }
         getViewsById();
         Intent intent = getIntent();
-        Vendor vendor = intent.getParcelableExtra("vendorDetails");
+        vendor = intent.getParcelableExtra("vendorDetails");
         setData(vendor);
+        RelativeLayout layout = findViewById(R.id.profile_layout);
+
+        AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +70,101 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getStringData();
+                if(firstNameString.equals("") || lastNameString.equals("") || phoneString.equals("") ||
+                        addressString.equals("") || cityString.equals("") || stateString.equals("") ||
+                        businessNameString.equals("")  || panNumberString.equals("")){
+                    if(firstNameString.equals("")){
+                        firstNameField.setError("First Name is required");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                firstNameField.setErrorEnabled(false);
+                            }
+                        },1500);
+                    } else if(lastNameString.equals("")){
+                        lastNameField.setError("Last Name is required");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                lastNameField.setErrorEnabled(false);
+                            }
+                        },1500);
+                    } else if(phoneString.equals("")){
+                        phoneField.setError("Phone Number is required");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                phoneField.setErrorEnabled(false);
+
+                            }
+                        },1500);
+
+                    } else if(addressString.equals("")){
+                        addressField.setError("Address is required");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                addressField.setErrorEnabled(false);
+
+                            }
+                        },1500);
+                    } else if(cityString.equals("")){
+                        cityField.setError("City is required");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                cityField.setErrorEnabled(false);
+
+                            }
+                        },1500);
+                    } else if(stateString.equals("")){
+                        stateField.setError("State is required");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                stateField.setErrorEnabled(false);
+                            }
+                        },1500);
+                    } else if(businessNameString.equals("")){
+                        businessNameField.setError("Business Name is required");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                businessNameField.setErrorEnabled(false);
+                            }
+                        },1500);
+                    } else if(panNumberString.equals("")){
+                        panNumberField.setError("Pan Number is required");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                panNumberField.setErrorEnabled(false);
+                            }
+                        },1500);
+                    } else if(phoneString.length() != 10){
+                        phoneField.setError("Phone Number must be 10 digits");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                phoneField.setErrorEnabled(false);
+                            }
+                        },1500);
+                    } else {
+                        Vendor vendor = new Vendor(firstNameString, lastNameString,emailString, businessNameString, phoneString,panNumberString, gstNumberString, addressString, cityString, stateString, tollFreeString, websiteString, descriptionString);
+                        authViewModel.updateProfile(layout,emailString,vendor).observe(EditProfileActivity.this, new Observer<Vendor>() {
+                            @Override
+                            public void onChanged(Vendor vendor) {
+                                setData(vendor);
+                            }
+                        });
+                    }
+                }
+            }
+        });
 
         change_pass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +178,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void setData(Vendor vendor) {
         email.setText("Email: "+vendor.getEmail());
         firstName.setText(vendor.getFirstName());
@@ -87,6 +193,23 @@ public class EditProfileActivity extends AppCompatActivity {
         panNumber.setText(vendor.getPanNumber());
         gstNumber.setText(vendor.getGstNumber());
         description.setText(vendor.getDescription());
+    }
+
+    private void getStringData(){
+        emailString = email.getText().toString();
+        firstNameString = firstName.getText().toString();
+        lastNameString = lastName.getText().toString();
+        phoneString = phone.getText().toString();
+        addressString = address.getText().toString();
+        cityString = city.getText().toString();
+        stateString = state.getText().toString();
+        businessNameString = businessName.getText().toString();
+        tollFreeString = tollFree.getText().toString();
+        websiteString = website.getText().toString();
+        panNumberString = panNumber.getText().toString();
+        gstNumberString = gstNumber.getText().toString();
+        descriptionString = description.getText().toString();
+
     }
 
     private void getViewsById() {

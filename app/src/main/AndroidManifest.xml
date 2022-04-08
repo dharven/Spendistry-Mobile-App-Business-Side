@@ -6,9 +6,22 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <queries>
+        <package android:name="com.google.android.apps.maps" />
+    </queries>
+
+    <permission
+        android:name="com.example.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.example.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:name=".Constants.Global"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -17,10 +30,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpendistryBusiness"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/API" />
+
         <activity
             android:name=".Activities.BusinessInvoicesActivity"
             android:exported="false"
-            android:parentActivityName=".Activities.DashboardActivity"/>
+            android:parentActivityName=".Activities.DashboardActivity" />
         <activity
             android:name=".Activities.EditProfileActivity"
             android:exported="false"
@@ -28,24 +45,24 @@
         <activity
             android:name=".Activities.ForgotPasswordActivity"
             android:exported="false"
-            android:parentActivityName=".Activities.DashboardActivity"/>
+            android:parentActivityName=".Activities.DashboardActivity" />
         <activity
             android:name=".Activities.OtpActivity"
             android:exported="false"
-            android:parentActivityName=".Activities.EditProfileActivity"/>
+            android:parentActivityName=".Activities.EditProfileActivity" />
         <activity
             android:name=".Activities.ReportedInvoiceActivity"
+            android:parentActivityName=".Activities.DashboardActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.DashboardActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-
-
-             <category android:name="android.intent.category.DEFAULT" />
-             </intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activities.CreateInvoiceActivity"

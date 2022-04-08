@@ -75,7 +75,7 @@ public class EditDialog extends DialogFragment {
                 if (frag.equals("scan")) {
                     mOnSentListener.sendEditConfirmation(true);
                 }
-                inventoryViewModel.updateElement(emailString, id, new ItemPrices(id,barcodeString, itemName.getText().toString(), itemPrice.getText().toString()));
+                inventoryViewModel.updateElement(emailString, id, new ItemPrices(id,barcodeString, emailString,itemName.getText().toString(), itemPrice.getText().toString()));
                 requireDialog().dismiss();
             }
         });

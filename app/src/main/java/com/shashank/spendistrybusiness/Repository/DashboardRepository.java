@@ -22,6 +22,7 @@ import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.SpendistryAPI.SpendistryAPI;
 
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -81,6 +82,11 @@ public class DashboardRepository {
         return dashboardData;
     }
 
+
+    public void deleteInventory(){
+        new deleteInventory(businessDB).execute();
+    }
+
     public LiveData<Dashboard> getDashBoardFromDB(String email) {
         return businessDB.dashboardDao().getDashboardData(email);
     }
@@ -105,6 +111,20 @@ public class DashboardRepository {
         protected void onPreExecute() {
             super.onPreExecute();
 //            Toast.makeText(application, "dashboard added", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    static class deleteInventory extends AsyncTask<Void, Void, Void> {
+        private final InventoryDao inventoryDao;
+
+        deleteInventory(SpendistryBusinessDB businessDB) {
+            inventoryDao = businessDB.inventoryDao();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            inventoryDao.deleteAll();
+            return null;
         }
     }
 }

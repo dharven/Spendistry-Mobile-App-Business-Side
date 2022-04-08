@@ -1,34 +1,32 @@
 package com.shashank.spendistrybusiness.Activities;
 
-import androidx.annotation.NonNull;
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.widget.LinearLayout;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
-import android.widget.Toast;
-
 import com.shashank.spendistrybusiness.Adapters.BusinessInvoiceAdapter;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InvoiceViewModel;
 
-import java.util.List;
 import java.util.Objects;
 
 public class BusinessInvoicesActivity extends AppCompatActivity {
-private BusinessInvoiceAdapter invoiceAdapter;
+    private BusinessInvoiceAdapter invoiceAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,40 +43,31 @@ private BusinessInvoiceAdapter invoiceAdapter;
         InvoiceViewModel invoiceViewModel = new ViewModelProvider(this).get(InvoiceViewModel.class);
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this,R.color.mainBlue),ContextCompat.getColor(this,R.color.cardBlue), ContextCompat.getColor(this,R.color.windowBlue));
+        LinearLayout linearLayout = findViewById(R.id.business_invoices_layout);
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.loading_layout);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        swipeRefreshLayout.setOnRefreshListener(() -> invoiceViewModel.getBusinessInvoices(email)
+                .observe(this, businessInvoices -> {
+                    dialog.dismiss();
+                    ((SimpleItemAnimator) Objects.requireNonNull(recyclerView.getItemAnimator())).setSupportsChangeAnimations(false);
+                    invoiceAdapter = new BusinessInvoiceAdapter(businessInvoices.getInvoices(), BusinessInvoicesActivity.this ,BusinessInvoicesActivity.this,BusinessInvoicesActivity.this, linearLayout, invoiceViewModel);
+                    recyclerView.setAdapter(invoiceAdapter);
+                    new Handler().postDelayed(() -> swipeRefreshLayout.setRefreshing(false), 1500);
+                }));
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            invoiceViewModel.getBusinessInvoices(email).observe(this, new Observer<BusinessInvoices>() {
-                @Override
-                public void onChanged(BusinessInvoices businessInvoices) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    },1500);
-                }
-            });
-        });
 
-
-        invoiceViewModel.getBusinessInvoices(email).observe(this, new Observer<BusinessInvoices>() {
-            @Override
-            public void onChanged(BusinessInvoices businessInvoices) {
-                ((SimpleItemAnimator) Objects.requireNonNull(recyclerView.getItemAnimator())).setSupportsChangeAnimations(false);
-                invoiceAdapter = new BusinessInvoiceAdapter( businessInvoices.getInvoices(), BusinessInvoicesActivity.this, BusinessInvoicesActivity.this);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(BusinessInvoicesActivity.this){
-                    /**
-                     * @return true if {@link #getOrientation()} is {@link #VERTICAL}
-                     */
-                    @Override
-                    public boolean canScrollVertically() {
-                        return true;
-                    }
-                };
-                recyclerView.setLayoutManager(linearLayoutManager);
-                recyclerView.setAdapter(invoiceAdapter);
-                recyclerView.setHasFixedSize(true);
-            }
+        invoiceViewModel.getBusinessInvoices(email).observe(this, businessInvoices -> {
+            dialog.dismiss();
+            ((SimpleItemAnimator) Objects.requireNonNull(recyclerView.getItemAnimator())).setSupportsChangeAnimations(false);
+            invoiceAdapter = new BusinessInvoiceAdapter(businessInvoices.getInvoices(), BusinessInvoicesActivity.this, BusinessInvoicesActivity.this, BusinessInvoicesActivity.this, linearLayout, invoiceViewModel);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(BusinessInvoicesActivity.this);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(invoiceAdapter);
+            recyclerView.setHasFixedSize(true);
         });
     }
 

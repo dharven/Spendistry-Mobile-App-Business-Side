@@ -47,8 +47,8 @@
         <Constraint
             android:id="@+id/splash"
             motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent" />

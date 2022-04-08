@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import com.google.android.material.snackbar.Snackbar;
 import com.shashank.spendistrybusiness.Activities.OtpActivity;
 import com.shashank.spendistrybusiness.Models.ItemPrices;

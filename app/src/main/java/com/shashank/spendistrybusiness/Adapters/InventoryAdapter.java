@@ -80,8 +80,8 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.MyVi
         return (ArrayList<ItemPrices>) itemPricesList;
     }
 
-    public ItemPrices updateItem(int position,String id,String barcode, String itemName, String price){
-        ItemPrices itemPrices = new ItemPrices(id,barcode, itemName, price);
+    public ItemPrices updateItem(int position,String id,String barcode,String email ,String itemName, String price){
+        ItemPrices itemPrices = new ItemPrices(id,barcode, email ,itemName, price);
         itemPricesList.add(position, itemPrices);
         notifyItemInserted(position);
         return itemPrices;

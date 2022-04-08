@@ -38,7 +38,6 @@ public class InventoryRepository {
     }
 
     public void insertItemPrices(List<ItemPrices> itemPrices) {
-
         new InsertAsyncTask(businessDB).execute(itemPrices);
     }
 
@@ -72,7 +71,6 @@ public class InventoryRepository {
                         Toast.makeText(application, "notWorking: " + response.code(), Toast.LENGTH_SHORT).show();
                         return;
                     }
-
                     mutableLiveData.setValue(response.body().getItemPrices());
                     new AddAllDataAsyncTask(businessDB).execute(response.body().getItemPrices());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -97,7 +95,7 @@ public class InventoryRepository {
             @Override
             public void onResponse(Call<ItemPricesArrayList> call, Response<ItemPricesArrayList> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(application, "notWorking: " + response.code(), Toast.LENGTH_SHORT).show();
+
                     return;
                 }
                new DeleteElementAsyncTask(application,businessDB).execute(itemId);

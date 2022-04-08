@@ -14,11 +14,23 @@ import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.Models.Vendor;
 import com.shashank.spendistrybusiness.Repository.AuthRepository;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.http.Multipart;
+
 public class AuthViewModel extends AndroidViewModel {
     private AuthRepository authRepository;
     public AuthViewModel(@NonNull Application application) {
         super(application);
         authRepository = new AuthRepository(application);
+    }
+
+    public void setNewProfilePic(RelativeLayout layout, String email, MultipartBody.Part part){
+        authRepository.setNewProfilePic(layout, email,part);
+    }
+
+    public void deleteProfilePic(RelativeLayout layout,String id){
+        authRepository.deleteProfilePic(layout,id);
     }
 
     public void setNewPassword(Context context, LinearLayout linearLayout, String email, String newPassword){
@@ -29,14 +41,17 @@ public class AuthViewModel extends AndroidViewModel {
         return authRepository.getAuth(context, linearLayout, email, password);
     }
 
-    public MutableLiveData<Auth> createAccount(String email, String password) {
-        return authRepository.createAccount(email, password);
+    public MutableLiveData<Auth> createAccount(LinearLayout linearLayout,String email, String password) {
+        return authRepository.createAccount(linearLayout,email, password);
     }
 
     public MutableLiveData<Vendor> createVendorData(Vendor vendor) {
         return authRepository.createVendorData(vendor);
     }
 
+    public void newOTP(LinearLayout linearLayout,String email){
+        authRepository.newOTP(linearLayout,email);
+    }
     public MutableLiveData<Auth> deleteAccount(String email) {
         return authRepository.deleteAccount(email);
     }

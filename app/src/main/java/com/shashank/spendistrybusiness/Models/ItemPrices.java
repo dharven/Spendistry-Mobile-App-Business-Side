@@ -20,6 +20,8 @@ public class ItemPrices {
     @NonNull
     private final String id ;
 
+    private String email;
+
     @ColumnInfo(name = "barcode")
     private final String barcode;
 
@@ -34,9 +36,10 @@ public class ItemPrices {
     private String quantity;
 
 
-    public ItemPrices(String id,String barcode, String itemName, String price) {
+    public ItemPrices(String id,String email,String barcode, String itemName, String price) {
         this.id = id;
         this.barcode = barcode;
+        this.email = email;
         this.itemName = itemName;
         this.price = price;
         this.total = price;
@@ -50,6 +53,14 @@ public class ItemPrices {
         this.price = price;
         this.total = String.valueOf(Integer.parseInt(price) * quantity);
         this.quantity = quantity + "";
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getId() {

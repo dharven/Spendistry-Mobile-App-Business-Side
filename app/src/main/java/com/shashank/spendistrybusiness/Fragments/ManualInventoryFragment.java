@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.shashank.spendistrybusiness.Activities.SplashScreenActivity;
@@ -72,6 +73,8 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         LinearLayout linearLayout = rootView.findViewById(R.id.manual_inventory);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(requireContext(),R.color.mainBlue),ContextCompat.getColor(requireContext(),R.color.cardBlue), ContextCompat.getColor(requireContext(),R.color.windowBlue));
+        swipeRefreshLayout.setRefreshing(true);
 
         inventoryViewModel.getInventory(email).observe(getViewLifecycleOwner(), new Observer<List<ItemPrices>>() {
             @Override
@@ -80,6 +83,7 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
                 itemList.setLayoutManager(new LinearLayoutManager(requireContext()));
                 itemList.setAdapter(inventoryAdapter);
                 itemList.setLayoutManager(layoutManager);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -109,7 +113,8 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
                     snackbar.show();
                 } else {
                     ArrayList<ItemPrices> itemPrices = new ArrayList<>();
-                    ItemPrices item = new ItemPrices(id.toString(), "", itemName.getText().toString(), itemPrice.getText().toString());
+                    Toast.makeText(requireContext(), email, Toast.LENGTH_SHORT).show();
+                    ItemPrices item = new ItemPrices(id.toString(), email,"",itemName.getText().toString(), itemPrice.getText().toString());
                     itemPrices.add(item);
                     inventoryViewModel.setInventory(email, itemPrices);
                     itemPrice.setText("");
@@ -140,6 +145,7 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
                     recentlyRemoved = inventoryAdapter.recentRemove(viewHolder.getBindingAdapterPosition());
                     DeleteDialog deleteDialog = new DeleteDialog();
                     //remove bg
+                    deleteDialog.setCancelable(false);
                     deleteDialog.setArguments(bundle);
                     deleteDialog.setTargetFragment(ManualInventoryFragment.this, 1);
                     deleteDialog.show(getParentFragmentManager(), "DeleteDialog");
@@ -154,6 +160,7 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
                     recentPosition = viewHolder.getBindingAdapterPosition();
                     recentlyRemoved = inventoryAdapter.recentRemove(viewHolder.getBindingAdapterPosition());
                     EditDialog editDialog = new EditDialog();
+                    editDialog.setCancelable(false);
                     editDialog.setArguments(bundle);
                     editDialog.setTargetFragment(ManualInventoryFragment.this, 1);
                     editDialog.show(getParentFragmentManager(), "EditDialog");

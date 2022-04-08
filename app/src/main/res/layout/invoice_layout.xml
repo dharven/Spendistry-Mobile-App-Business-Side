@@ -19,14 +19,41 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <TextView
-            android:id="@+id/business_name_invoice1"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/mainBlue"
-            android:textSize="24sp"
-            tools:text="Spendistry" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/business_name_invoice1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingStart="6dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:textColor="@color/mainBlue"
+                android:textSize="24sp"
+                tools:text="Spendistry" />
+
+            <ImageButton
+                android:id="@+id/download_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:backgroundTint="@color/zxing_transparent"
+                android:contentDescription="@string/done"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:paddingStart="6dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="6dp"
+                app:srcCompat="@drawable/download"
+                tools:ignore="TouchTargetSizeCheck" />
+        </LinearLayout>
+
+
 
         <TextView
             android:id="@+id/business_address"
@@ -175,15 +202,32 @@
         tools:listitem="@layout/invoice_recyclerview" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/invoice_total"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            android:gravity="end"
-            android:textColor="@color/mainBlue"
-            android:textSize="16sp"
-            tools:text="Total: $0.00" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/invoice_discount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/mainBlue"
+                android:textSize="14sp"
+                tools:text="Discount: $0.00" />
+
+            <TextView
+                android:id="@+id/invoice_total"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="@color/mainBlue"
+                android:textSize="16sp"
+                tools:text="Total: $0.00" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -236,33 +280,15 @@
         </LinearLayout>
 
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/round_off"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/invoice_discount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/mainBlue"
-                android:textSize="14sp"
-                tools:text="Discount: $0.00" />
-
-            <TextView
-                android:id="@+id/round_off"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:textColor="@color/mainBlue"
-                android:textSize="16sp"
-                tools:text="Round off: $0.00" />
-
-        </LinearLayout>
-
+            android:layout_marginEnd="6dp"
+            android:gravity="end"
+            android:textColor="@color/mainBlue"
+            android:textSize="16sp"
+            tools:text="Round off: $0.00" />
 
         <TextView
             android:id="@+id/payment_mode"

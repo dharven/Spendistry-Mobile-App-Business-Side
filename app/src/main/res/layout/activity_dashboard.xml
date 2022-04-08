@@ -62,12 +62,12 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/materialCardView2"
+                    style="@style/cardViewTheme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="25dp"
                     android:layout_marginEnd="5dp"
-                    style="@style/cardViewTheme"
                     android:layout_marginBottom="25dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="8dp"
@@ -80,12 +80,14 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/monthlyTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/alata"
                             android:text="@string/monthly_income_n18000"
                             android:textColor="#03045E"
                             android:textSize="24sp" />
+
                         <TextView
                             android:id="@+id/monthly_income"
                             android:layout_width="wrap_content"
@@ -101,6 +103,7 @@
                             android:text="@string/yearly_income_n180000000"
                             android:textColor="#03045E"
                             android:textSize="16sp" />
+
                         <TextView
                             android:id="@+id/yearly_income"
                             android:layout_width="wrap_content"
@@ -113,35 +116,37 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/issued_invoices_card"
-                    android:background="?attr/selectableItemBackground"
+                    style="@style/cardViewTheme"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="25dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="25dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackground"
                     android:padding="16dp"
                     app:cardCornerRadius="12dp"
-                    style="@style/cardViewTheme"
                     app:cardElevation="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:strokeWidth="0dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
                         android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/alata"
-                        android:text="@string/issued_invoices_n180"
-                        android:textColor="#03045E"
-                        android:textSize="20sp" />
+                        <TextView
+                            android:id="@+id/issueTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/alata"
+                            android:text="@string/issued_invoices_n180"
+                            android:textColor="#03045E"
+                            android:textSize="20sp" />
 
                         <TextView
                             android:id="@+id/issued_invoices"
@@ -157,13 +162,13 @@
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
+                style="@style/cardViewTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="25dp"
                 android:layout_weight="1"
-                style="@style/cardViewTheme"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -183,7 +188,7 @@
                         android:layout_width="68dp"
                         android:layout_height="68dp"
                         android:layout_marginEnd="6dp"
-                        android:src="@drawable/thanos"
+                        android:scaleType="centerCrop"
                         app:riv_corner_radius="34dp" />
 
                     <LinearLayout
@@ -241,15 +246,31 @@
                 app:cardCornerRadius="12dp"
                 app:cardElevation="6dp"
                 app:strokeWidth="0dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <com.broooapps.graphview.CurveGraphView
+                        android:id="@+id/cgv"
+                        android:layout_width="wrap_content"
+                        android:layout_marginEnd="30dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:layout_margin="16dp">
 
-                <com.broooapps.graphview.CurveGraphView
-                    android:id="@+id/cgv"
-                    android:layout_width="wrap_content"
-                    android:layout_marginEnd="30dp"
-                    android:layout_height="250dp"
-                    android:layout_margin="16dp">
+                    </com.broooapps.graphview.CurveGraphView>
 
-                </com.broooapps.graphview.CurveGraphView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:layout_marginTop="-10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/mainBlue"
+                        android:gravity="center"
+                        android:text="Income of last 30 days"/>
+                </LinearLayout>
+
 
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

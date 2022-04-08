@@ -48,6 +48,11 @@ public class Dashboard {
         this.reportCount = reportCount;
     }
 
+    @Ignore
+    public Dashboard(Vendor vendorDetails) {
+        this.vendorDetails = vendorDetails;
+    }
+
     public int getId() {
         return id;
     }

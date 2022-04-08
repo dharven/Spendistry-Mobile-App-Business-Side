@@ -23,7 +23,8 @@ public class Vendor implements Parcelable {
     private String businessName;
 
     private String mobileNumber;
-    private String currentInvoiceNumber;
+    private int currentInvoiceNumber;
+    private String password;
     private String panNumber;
     private String gstNumber;
     private String address;
@@ -35,7 +36,7 @@ public class Vendor implements Parcelable {
     private String lng;
     private String vendorDescription;
 
-    public Vendor(String firstName, String lastName, String email, String vendorId, String businessName, String mobileNumber, String currentInvoiceNumber, String panNumber, String gstNumber, String address, String city, String state, String tollFreeNumber, String website, String description) {
+    public Vendor(String firstName, String lastName, String email, String vendorId, String businessName, String mobileNumber, int currentInvoiceNumber, String panNumber, String gstNumber, String address, String city, String state, String tollFreeNumber, String website, String description) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -58,10 +59,15 @@ public class Vendor implements Parcelable {
         this.lng = lng;
     }
 
-    public Vendor(String firstName, String lastName, String email, String businessName, String mobileNumber, String panNumber, String gstNumber, String address, String city, String state, String tollFreeNumber, String website,String description) {
+    public Vendor(int currentInvoiceNumber) {
+        this.currentInvoiceNumber = currentInvoiceNumber;
+    }
+
+    public Vendor(String firstName, String lastName, String email, String businessName, String mobileNumber, String panNumber, String gstNumber, String address, String city, String state, String tollFreeNumber, String website, String description) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.vendorId = email;
         this.businessName = businessName;
         this.mobileNumber = mobileNumber;
         this.panNumber = panNumber;
@@ -71,7 +77,6 @@ public class Vendor implements Parcelable {
         this.state = state;
         this.tollFreeNumber = tollFreeNumber;
         this.website = website;
-        this.vendorId = email;
         vendorDescription = description;
     }
 
@@ -83,7 +88,7 @@ public class Vendor implements Parcelable {
         vendorId = in.readString();
         businessName = in.readString();
         mobileNumber = in.readString();
-        currentInvoiceNumber = in.readString();
+        currentInvoiceNumber = in.readInt();
         panNumber = in.readString();
         gstNumber = in.readString();
         address = in.readString();
@@ -136,7 +141,7 @@ public class Vendor implements Parcelable {
         return mobileNumber;
     }
 
-    public String getCurrentInvoiceNumber() {
+    public int getCurrentInvoiceNumber() {
         return currentInvoiceNumber;
     }
 
@@ -176,6 +181,10 @@ public class Vendor implements Parcelable {
         return vendorId;
     }
 
+    public void setCurrentInvoiceNumber(int currentInvoiceNumber) {
+        this.currentInvoiceNumber = currentInvoiceNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -189,7 +198,7 @@ public class Vendor implements Parcelable {
         parcel.writeString(vendorId);
         parcel.writeString(businessName);
         parcel.writeString(mobileNumber);
-        parcel.writeString(currentInvoiceNumber);
+        parcel.writeInt(currentInvoiceNumber);
         parcel.writeString(panNumber);
         parcel.writeString(gstNumber);
         parcel.writeString(address);

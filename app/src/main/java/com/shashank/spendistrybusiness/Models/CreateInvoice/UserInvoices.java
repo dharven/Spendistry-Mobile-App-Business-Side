@@ -15,6 +15,10 @@ public class UserInvoices {
         this.businessName = businessName;
     }
 
+    public UserInvoices(ArrayList<BusinessInvoices> businessName) {
+        this.businessName = businessName;
+    }
+
     public String getEmail() {
         return email;
     }

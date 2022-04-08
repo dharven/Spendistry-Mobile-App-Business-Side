@@ -22,4 +22,8 @@ public class DashboardViewModel extends AndroidViewModel {
     public LiveData<Dashboard> getDashboardData(LinearLayout linearLayout, String email){
         return dashboardRepository.getDashboardData(linearLayout,email);
     }
+
+    public void deleteInventory(){
+        dashboardRepository.deleteInventory();
+    }
 }

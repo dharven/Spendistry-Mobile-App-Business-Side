@@ -24,6 +24,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private InetAddress ipAddr = null;
     private MotionLayout motionLayout;
+    boolean internetAvailable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +37,58 @@ public class SplashScreenActivity extends AppCompatActivity {
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         //change background colour from getWindow()
-        getWindow().setBackgroundDrawableResource(R.color.windowBlue);
+        getWindow().setBackgroundDrawableResource(R.color.mainBlue);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         isInternetAvailable();
+        motionLayout.addTransitionListener(new MotionLayout.TransitionListener() {
+            @Override
+            public void onTransitionStarted(MotionLayout motionLayout, int startId, int endId) {
+
+            }
+
+            @Override
+            public void onTransitionChange(MotionLayout motionLayout, int startId, int endId, float progress) {
+
+            }
+
+            @Override
+            public void onTransitionCompleted(MotionLayout motionLayout, int currentId) {
+                if (internetAvailable) {
+                    sharedPreferences.edit().putBoolean("internet", true).apply();
+                    if (sharedPreferences.getBoolean("loggedIn", false)) {
+                        String email = sharedPreferences.getString("email", "not");
+                        Intent intent = new Intent(SplashScreenActivity.this, DashboardActivity.class);
+                        intent.putExtra("email", email);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                } else {
+                    sharedPreferences.edit().putBoolean("internet", false).apply();
+                    if (sharedPreferences.getBoolean("loggedIn", false)) {
+                        String email = sharedPreferences.getString("email", "not");
+                        Intent intent = new Intent(SplashScreenActivity.this, DashboardActivity.class);
+                        intent.putExtra("email", email);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                    finish();
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                }
+            }
+
+            @Override
+            public void onTransitionTrigger(MotionLayout motionLayout, int triggerId, boolean positive, float progress) {
+
+            }
+        });
     }
 
     public void isInternetAvailable() {
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try {
@@ -56,55 +101,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         // Post the result to the main thread
-                        motionLayout.addTransitionListener(new MotionLayout.TransitionListener() {
-                            @Override
-                            public void onTransitionStarted(MotionLayout motionLayout, int startId, int endId) {
-
-                            }
-
-                            @Override
-                            public void onTransitionChange(MotionLayout motionLayout, int startId, int endId, float progress) {
-
-                            }
-
-                            @Override
-                            public void onTransitionCompleted(MotionLayout motionLayout, int currentId) {
-                                if (ipAddr != null) {
-//                            Toast.makeText(SplashScreenActivity.this, "Internet is available", Toast.LENGTH_SHORT).show();
-                                    sharedPreferences.edit().putBoolean("internet", true).apply();
-                                    if (sharedPreferences.getBoolean("loggedIn", false)) {
-                                        String email = sharedPreferences.getString("email", "not");
-                                        Intent intent = new Intent(SplashScreenActivity.this, DashboardActivity.class);
-                                        intent.putExtra("email", email);
-                                        startActivity(intent);
-                                    } else {
-                                        Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
-                                        startActivity(intent);
-                                    }
-                                } else {
-                                    sharedPreferences.edit().putBoolean("internet", false).apply();
-                                    if (sharedPreferences.getBoolean("loggedIn", false)) {
-                                        String email = sharedPreferences.getString("email", "not");
-                                        Intent intent = new Intent(SplashScreenActivity.this, DashboardActivity.class);
-                                        intent.putExtra("email", email);
-                                        startActivity(intent);
-                                        finish();
-                                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                                    } else {
-                                        Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onTransitionTrigger(MotionLayout motionLayout, int triggerId, boolean positive, float progress) {
-
-                            }
-                        });
-
+                        internetAvailable = ipAddr != null;
                     }
                 });
             }

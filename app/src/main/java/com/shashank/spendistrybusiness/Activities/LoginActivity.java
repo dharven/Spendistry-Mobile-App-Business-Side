@@ -5,13 +5,17 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.AuthViewModel;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -35,12 +39,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-         email = findViewById(R.id.password_forgot);
-         password = findViewById(R.id.repassword_forgot);
-         loginButton = findViewById(R.id.update_password);
+         email = findViewById(R.id.email_login);
+         password = findViewById(R.id.password_login);
+         loginButton = findViewById(R.id.login);
          reg = findViewById(R.id.reg);
-         TextInputLayout emailLayout = findViewById(R.id.pass_forgot);
-         TextInputLayout passLayout = findViewById(R.id.repass_forgot);
+         TextInputLayout emailLayout = findViewById(R.id.email_login_field);
+         TextInputLayout passLayout = findViewById(R.id.pass_login_field);
          TextView forgot = findViewById(R.id.forgot);
          LinearLayout linearLayout = findViewById(R.id.login_layout);
 
@@ -119,6 +123,11 @@ public class LoginActivity extends AppCompatActivity {
                      return;
                  }
                  if (isEmailValid(email.getText().toString())) {
+                     Dialog dialog = new Dialog(LoginActivity.this);
+                     dialog.setContentView(R.layout.loading_layout);
+                     dialog.setCancelable(false);
+                     dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                     dialog.show();
 
                          authViewModel.getAuth(LoginActivity.this, linearLayout,email.getText().toString(), password.getText().toString()).observe(LoginActivity.this, new Observer<String>() {
                              @Override
@@ -131,10 +140,16 @@ public class LoginActivity extends AppCompatActivity {
                                          editor.apply();
                                          //
                                          Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                         dialog.dismiss();
                                          startActivity(intent);
                                          finish();
                                      overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                                     }
+                                     } else {
+                                     Snackbar snackbar = Snackbar.make(linearLayout, "Something went wrong!!", Snackbar.LENGTH_SHORT);
+                                     snackbar.setTextColor(Color.WHITE);
+                                     snackbar.setBackgroundTint(getResources().getColor(R.color.red));
+                                     snackbar.show();
+                                 }
                              }
 
                          });

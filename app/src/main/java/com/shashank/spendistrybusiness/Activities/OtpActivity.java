@@ -99,8 +99,13 @@ public class OtpActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(OtpActivity.this, DashboardActivity.class));
-                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                if (getSharedPreferences("loggedIn", MODE_PRIVATE).getBoolean("loggedIn", false)) {
+                    startActivity(new Intent(OtpActivity.this, DashboardActivity.class));
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                } else {
+                    startActivity(new Intent(OtpActivity.this, LoginActivity.class));
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -191,50 +191,60 @@ public class RegisterActivity extends AppCompatActivity {
                     registerButton.setText("Register");
                 } else {
                     if (passwordString.equals(confirmPasswordString)) {
-
-                        otp = Global.sendOTP(RegisterActivity.this, linearLayout, emailString);
+                        //send post request of otp
+                        authViewModel.newOTP(linearLayout, email.getText().toString());
                         Dialog dialog = new Dialog(RegisterActivity.this);
                         dialog.setContentView(R.layout.otp_dialog);
                         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        dialog.setCancelable(false);
+                        dialog.setCancelable(true);
                         final OTPView otpField = dialog.findViewById(R.id.otp_field);
                         final TextView resendOtp = dialog.findViewById(R.id.resend_dialog);
                         dialog.show();
                         otpField.setOnFinishListener(new Function1<String, Unit>() {
                             @Override
                             public Unit invoke(String s) {
-                                if (s.equals(otp)) {
-                                        authViewModel.createAccount(emailString, passwordString).observe(RegisterActivity.this, new Observer<Auth>() {
+                                authViewModel.verifyOTP(linearLayout, email.getText().toString(), Integer.parseInt(s)).observe(RegisterActivity.this, response -> {
+                                    if (response.equals("201")) {
+                                        Dialog dialog1 = new Dialog(RegisterActivity.this);
+                                        dialog1.setContentView(R.layout.loading_layout);
+                                        dialog1.setCancelable(false);
+                                        dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                        dialog1.show();
+                                        authViewModel.createAccount(linearLayout,emailString, passwordString).observe(RegisterActivity.this, new Observer<Auth>() {
                                             @Override
                                             public void onChanged(Auth auth) {
                                                 if (!auth.getEmail().equals("")) {
-                                                    authViewModel.CreateInventory(emailString);
+                                                    address.setText(addressString);
                                                     authViewModel.createVendorData(new Vendor(firstNameString, lastNameString, emailString, businessNameString,
                                                             phoneString, panNumberString, gstNumberString, addressString,
                                                             cityString, stateString, tollFreeString, websiteString, "")).observe(RegisterActivity.this, new Observer<Vendor>() {
                                                         @Override
                                                         public void onChanged(Vendor vendor) {
+                                                            dialog1.dismiss();
                                                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                                             startActivity(intent);
                                                             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                                                         }
                                                     });
                                                 }
+                                                //
                                             }
                                         });
-                                    } else {
-                                        Snackbar snackbar = Snackbar.make(linearLayout, "Wrong OTP!", Snackbar.LENGTH_LONG);
+                                    } else if (response.equals("401")) {
+                                        Snackbar snackbar = Snackbar.make(linearLayout, "Invalid OTP!", Snackbar.LENGTH_SHORT);
+                                        snackbar.setTextColor(Color.WHITE);
                                         snackbar.setBackgroundTint(ContextCompat.getColor(RegisterActivity.this, R.color.red));
-                                        snackbar.setTextColor(ContextCompat.getColor(RegisterActivity.this, R.color.material_white));
                                         snackbar.show();
                                     }
+                                });
                                 return null;
                             }
                         });
                         resendOtp.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                    otp = Global.sendOTP(RegisterActivity.this, linearLayout, emailString);
+                                //send post request of otp
+                                authViewModel.newOTP(linearLayout, email.getText().toString());
                             }
                         });
 

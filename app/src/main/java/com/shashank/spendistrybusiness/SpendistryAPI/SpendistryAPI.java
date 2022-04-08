@@ -1,21 +1,35 @@
 package com.shashank.spendistrybusiness.SpendistryAPI;
 
+import com.google.gson.annotations.SerializedName;
 import com.shashank.spendistrybusiness.Models.Auth;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.InvoicePatch;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.OTP;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.QR;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.UserInvoices;
 import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
+import com.shashank.spendistrybusiness.Models.Report;
 import com.shashank.spendistrybusiness.Models.Vendor;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.LongStream;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface SpendistryAPI {
@@ -30,6 +44,15 @@ public interface SpendistryAPI {
 
     @GET("invoice/vendor/{email}")
     Call<ArrayList<BusinessInvoices>> getBusinessInvoices(@Path("email") String email);
+
+    @GET("report/reportTo/{email}")
+    Call<List<Report>> getReportedInvoices(@Path("email") String email);
+
+    @GET("invoice/findEle/{email}/{businessEmail}/{invoiceId}")
+    Call<Invoice> getReportedInvoice(@Path("email") String email, @Path("businessEmail") String businessEmail, @Path("invoiceId") String invoiceId);
+
+    @GET("pdf/{email}/{businessEmail}/{invoiceId}")
+    Call<ResponseBody> getPDF(@Path("email") String email, @Path("businessEmail") String businessEmail, @Path("invoiceId") String invoiceId);
 
 
     //POST
@@ -51,9 +74,18 @@ public interface SpendistryAPI {
     @POST("otp/forgotPassword")
     Call<String> sendOTP(@Body OTP otp);
 
+    @POST("otp/createAccount")
+    Call<String> newOTP(@Body OTP otp);
+
     @POST("otp/verifyOTP")
     Call<String> verifyOTP(@Body OTP otp);
 
+    @Multipart
+    @POST("vendor/uploadImage/{email}")
+    Call<okhttp3.ResponseBody> setNewProfilePic(@Path("email") String email, @Part MultipartBody.Part image  );
+
+    @POST("invoice/decrypt")
+    Call<String> verifyQR(@Body QR qr);
 
     //DELETE
     @DELETE("authBusiness/{email}")
@@ -61,6 +93,12 @@ public interface SpendistryAPI {
 
     @DELETE("itemsPrices/deleteItems/{email}/{itemId}")
     Call<ItemPricesArrayList> deleteElement(@Path("email") String email, @Path("itemId") String itemId);
+
+    @DELETE("report/{id}")
+    Call<Report> deleteReportRequest(@Path("id") String id);
+
+    @DELETE("vendor/deleteImage/{id}")
+    Call<String> deleteProfilePic(@Path("id") String id);
 
 
     //PATCH
@@ -76,6 +114,7 @@ public interface SpendistryAPI {
     @PATCH("vendor/{email}")
     Call<Vendor> updateProfile(@Path("email") String email, @Body Vendor vendor);
 
-
+    @PATCH("invoice/patchEle/{userEmail}/{businessEmail}/{invoiceId}/{reportId}")
+    Call<InvoicePatch> updateInvoice(@Path("userEmail") String userEmail, @Path("businessEmail") String businessEmail, @Path("invoiceId") String invoiceId,@Path("reportId") String reportId, @Body InvoicePatch invoice);
 
 }

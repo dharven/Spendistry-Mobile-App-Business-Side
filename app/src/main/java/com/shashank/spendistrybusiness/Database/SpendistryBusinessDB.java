@@ -19,7 +19,7 @@ import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
 import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 
-@Database(entities = {ItemPrices.class, Dashboard.class, BusinessInvoices.class}, version = 17, exportSchema = false)
+@Database(entities = {ItemPrices.class, Dashboard.class, BusinessInvoices.class}, version = 20, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class SpendistryBusinessDB extends RoomDatabase {
     private static final String DATABASE_NAME = "SpendistryBusinessDB";

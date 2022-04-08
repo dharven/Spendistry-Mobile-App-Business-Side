@@ -68,7 +68,7 @@ public class ScanEntryDialog extends DialogFragment {
             public void onClick(View view) {
                 ObjectId id = new ObjectId();
                 ArrayList<ItemPrices> itemPrices = new ArrayList<>();
-                ItemPrices item = new ItemPrices(id.toString(),barcodeString, itemName.getText().toString() , itemPrice.getText().toString());
+                ItemPrices item = new ItemPrices(id.toString(),barcodeString, emailString,itemName.getText().toString() , itemPrice.getText().toString());
                 itemPrices.add(item);
                 inventoryViewModel.setInventory(emailString,itemPrices);
                 requireDialog().dismiss();

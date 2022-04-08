@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/windowBlue"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/invoice_discount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="12dp"
+                android:layout_weight="1"
+                android:hint="Discount Percentage"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="@color/mainBlue"
+                app:hintTextColor="@color/mainBlue">
+
+                <!--this is the actual edit text which takes the input-->
+                <EditText
+                    android:id="@+id/invoice_discount_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:text="0"
+                    android:fontFamily="@font/alata"
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/cursor_drawable" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Spinner
+                android:id="@+id/invoice_payment_method"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="6dp"
+                android:spinnerMode="dropdown"
+                android:layout_marginBottom="12dp"
+                android:layout_weight="1"
+                android:theme="@style/MaterialAlertDialog.Material3"
+                android:entries="@array/payment_mode"
+                tools:listitem="@android:layout/simple_dropdown_item_1line" />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/invoice_IGST"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1"
+            android:hint="IGST Percentage"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeColor="@color/mainBlue"
+            app:hintTextColor="@color/mainBlue">
+
+            <!--this is the actual edit text which takes the input-->
+            <EditText
+                android:id="@+id/invoice_igst_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:ems="10"
+                android:text="0"
+
+                android:fontFamily="@font/alata"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                android:textCursorDrawable="@drawable/cursor_drawable" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/invoice_CGST"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1"
+            android:hint="CGST Percentage"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeColor="@color/mainBlue"
+            app:hintTextColor="@color/mainBlue">
+
+            <!--this is the actual edit text which takes the input-->
+            <EditText
+                android:id="@+id/invoice_cgst_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:ems="10"
+                android:text="0"
+
+                android:fontFamily="@font/alata"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                android:textCursorDrawable="@drawable/cursor_drawable" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/invoice_UTGST"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1"
+            android:hint="UTGST Percentage"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeColor="@color/mainBlue"
+            app:hintTextColor="@color/mainBlue">
+
+            <!--this is the actual edit text which takes the input-->
+            <EditText
+                android:id="@+id/invoice_utgst_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:ems="10"
+                android:text="0"
+
+                android:fontFamily="@font/alata"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                android:textCursorDrawable="@drawable/cursor_drawable" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/invoice_SGST"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1"
+            android:hint="SGST Percentage"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeColor="@color/mainBlue"
+            app:hintTextColor="@color/mainBlue">
+
+            <!--this is the actual edit text which takes the input-->
+            <EditText
+                android:id="@+id/invoice_sgst_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:ems="10"
+                android:text="0"
+
+                android:fontFamily="@font/alata"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                android:textCursorDrawable="@drawable/cursor_drawable" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+           <com.google.android.material.button.MaterialButton
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:backgroundTint="@color/mainBlue"
+               android:id="@+id/invoice_send_button"
+               android:layout_marginStart="12dp"
+               android:layout_marginEnd="12dp"
+               android:layout_marginBottom="8dp"
+               android:text="Send"/>
+
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

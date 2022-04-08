@@ -44,34 +44,40 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
+    //okhttp
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+
     //RecyclerViewChildDrawer
     implementation 'com.github.xabaras:RecyclerViewSwipeDecorator:1.4'
+
+
+
+    //QR
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.1.1'
 
     //room
     implementation "androidx.room:room-runtime:2.4.1"
     annotationProcessor "androidx.room:room-compiler:2.4.1"
     androidTestImplementation "androidx.room:room-testing:2.4.1"
 
-    //QR
-    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
-    implementation 'com.github.yuriy-budiyev:code-scanner:2.1.1'
-
-    //SearchableSpinner
-//    implementation 'com.github.leoncydsilva:SearchableSpinner:1.0.1'
-//    implementation 'com.github.captain-miao:optroundcardview:1.0.0'
-
     //SwipeRefreshLayout
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
-    //Glide
+    //for image processing Glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
-    //Rounded Images
+    //for Rounded Images
     implementation 'com.makeramen:roundedimageview:2.3.0'
 
-    //graph
+    //for graph
     implementation 'com.github.swapnil1104:CurveGraphView:2.1'
-    implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    //for maps
+    implementation 'com.google.android.gms:play-services-base:17.6.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
 
     //badge
     implementation 'io.github.nikartm:image-support:2.0.0'
@@ -79,17 +85,13 @@ dependencies {
     //otpEditText
     implementation 'com.github.KevinSchildhorn:OTPView:0.2.2'
 
-    //Email
-    implementation 'com.github.ShashankMistry:GmailBackground:1.0.0'
-    //    implementation 'com.github.yesidlazaro:GmailBackground:1.2.0'
-
-    //mongo bson
+    //mongodb bson
     implementation'org.mongodb:bson:3.0.4'
-
-    //AES
-    implementation'com.scottyab:aescrypt:0.0.1'
 
     //PERMISSION
     implementation 'com.karumi:dexter:6.2.3'
+
+    //lottie animations
+    implementation "com.airbnb.android:lottie:3.6.0"
 
 }

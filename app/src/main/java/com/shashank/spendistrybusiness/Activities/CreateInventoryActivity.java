@@ -1,27 +1,23 @@
 package com.shashank.spendistrybusiness.Activities;
 
-import androidx.annotation.NonNull;
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.view.Window;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
-
-import android.Manifest;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.Window;
-
 import com.shashank.spendistrybusiness.Fragments.ManualInventoryFragment;
 import com.shashank.spendistrybusiness.Fragments.ScanInventoryFragment;
 import com.shashank.spendistrybusiness.R;
@@ -55,21 +51,19 @@ public class CreateInventoryActivity extends AppCompatActivity {
         }
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.CAMERA).withListener(new PermissionListener() {
+                    @SuppressLint("NonConstantResourceId")
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        navigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-                            @Override
-                            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                                switch (item.getItemId()) {
-                                    case R.id.page_1:
-                                        fragmentManager.beginTransaction().replace(R.id.frame, manualInventoryFragment).commit();
-                                        return true;
-                                    case R.id.page_2:
-                                        fragmentManager.beginTransaction().remove(manualInventoryFragment).add(R.id.frame, scanInventoryFragment).commit();
-                                        return true;
-                                    default:
-                                        return false;
-                                }
+                        navigationView.setOnItemSelectedListener(item -> {
+                            switch (item.getItemId()) {
+                                case R.id.page_1:
+                                    fragmentManager.beginTransaction().replace(R.id.frame, manualInventoryFragment).commit();
+                                    return true;
+                                case R.id.page_2:
+                                    fragmentManager.beginTransaction().remove(manualInventoryFragment).add(R.id.frame, scanInventoryFragment).commit();
+                                    return true;
+                                default:
+                                    return false;
                             }
                         });
                     }

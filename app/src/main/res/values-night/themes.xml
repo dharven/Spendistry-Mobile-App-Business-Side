@@ -124,7 +124,7 @@
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
-        <item name="android:statusBarColor">@color/windowBlue</item>
-        <item name="android:navigationBarColor">@color/windowBlue</item>
+        <item name="android:statusBarColor">@color/mainBlue</item>
+        <item name="android:navigationBarColor">@color/mainBlue</item>
     </style>
 </resources>

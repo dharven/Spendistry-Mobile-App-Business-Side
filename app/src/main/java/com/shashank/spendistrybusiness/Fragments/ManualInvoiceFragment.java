@@ -15,6 +15,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -35,16 +37,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.shashank.spendistrybusiness.Activities.DashboardActivity;
 import com.shashank.spendistrybusiness.Activities.MainActivity;
+import com.shashank.spendistrybusiness.Activities.ReportedInvoiceActivity;
 import com.shashank.spendistrybusiness.Adapters.InvoiceAdapter;
 import com.shashank.spendistrybusiness.Adapters.SearchableSpinnerAdapter;
+import com.shashank.spendistrybusiness.Constants.Global;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
 import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
+import com.shashank.spendistrybusiness.Models.Vendor;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InvoiceViewModel;
 
@@ -68,10 +76,12 @@ public class ManualInvoiceFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private ItemPrices recentlyRemoved;
     private int recentPosition;
-    private String businessEmail, businessName, description, city;
+    private String businessEmail, businessName, description, city, gstin, address, contact, email,invoiceId, reportId;
+    private int invoiceNumber;
     private LinearLayoutManager layoutManager;
     private TextView searchItem;
     private LinearLayout linearLayout;
+    private Vendor vendor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,14 +103,28 @@ public class ManualInvoiceFragment extends Fragment {
         layoutManager = new LinearLayoutManager(requireContext());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
-        String email = bundle.getString("SCAN_RESULT");
+        email = bundle.getString("SCAN_RESULT");
 //        sharedPreferences.edit().putBoolean("hasData", true).apply();
-        invoiceViewModel.getInvoice().observe(requireActivity(), new Observer<List<ItemPrices>>() {
 
+        if (sharedPreferences.getBoolean("report", false)) {
+            send.setText("Change Data");
+            cancel.setText("Reject");
+            invoiceId = bundle.getString("invoiceId");
+            reportId = bundle.getString("reportId");
+            businessEmail = sharedPreferences.getString("email", "");
+            invoiceViewModel.getReportedInvoice(email, businessEmail, invoiceId).observe(requireActivity(), new Observer<List<ItemPrices>>() {
+                @Override
+                public void onChanged(List<ItemPrices> itemPrices) {
+                    invoiceViewModel.setInvoiceList(itemPrices);
+                }
+            });
+        } else {
+            send.setText("Send");
+            cancel.setText("Cancel");
+        }
+        invoiceViewModel.getInvoice().observe(requireActivity(), new Observer<List<ItemPrices>>() {
             @Override
             public void onChanged(List<ItemPrices> itemPrices) {
-
-
                 invoiceAdapter = new InvoiceAdapter(itemPrices, requireContext(), requireActivity());
                 invoiceList.setLayoutManager(new LinearLayoutManager(requireContext()));
                 invoiceList.setLayoutManager(layoutManager);
@@ -160,12 +184,11 @@ public class ManualInvoiceFragment extends Fragment {
         invoiceList.addItemDecoration(dividerItemDecoration);
 
 
-
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!itemPrice.getText().toString().equals("") && !itemName.getText().toString().equals("") && !itemQuantity.getText().toString().equals("")) {
-                    ItemPrices itemPrices = new ItemPrices( "", itemName.getText().toString(), Integer.parseInt(itemQuantity.getText().toString()),itemPrice.getText().toString());
+                    ItemPrices itemPrices = new ItemPrices("", itemName.getText().toString(), Integer.parseInt(itemQuantity.getText().toString()), itemPrice.getText().toString());
                     invoiceViewModel.setInvoice(itemPrices);
                     itemName.setText("");
                     itemPrice.setText("");
@@ -174,24 +197,32 @@ public class ManualInvoiceFragment extends Fragment {
         });
 
 
-
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                double total = 0;
-                for (int i = 0; i < invoiceAdapter.getItemCount(); i++) {
-                    total += Double.parseDouble(invoiceAdapter.getTotal(i));
-                }
 
-                double finalPrice = total - (total * (10.0 / 100.0));
-                Invoice invoice = new Invoice(invoiceAdapter.getItemPricesList(), "1", total, businessName,
-                        "lorem impsum", 10, finalPrice, 0.0, 0.0, 0.0, 0.0, email,
-                        businessEmail, "cash", Math.round(finalPrice), city);
-                ArrayList<Invoice> invoiceList = new ArrayList<>();
-                invoiceList.add(invoice);
-                BusinessInvoices businessArray = new BusinessInvoices(businessEmail, invoiceList);
-                invoiceViewModel.addInvoice(email, businessEmail, businessArray);
-                invoiceViewModel.setInvoice(new ItemPrices("", null, null, null));
+                    if (invoiceAdapter != null) {
+                        if (invoiceAdapter.getItemCount() > 0) {
+                            Dialog dialog = new Dialog(requireContext());
+                            dialog.setContentView(R.layout.final_invoice_dialog);
+                            dialog.setCancelable(true);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.getWindow().setLayout(800, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            setDialog(dialog, send);
+                        } else {
+                            Snackbar snackbar = Snackbar.make(linearLayout, "Add items first", Snackbar.LENGTH_SHORT);
+                            snackbar.setTextColor(Color.WHITE);
+                            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.red));
+                            snackbar.show();
+                        }
+                    } else {
+                        Snackbar snackbar = Snackbar.make(linearLayout, "Add items first", Snackbar.LENGTH_SHORT);
+                        snackbar.setTextColor(Color.WHITE);
+                        snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.red));
+                        snackbar.show();
+
+                    }
+
             }
         });
 
@@ -199,48 +230,168 @@ public class ManualInvoiceFragment extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                builder.setTitle("Cancel Invoice");
-                builder.setMessage("Are you sure you want to cancel this invoice?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(requireContext(), MainActivity.class);
-                        startActivity(intent);
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.show();
+                if (cancel.getText().toString().toLowerCase().equals("cancel")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                    builder.setTitle("Cancel Invoice");
+                    builder.setMessage("Are you sure you want to cancel this invoice?");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(requireContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    invoiceViewModel.deleteReportRequest(linearLayout, businessEmail);
+                }
             }
         });
         return rootView;
+    }
+
+    private void setDialog(Dialog dialog, Button send_btn) {
+        EditText discount = dialog.findViewById(R.id.invoice_discount_input);
+        EditText cgst = dialog.findViewById(R.id.invoice_cgst_input);
+        EditText sgst = dialog.findViewById(R.id.invoice_sgst_input);
+        EditText igst = dialog.findViewById(R.id.invoice_igst_input);
+        EditText utgst = dialog.findViewById(R.id.invoice_utgst_input);
+        Spinner spinner = dialog.findViewById(R.id.invoice_payment_method);
+        Button send = dialog.findViewById(R.id.invoice_send_button);
+        dialog.show();
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (discount.getText().toString().isEmpty()) {
+                    discount.setError("Enter discount");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            discount.setError(null);
+                        }
+                    }, 1500);
+                } else if (cgst.getText().toString().isEmpty()) {
+                    cgst.setError("Enter CGST");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            cgst.setError(null);
+                        }
+                    }, 1500);
+                } else if (sgst.getText().toString().isEmpty()) {
+                    sgst.setError("Enter SGST");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sgst.setError(null);
+                        }
+                    }, 1500);
+                } else if (igst.getText().toString().isEmpty()) {
+                    igst.setError("Enter IGST");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            igst.setError(null);
+                        }
+                    }, 1500);
+                } else if (utgst.getText().toString().isEmpty()) {
+                    utgst.setError("Enter UTGST");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            utgst.setError(null);
+                        }
+                    }, 1500);
+                } else {
+                    String discount_value = discount.getText().toString();
+                    String cgst_value = cgst.getText().toString();
+                    String sgst_value = sgst.getText().toString();
+                    String igst_value = igst.getText().toString();
+                    String utgst_value = utgst.getText().toString();
+                    String payment_method = spinner.getSelectedItem().toString();
+                    double total = 0;
+                    for (int i = 0; i < invoiceAdapter.getItemCount(); i++) {
+                        total += Double.parseDouble(invoiceAdapter.getTotal(i));
+                    }
+                    double discount_amount = Double.parseDouble(discount_value);
+                    double cgst_amount = Double.parseDouble(cgst_value);
+                    double sgst_amount = Double.parseDouble(sgst_value);
+                    double igst_amount = Double.parseDouble(igst_value);
+                    double utgst_amount = Double.parseDouble(utgst_value);
+
+                    double discount_total = total - (total * (discount_amount / 100.0));
+                    double cgst_total = (discount_total * (cgst_amount / 100.0));
+                    double sgst_total = (discount_total * (sgst_amount / 100.0));
+                    double igst_total = (discount_total * (igst_amount / 100.0));
+                    double utgst_total = (discount_total * (utgst_amount / 100.0));
+                    double final_total = discount_total + utgst_total + cgst_total + sgst_total + igst_total;
+
+
+//                    double finalPrice = total - ;
+                    if (send_btn.getText().toString().toLowerCase().equals("send")) {
+                        Invoice invoice = new Invoice(invoiceAdapter.getItemPricesList(), invoiceNumber, total, businessName, description
+                                , Double.parseDouble(discount_value), final_total, igst_amount, cgst_amount, sgst_amount, utgst_amount, email,
+                                businessEmail, payment_method, Math.round(final_total), city, address, gstin, contact);
+                        ArrayList<Invoice> invoiceList = new ArrayList<>();
+                        invoiceList.add(invoice);
+                        BusinessInvoices businessArray = new BusinessInvoices(businessEmail, invoiceList);
+                        if (invoice.getTitle() == null) {
+                            invoiceViewModel.addInvoice(email, businessEmail, businessArray);
+                            invoiceViewModel.setInvoice(new ItemPrices("", null, null, null, null));
+                            invoiceViewModel.updateInvoiceNumber(businessEmail, invoiceNumber + 1).observe(requireActivity(), new Observer<Integer>() {
+                                @Override
+                                public void onChanged(Integer s) {
+                                    invoiceNumber = s;
+                                    dialog.dismiss();
+                                }
+                            });
+                        } else {
+                            Snackbar snackbar = Snackbar.make(linearLayout, "Invoice has no Data", Snackbar.LENGTH_SHORT);
+                            snackbar.setTextColor(Color.WHITE);
+                            snackbar.setBackgroundTint(getResources().getColor(R.color.red));
+                            snackbar.show();
+                            dialog.dismiss();
+                        }
+                    } else {
+                        Invoice invoice = new Invoice(invoiceAdapter.getItemPricesList(), total, discount_amount, igst_amount, cgst_amount,sgst_amount,utgst_amount,payment_method, final_total,Math.round(final_total));
+                        invoiceViewModel.updateInvoice(email,businessEmail,invoiceId,reportId, invoice);
+                        Global.itemPricesArrayList.clear();
+                        dialog.dismiss();
+                        startActivity(new Intent(requireActivity(), ReportedInvoiceActivity.class));
+                        requireActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    }
+                }
+            }
+        });
     }
 
     private void SearchItemDialog() {
         searchItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 dialog = new Dialog(requireContext());
                 dialog.setContentView(R.layout.searchable_spinner);
-                dialog.getWindow().setLayout(800, 1400);
+                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
                 EditText editText = dialog.findViewById(R.id.search_box);
                 listView = dialog.findViewById(R.id.list_view);
-//                Button close = dialog.findViewById(R.id.choose_close);
-
-//                close.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        adapter = new SearchableSpinnerAdapter(requireContext(), (ArrayList<ItemPrices>) itemPricesListTemp);
-//                        dialog.dismiss();
-//                    }
-//                });
+                invoiceViewModel.getItemPrices(businessEmail).observe(requireActivity(), new Observer<List<ItemPrices>>() {
+                    @Override
+                    public void onChanged(List<ItemPrices> itemPrices) {
+                        adapter = new SearchableSpinnerAdapter(requireContext(), (ArrayList<ItemPrices>) itemPrices);
+                        itemPricesListFilter = itemPrices;
+                        itemPricesListTemp = itemPrices;
+                        listView.setAdapter(adapter);
+                    }
+                });
 
                 dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
@@ -248,7 +399,7 @@ public class ManualInvoiceFragment extends Fragment {
                         adapter = new SearchableSpinnerAdapter(requireContext(), (ArrayList<ItemPrices>) itemPricesListTemp);
                     }
                 });
-                listView.setAdapter(adapter);
+
                 editText.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -280,7 +431,6 @@ public class ManualInvoiceFragment extends Fragment {
                         ItemPrices itemPrices = (ItemPrices) parent.getAdapter().getItem(position);
                         Dialog dialog1 = new Dialog(requireContext());
                         dialog1.setContentView(R.layout.quantity_dialog);
-                        dialog1.getWindow().setLayout(800, 1400);
                         dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         dialog1.show();
                         final TextView itemName = dialog1.findViewById(R.id.item_name_quantity);
@@ -301,7 +451,7 @@ public class ManualInvoiceFragment extends Fragment {
                             @Override
                             public void onClick(View view) {
                                 adapter = new SearchableSpinnerAdapter(requireContext(), (ArrayList<ItemPrices>) itemPricesListTemp);
-                                ItemPrices itemPrices1 = new ItemPrices(itemPrices.getBarcode(),itemPrices.getItemName(),Integer.parseInt(itemQuantity.getText().toString()), itemPrice.getText().toString() );
+                                ItemPrices itemPrices1 = new ItemPrices(itemPrices.getBarcode(), itemPrices.getItemName(), Integer.parseInt(itemQuantity.getText().toString()), itemPrice.getText().toString());
                                 invoiceViewModel.setInvoice(itemPrices1);
                                 dialog1.dismiss();
                             }
@@ -326,23 +476,20 @@ public class ManualInvoiceFragment extends Fragment {
 
 
         businessEmail = sharedPreferences.getString("email", "");
-        invoiceViewModel.getItemPrices(businessEmail).observe(requireActivity(), new Observer<List<ItemPrices>>() {
-            @Override
-            public void onChanged(List<ItemPrices> itemPrices) {
-                sharedPreferences.edit().putBoolean("hasData",true).apply();
-                adapter = new SearchableSpinnerAdapter(requireContext(), (ArrayList<ItemPrices>) itemPrices);
-                itemPricesListFilter = itemPrices;
-                itemPricesListTemp = itemPrices;
-            }
-        });
 
-        invoiceViewModel.getDashBoardFromDB(businessEmail).observe(getViewLifecycleOwner(),new Observer<Dashboard>() {
+
+        invoiceViewModel.getDashBoardFromDB(businessEmail).observe(getViewLifecycleOwner(), new Observer<Dashboard>() {
 
             @Override
             public void onChanged(Dashboard dashboard) {
+                vendor = dashboard.getVendorDetails();
                 businessName = dashboard.getVendorDetails().getBusinessName();
                 city = dashboard.getVendorDetails().getCity();
-
+                description = dashboard.getVendorDetails().getDescription();
+                gstin = dashboard.getVendorDetails().getGstNumber();
+                address = dashboard.getVendorDetails().getAddress();
+                contact = dashboard.getVendorDetails().getMobileNumber();
+                invoiceNumber = dashboard.getVendorDetails().getCurrentInvoiceNumber();
             }
         });
 
@@ -351,8 +498,8 @@ public class ManualInvoiceFragment extends Fragment {
     public void deleteDialog() {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.delete_dialog);
-        dialog.getWindow().setLayout(800, 1400);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCancelable(false);
         dialog.show();
         Button remove = dialog.findViewById(R.id.delete_btn);
         Button cancel = dialog.findViewById(R.id.cancel_delete_btn);
@@ -383,9 +530,8 @@ public class ManualInvoiceFragment extends Fragment {
 
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.edit_dialog);
-        dialog.getWindow().setLayout(800, 1400);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+        dialog.setCancelable(false);
         dialog.show();
         Button edit = dialog.findViewById(R.id.update_btn);
         Button cancel = dialog.findViewById(R.id.cancel_btn);
@@ -409,10 +555,10 @@ public class ManualInvoiceFragment extends Fragment {
                 if (newItemName.isEmpty() && newItemPrice.isEmpty() && itemQuantity.getText().toString().isEmpty()) {
                     Snackbar snackbar = Snackbar.make(linearLayout, "Please fill all the fields", Snackbar.LENGTH_SHORT);
                     snackbar.setTextColor(Color.WHITE);
-                    snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(),R.color.red));
+                    snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.red));
                     snackbar.show();
                 } else {
-                    invoiceAdapter.updateItem(recentPosition,new ItemPrices(recentlyRemoved.getBarcode(),newItemName, newItemQuantity, newItemPrice));
+                    invoiceAdapter.updateItem(recentPosition, new ItemPrices(recentlyRemoved.getBarcode(), newItemName, newItemQuantity, newItemPrice));
                     dialog.dismiss();
                 }
             }

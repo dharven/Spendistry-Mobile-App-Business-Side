@@ -118,8 +118,6 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
                     android:layout_margin="2dp"
-
-                    android:outlineAmbientShadowColor="@color/mainBlue"
                     app:boxCornerRadiusBottomEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
@@ -141,7 +139,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
-
+                    app:passwordToggleEnabled="true"
                     android:hint="Password"
                     android:outlineAmbientShadowColor="@color/mainBlue"
                     app:boxCornerRadiusBottomEnd="12dp"
@@ -162,6 +160,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/confirmPassField"
+                    app:passwordToggleEnabled="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Confirm Password"

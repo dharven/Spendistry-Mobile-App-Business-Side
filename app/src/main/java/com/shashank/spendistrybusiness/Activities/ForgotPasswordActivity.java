@@ -9,10 +9,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -53,7 +55,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setTitle("");
         }
-        getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.windowBlue));
+        Window window = getWindow();
+        window.setNavigationBarColor(ContextCompat.getColor(this,R.color.windowBlue));
+        window.setBackgroundDrawableResource(R.color.cardBlue);
+        window.setStatusBarColor(ContextCompat.getColor(this,R.color.cardBlue));
         TextInputLayout confirmPasswordLayout = findViewById(R.id.repass_forgot);
         LinearLayout linearLayout = findViewById(R.id.linearlayout_forgot);
         Button submit = findViewById(R.id.update_password);
@@ -112,8 +117,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(ForgotPasswordActivity.this, DashboardActivity.class));
-                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                SharedPreferences sharedPreferences = getSharedPreferences("loggedIn",MODE_PRIVATE);
+                if (sharedPreferences.getBoolean("loggedIn",false)) {
+                    startActivity(new Intent(ForgotPasswordActivity.this, DashboardActivity.class));
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                } else {
+                    startActivity(new Intent(ForgotPasswordActivity.this, LoginActivity.class));
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);

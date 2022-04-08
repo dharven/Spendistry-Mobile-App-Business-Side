@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.shashank.spendistrybusiness.Constants.Global;
 import com.shashank.spendistrybusiness.Fragments.ManualInvoiceFragment;
 import com.shashank.spendistrybusiness.Fragments.ScanInvoiceFragment;
 import com.shashank.spendistrybusiness.R;
@@ -24,6 +25,7 @@ public class CreateInvoiceActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private ManualInvoiceFragment manualInvoiceFragment;
     private ScanInvoiceFragment scanInvoiceFragment;
+    private String parentActivity;
 //    private PagerAdapter pagerAdapter;
 
     @Override
@@ -39,6 +41,8 @@ public class CreateInvoiceActivity extends AppCompatActivity {
         }
         Intent intent = getIntent();
         final String ClientEmail = intent.getStringExtra("SCAN_RESULT");
+        String invoiceId = intent.getStringExtra("invoiceId");
+        String reportId = intent.getStringExtra("reportId");
         navigationView = findViewById(R.id.navigationViewInvoice);
         frameLayout = findViewById(R.id.frame);
         getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.cardBlue));
@@ -47,6 +51,9 @@ public class CreateInvoiceActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Bundle bundle = new Bundle();
         bundle.putString("SCAN_RESULT", ClientEmail);
+        bundle.putString("invoiceId", invoiceId);
+        bundle.putString("reportId", reportId);
+
         scanInvoiceFragment.setArguments(bundle);
         manualInvoiceFragment.setArguments(bundle);
         if (savedInstanceState == null) {
@@ -59,7 +66,6 @@ public class CreateInvoiceActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.page_1:
                         fragmentManager.beginTransaction().replace(R.id.frame, manualInvoiceFragment).commit();
-
                         return true;
                     case R.id.page_2:
                         fragmentManager.beginTransaction().remove(manualInvoiceFragment).add(R.id.frame, scanInvoiceFragment).addToBackStack("added").commit();
@@ -76,11 +82,22 @@ public class CreateInvoiceActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (manualInvoiceFragment.isVisible()) {
             super.onBackPressed();
+            Global.itemPricesArrayList.clear();
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
         } else {
             getSupportFragmentManager().beginTransaction().remove(scanInvoiceFragment).add(R.id.frame, manualInvoiceFragment).commit();
             navigationView.getMenu().getItem(0).setChecked(true);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            Global.itemPricesArrayList.clear();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

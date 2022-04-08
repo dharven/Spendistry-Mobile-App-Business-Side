@@ -16,7 +16,7 @@ public class Invoice {
     private ArrayList<ItemPrices> totalItems;
 
     @SerializedName("invoiceNumber")
-    private String invoiceNumber;
+    private int invoiceNumber;
 
     @SerializedName("invoiceDate")
     private String Date;
@@ -80,10 +80,13 @@ public class Invoice {
     @Ignore
     private boolean isExpanded;
 
-    public Invoice(ArrayList<ItemPrices> totalItems, String invoiceNumber,
+    @Ignore
+    private Invoice invoices;
+
+    public Invoice(ArrayList<ItemPrices> totalItems, int invoiceNumber,
                    double total, String title, String description, double discount, double finalPrice,double IGST,
                    double CGST, double SGST, double UTGST, String sentTo, String sentBy, String paymentMode,
-                   double roundOff, String city) {
+                   double roundOff, String city, String businessAddress, String  gstNumber, String businessContactNo) {
 
         this.totalItems = totalItems;
         this.invoiceNumber = invoiceNumber;
@@ -101,10 +104,13 @@ public class Invoice {
         PaymentMode = paymentMode;
         this.roundOff = roundOff;
         this.city = city;
+        this.businessAddress = businessAddress;
+        this.businessContactNo = businessContactNo;
+        this.gstNumber = gstNumber;
     }
 
     @Ignore
-    public Invoice(ArrayList<ItemPrices> totalItems, String invoiceNumber,
+    public Invoice(ArrayList<ItemPrices> totalItems, int invoiceNumber,
                    double total, String title, String description, double discount, double finalPrice,double IGST,
                    double CGST, double SGST, double UTGST, String sentTo, String sentBy, String paymentMode,
                    double roundOff, String city, String invoiceTime, String businessName, String businessAddress,
@@ -132,6 +138,20 @@ public class Invoice {
         this.businessContactNo = businessContactNo;
         this.gstNumber = gstNumber;
     }
+
+    public Invoice(ArrayList<ItemPrices> totalItems, double total, double discount, double IGST, double CGST, double SGST, double UTGST, String paymentMode,double finalPrice, double roundOff) {
+        this.totalItems = totalItems;
+        Total = total;
+        this.discount = discount;
+        this.IGST = IGST;
+        this.CGST = CGST;
+        this.SGST = SGST;
+        this.UTGST = UTGST;
+        PaymentMode = paymentMode;
+        this.finalPrice = finalPrice;
+        this.roundOff = roundOff;
+    }
+
 
     public boolean isExpanded() {
         return isExpanded;
@@ -197,11 +217,11 @@ public class Invoice {
         this.totalItems = totalItems;
     }
 
-    public String getInvoiceNumber() {
+    public int getInvoiceNumber() {
         return invoiceNumber;
     }
 
-    public void setInvoiceNumber(String invoiceNumber) {
+    public void setInvoiceNumber(int invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
     }
 

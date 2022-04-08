@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
 import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.Vendor;
@@ -26,4 +27,7 @@ public interface dashboardDao {
 
     @Query("DELETE FROM dashboard")
     void deleteAll();
+
+    @Update
+    void updateCurrentInvoiceNumber(Dashboard dashboard);
 }

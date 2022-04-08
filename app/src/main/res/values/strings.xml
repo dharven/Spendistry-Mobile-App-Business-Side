@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">SpendistryBusiness</string>
+    <string name="API">AIzaSyDj1NK-n1WqK5xz7d8THp8n4ViC5Z519sA</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="log_in">Log In</string>
@@ -23,4 +24,11 @@
     <string name="qnt"><u><b>Qnt</b></u></string>
     <string name="price"><u><b>Price</b></u></string>
     <string name="total"><u><b>Total</b></u></string>
+
+    <string-array name="payment_mode">
+        <item>Cash</item>
+        <item>Card</item>
+        <item>Cheque</item>
+        <item>UPI</item>
+    </string-array>
 </resources>

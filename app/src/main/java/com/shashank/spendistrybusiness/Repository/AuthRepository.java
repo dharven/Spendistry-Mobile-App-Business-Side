@@ -2,6 +2,7 @@ package com.shashank.spendistrybusiness.Repository;
 
 
 import android.app.Application;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,11 +32,17 @@ import com.shashank.spendistrybusiness.SpendistryAPI.SpendistryAPI;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Multipart;
 
 public class AuthRepository {
     private Application application;
@@ -56,10 +63,17 @@ public class AuthRepository {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
 //                    Toast.makeText(application, "notWorking: " + response.code(), Toast.LENGTH_SHORT).show();
-                    Snackbar snackbar = Snackbar.make(linearLayout, "Email or Password is incorrect", Snackbar.LENGTH_SHORT);
-                    snackbar.setTextColor(Color.WHITE);
-                    snackbar.setBackgroundTint(context.getResources().getColor(R.color.red));
-                    snackbar.show();
+                    if (response.code() == 401 || response.code() == 403) {
+                        Snackbar snackbar = Snackbar.make(linearLayout, "Email or Password is incorrect", Snackbar.LENGTH_SHORT);
+                        snackbar.setTextColor(Color.WHITE);
+                        snackbar.setBackgroundTint(context.getResources().getColor(R.color.red));
+                        snackbar.show();
+                    }else {
+                        Snackbar snackbar = Snackbar.make(linearLayout, "Something went wrong", Snackbar.LENGTH_SHORT);
+                        snackbar.setTextColor(Color.WHITE);
+                        snackbar.setBackgroundTint(context.getResources().getColor(R.color.red));
+                        snackbar.show();
+                    }
                     return;
                 }
                 auth.setValue(response.headers().get("auth-token-vendor"));
@@ -73,7 +87,70 @@ public class AuthRepository {
         return auth;
     }
 
-    public MutableLiveData<Auth> createAccount(String email, String password) {
+    public void setNewProfilePic(RelativeLayout relativeLayout, String email,MultipartBody.Part part) {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        api = new Retrofit.Builder().baseUrl(Constants.URL_API).client(client).build().create(SpendistryAPI.class);
+        retrofit2.Call<okhttp3.ResponseBody> req = api.setNewProfilePic(email,part);
+        req.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                // Do Something
+                if (!response.isSuccessful()) {
+                    Snackbar snackbar = Snackbar.make(relativeLayout, "Something went wrong!!", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
+                    snackbar.show();
+                    return;
+                }
+                Snackbar snackbar = Snackbar.make(relativeLayout, "Profile picture updated", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(application.getResources().getColor(R.color.cardBlue));
+                snackbar.show();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                Snackbar snackbar = Snackbar.make(relativeLayout, "Something went wrong!!", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
+                snackbar.show();
+            }
+        });
+
+    }
+
+    public void deleteProfilePic(RelativeLayout layout,String id){
+        Call<String> call = api.deleteProfilePic(id);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!response.isSuccessful()) {
+                    if (response.code() == 404) {
+                        Snackbar snackbar = Snackbar.make(layout, "Profile picture not found", Snackbar.LENGTH_SHORT);
+                        snackbar.setTextColor(Color.WHITE);
+                        snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
+                        snackbar.show();
+                    }
+                    return;
+                }
+                Snackbar snackbar = Snackbar.make(layout, "Profile picture deleted", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(application.getResources().getColor(R.color.cardBlue));
+                snackbar.show();
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(application, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public MutableLiveData<Auth> createAccount(LinearLayout linearLayout,String email, String password) {
         MutableLiveData<Auth> auth = new MutableLiveData<>();
         Auth auth1 = new Auth(email, password);
         Call<Auth> call = api.createAccount(auth1);
@@ -81,7 +158,16 @@ public class AuthRepository {
             @Override
             public void onResponse(Call<Auth> call, Response<Auth> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(application, "account not created " + response.code(), Toast.LENGTH_SHORT).show();
+                    if (response.code() == 400) {
+                        Snackbar snackbar = Snackbar.make(linearLayout, "Email already exists", Snackbar.LENGTH_LONG);
+                        snackbar.setTextColor(Color.WHITE);
+                        snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
+                        snackbar.show();
+                    }
+                    Snackbar snackbar = Snackbar.make(linearLayout, "Error in creation of account", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
+                    snackbar.show();
                     return;
                 }
                 auth.setValue(response.body());
@@ -227,6 +313,36 @@ public class AuthRepository {
         });
     }
 
+    public void newOTP(LinearLayout linearLayout,String email){
+        OTP otp1 = new OTP(email);
+        Call<String> call = api.newOTP(otp1);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!response.isSuccessful()) {
+                    Snackbar snackbar = Snackbar.make(linearLayout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
+                    snackbar.show();
+                    return;
+                }
+                Snackbar snackbar = Snackbar.make(linearLayout, "OTP sent!", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.cardBlue));
+                snackbar.show();
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Snackbar snackbar = Snackbar.make(linearLayout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
+                snackbar.show();
+            }
+        });
+    }
+
     public MutableLiveData<String> verifyOTP(LinearLayout linearLayout,String email,int otp){
         OTP otp1 = new OTP(email,otp);
         MutableLiveData<String> mutableLiveData = new MutableLiveData<>();
@@ -240,6 +356,8 @@ public class AuthRepository {
                         snackbar = Snackbar.make(linearLayout, "Incorrect OTP!", Snackbar.LENGTH_SHORT);
                     } else {
                         snackbar = Snackbar.make(linearLayout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+//                        snackbar = Snackbar.make(linearLayout, response.code(), Snackbar.LENGTH_SHORT);
+
                     }
                     snackbar.setTextColor(Color.WHITE);
                     snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
@@ -252,6 +370,7 @@ public class AuthRepository {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Snackbar snackbar = Snackbar.make(linearLayout, "Something went wrong!", Snackbar.LENGTH_SHORT);
+//                Snackbar snackbar = Snackbar.make(linearLayout, t.getMessage(), Snackbar.LENGTH_SHORT);
                 snackbar.setTextColor(Color.WHITE);
                 snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
                 snackbar.show();
@@ -262,7 +381,6 @@ public class AuthRepository {
 
     public MutableLiveData<Vendor> updateProfile(RelativeLayout layout,String email, Vendor vendor){
         MutableLiveData<Vendor> mutableLiveData = new MutableLiveData<>();
-        Toast.makeText(application, ""+email, Toast.LENGTH_SHORT).show();
         Call<Vendor> call = api.updateProfile(email,vendor);
         call.enqueue(new Callback<Vendor>() {
             @Override
@@ -274,20 +392,22 @@ public class AuthRepository {
                     snackbar.show();
                     return;
                 }
-
                 Snackbar snackbar = Snackbar.make(layout, "Profile Updated!", Snackbar.LENGTH_SHORT);
                 snackbar.setTextColor(Color.WHITE);
-                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.windowBlue));
+                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.cardBlue));
                 snackbar.show();
                 mutableLiveData.setValue(response.body());
             }
 
             @Override
             public void onFailure(Call<Vendor> call, Throwable t) {
-                Snackbar snackbar = Snackbar.make(layout, "Something went wrong!", Snackbar.LENGTH_SHORT);
-                snackbar.setTextColor(Color.WHITE);
-                snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
-                snackbar.show();
+
+                if (t.getMessage().startsWith("Unable to resolve host")) {
+                    Snackbar snackbar = Snackbar.make(layout, "Internet is not available!", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(application, R.color.red));
+                    snackbar.show();
+                }
             }
         });
         return mutableLiveData;

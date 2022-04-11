@@ -421,6 +421,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         intent.setType("image/*");
                         intent.setAction(Intent.ACTION_PICK);
                         startActivityForResult(intent, 23);
+                        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     }
 
                     @Override
@@ -436,6 +437,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 Uri uri = Uri.fromParts("package", getPackageName(), null);
                                 intent.setData(uri);
                                 startActivity(intent);
+                                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                             }
                         });
                         snackbar.setActionTextColor(Color.WHITE);
@@ -455,6 +457,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 Uri uri = Uri.fromParts("package", getPackageName(), null);
                                 intent.setData(uri);
                                 startActivity(intent);
+                                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                             }
                         });
                         snackbar.setActionTextColor(Color.WHITE);

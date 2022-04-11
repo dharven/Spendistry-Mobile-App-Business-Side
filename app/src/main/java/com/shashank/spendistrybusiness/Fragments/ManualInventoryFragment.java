@@ -72,9 +72,14 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
         layoutManager = new LinearLayoutManager(requireContext());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
-        LinearLayout linearLayout = rootView.findViewById(R.id.manual_inventory);
+        LinearLayout linearLayout = rootView.findViewById(R.id.manual_invoice);
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(requireContext(),R.color.mainBlue),ContextCompat.getColor(requireContext(),R.color.cardBlue), ContextCompat.getColor(requireContext(),R.color.windowBlue));
         swipeRefreshLayout.setRefreshing(true);
+        try {
+            inventoryViewModel.setInventory(email, new ArrayList<>());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         inventoryViewModel.getInventory(email).observe(getViewLifecycleOwner(), new Observer<List<ItemPrices>>() {
             @Override
@@ -119,6 +124,7 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
                     inventoryViewModel.setInventory(email, itemPrices);
                     itemPrice.setText("");
                     itemName.setText("");
+
 
                 }
             }

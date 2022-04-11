@@ -49,10 +49,12 @@ public abstract class SpendistryBusinessDB extends RoomDatabase {
 
     static class AddItemsAsyncTask extends AsyncTask<Void, Void, Void> {
         private final InventoryDao inventoryDao;
+        private final dashboardDao dashboardDao;
 
 
         AddItemsAsyncTask(SpendistryBusinessDB businessDB) {
             inventoryDao = businessDB.inventoryDao();
+            dashboardDao = businessDB.dashboardDao();
             Log.i("Test", "PopulateAsyncTask: test");
 
         }
@@ -60,6 +62,7 @@ public abstract class SpendistryBusinessDB extends RoomDatabase {
         @Override
         protected Void doInBackground(Void... voids) {
             inventoryDao.deleteAll();
+            dashboardDao.deleteAll();
             Log.w("main123", "doInBackground: bg working");
             return null;
         }

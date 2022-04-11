@@ -2,6 +2,7 @@ package com.shashank.spendistrybusiness.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 
@@ -41,6 +43,18 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.MyVi
     public void onBindViewHolder(@NonNull InventoryAdapter.MyViewHolder holder, int position) {
             holder.itemPrice.setText("₹"+itemPricesList.get(position).getPrice());
             holder.itemName.setText(itemPricesList.get(position).getItemName());
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Snackbar snackbar = Snackbar.make(activity.findViewById(R.id.manual_invoice), "Swipe Left/Right to take action", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(activity.getResources().getColor(R.color.mainBlue));
+                snackbar.show();
+                return true;
+            }
+        });
+
     }
 
     @Override

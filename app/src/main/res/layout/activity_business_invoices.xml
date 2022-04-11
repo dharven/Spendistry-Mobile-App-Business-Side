@@ -9,34 +9,42 @@
     android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/action_bar_inventory_card"
         style="@style/editPageCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/mainBlue"
+        android:id="@+id/action_bar_inventory_card"
+        android:layout_alignParentTop="true"
         app:cardElevation="16dp"
         app:strokeWidth="0dp">
 
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar_issued_invoices"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
-            android:theme="@style/ActionBarStyle">
+            android:theme="@style/Theme.SpendistryBusiness.AppBarOverlay">
 
-            <TextView
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_issued_invoices"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="35dp"
-                android:gravity="center"
-                android:text="Issued Invoices"
-                android:textColor="@color/windowBlue"
-                android:textSize="30sp" />
-        </com.google.android.material.appbar.MaterialToolbar>
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:menu="@menu/invoice_search"
+                app:popupTheme="@style/popupMenuBackground"
+                app:titleTextColor="@color/mainBlue" >
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Invoices"
+                    android:textColor="@color/windowBlue"
+                    android:textSize="30sp" />
+            </androidx.appcompat.widget.Toolbar>
 
+
+        </com.google.android.material.appbar.AppBarLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout_issued"

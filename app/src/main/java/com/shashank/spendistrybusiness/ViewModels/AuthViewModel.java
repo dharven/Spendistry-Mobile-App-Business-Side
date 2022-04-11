@@ -52,6 +52,7 @@ public class AuthViewModel extends AndroidViewModel {
     public void newOTP(LinearLayout linearLayout,String email){
         authRepository.newOTP(linearLayout,email);
     }
+
     public MutableLiveData<Auth> deleteAccount(String email) {
         return authRepository.deleteAccount(email);
     }

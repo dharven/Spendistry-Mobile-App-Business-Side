@@ -3,6 +3,7 @@ package com.shashank.spendistrybusiness.Adapters;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 
@@ -50,12 +53,36 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHo
             holder.itemQuantity.setText("1");
             holder.itemTotal.setText("₹"+itemPricesList.get(position).getPrice());
         }
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Snackbar snackbar = Snackbar.make(activity.findViewById(R.id.manual_invoice), "Swipe left to take action", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(activity.getResources().getColor(R.color.mainBlue));
+                snackbar.show();
+                return true;
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return itemPricesList.size();
     }
+
+    public void searchQuery(String query, List<ItemPrices> pricesList) {
+        List<ItemPrices> newList = new ArrayList<>();
+        for (ItemPrices itemPrice : pricesList) {
+            if (itemPrice.getItemName().toLowerCase().contains(query.toLowerCase())) {
+                newList.add(itemPrice);
+            }
+        }
+        this.itemPricesList = newList;
+        notifyDataSetChanged();
+    }
+
+
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView itemName;

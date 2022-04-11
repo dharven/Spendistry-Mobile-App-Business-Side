@@ -50,6 +50,9 @@ public class InvoiceViewModel extends AndroidViewModel {
     public LiveData<List<ItemPrices>> getItemPrices(String email) {
         return inventoryRepository.getInventory(email);
     }
+    public void setInventory(String email,ArrayList<ItemPrices> itemPricesList) {
+        inventoryRepository.setInventory(email,itemPricesList);
+    }
 
     public LiveData<BusinessInvoices> getBusinessInvoices(String email){
         return invoiceRepository.getBusinessInvoices(email);

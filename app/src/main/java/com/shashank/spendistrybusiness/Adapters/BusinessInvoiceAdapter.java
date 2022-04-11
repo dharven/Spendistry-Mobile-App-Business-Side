@@ -29,6 +29,7 @@ import com.shashank.spendistrybusiness.DialogFragment.DeleteDialog;
 import com.shashank.spendistrybusiness.DialogFragment.EditDialog;
 import com.shashank.spendistrybusiness.Fragments.ManualInventoryFragment;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
+import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InvoiceViewModel;
 
@@ -39,8 +40,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -56,7 +59,14 @@ public class BusinessInvoiceAdapter extends RecyclerView.Adapter<BusinessInvoice
     private LifecycleOwner lifecycleOwner;
 
     public BusinessInvoiceAdapter(List<Invoice> itemPricesList, Context context, Activity activity, LifecycleOwner lifecycleOwner, LinearLayout layout, InvoiceViewModel invoiceViewModel) {
-        Collections.reverse(itemPricesList);
+        itemPricesList.sort(Comparator.comparingInt(Invoice::getInvoiceNumber).reversed());
+        //convert to data
+        for (Invoice invoice : itemPricesList) {
+            Date time = new Date(Long.parseLong(invoice.getInvoiceTime()));
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy 'Time: ' hh:mm:ss aaa", java.util.Locale.getDefault());
+            String date = sdf.format(time);
+            invoice.setDate(date);
+        }
         this.invoiceList = itemPricesList;
         this.context = context;
         this.activity = activity;
@@ -103,10 +113,7 @@ public class BusinessInvoiceAdapter extends RecyclerView.Adapter<BusinessInvoice
         holder.description.setText(invoiceList.get(position).getDescription());
         //string to date
 //        Instant instant = Instant.ofEpochSecond( Long.parseLong(invoiceList.get(position).getInvoiceTime()));
-        Date time = new Date(Long.parseLong(invoiceList.get(position).getInvoiceTime()));
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy 'Time: ' hh:mm:ss aaa", java.util.Locale.getDefault());
-        String date = sdf.format(time);
-        holder.invoiceTime.setText("Date:  " + date);
+        holder.invoiceTime.setText("Date:  " + invoiceList.get(position).getDate());
         holder.invoiceAddress.setText("BusinessAddress: " + invoiceList.get(position).getBusinessAddress());
         holder.notice.setText("SUBJECT TO " + invoiceList.get(position).getCity().toUpperCase() + " JURISDICTION ONLY");
         holder.gstNo.setText("GST No.: " + invoiceList.get(position).getGstNumber());
@@ -120,7 +127,7 @@ public class BusinessInvoiceAdapter extends RecyclerView.Adapter<BusinessInvoice
             @Override
             public void onClick(View view) {
 
-                invoiceViewModel.getPDF(invoice.getSentBy(), invoice.getSentTo(), invoice.getInvoiceId()).observe(lifecycleOwner, new Observer<ResponseBody>() {
+                invoiceViewModel.getPDF(invoice.getSentTo(), invoice.getSentBy(), invoice.getInvoiceId()).observe(lifecycleOwner, new Observer<ResponseBody>() {
                     @Override
                     public void onChanged(ResponseBody responseBody) {
                         try {
@@ -200,6 +207,23 @@ public class BusinessInvoiceAdapter extends RecyclerView.Adapter<BusinessInvoice
     @Override
     public int getItemCount() {
         return invoiceList.size();
+    }
+
+    public List<Invoice> getList(){
+        return invoiceList;
+    }
+
+    public void searchQuery(String query, List<Invoice> pricesList) {
+        List<Invoice> newList = new ArrayList<>();
+        for (Invoice invoice : pricesList) {
+            if (invoice.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                newList.add(invoice);
+            } else if (invoice.getDate().toLowerCase().contains(query.toLowerCase())) {
+                newList.add(invoice);
+            }
+        }
+        this.invoiceList = newList;
+        notifyDataSetChanged();
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {

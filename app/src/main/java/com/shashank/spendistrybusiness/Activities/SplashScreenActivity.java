@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.shashank.spendistrybusiness.Constants.Constants;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.AuthViewModel;
 
@@ -22,9 +23,7 @@ import java.net.InetAddress;
 
 public class SplashScreenActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
-    private InetAddress ipAddr = null;
     private MotionLayout motionLayout;
-    boolean internetAvailable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         //change background colour from getWindow()
         getWindow().setBackgroundDrawableResource(R.color.mainBlue);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        isInternetAvailable();
         motionLayout.addTransitionListener(new MotionLayout.TransitionListener() {
             @Override
             public void onTransitionStarted(MotionLayout motionLayout, int startId, int endId) {
@@ -53,7 +51,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
             @Override
             public void onTransitionCompleted(MotionLayout motionLayout, int currentId) {
-                if (internetAvailable) {
+                if (isConnected()) {
                     sharedPreferences.edit().putBoolean("internet", true).apply();
                     if (sharedPreferences.getBoolean("loggedIn", false)) {
                         String email = sharedPreferences.getString("email", "not");
@@ -87,26 +85,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         });
     }
 
-    public void isInternetAvailable() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ipAddr = InetAddress.getByName("google.com");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Post the result to the main thread
-                        internetAvailable = ipAddr != null;
-                    }
-                });
-            }
-        }).start();
-
+    public boolean isConnected()  {
+        try {
+            String command = "";
+            command = "ping -c 1 " + Constants.URL_API.replace("https://", "").replace("/", "");
+            return Runtime.getRuntime().exec(command).waitFor() == 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }

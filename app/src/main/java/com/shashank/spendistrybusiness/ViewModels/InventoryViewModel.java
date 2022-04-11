@@ -22,7 +22,7 @@ public class InventoryViewModel extends AndroidViewModel {
         inventoryRepository = new InventoryRepository(application);
     }
 
-    public void setInventory(String email, ArrayList<ItemPrices> itemPrices){
+    public void setInventory(String email, ArrayList<ItemPrices> itemPrices) {
        inventoryRepository.setInventory(email,itemPrices);
     }
 

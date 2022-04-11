@@ -98,7 +98,6 @@ public class ManualInvoiceFragment extends Fragment {
         linearLayout = rootView.findViewById(R.id.manual_invoice);
         itemQuantity.setText("1");
         Button addItem = rootView.findViewById(R.id.add_btn_invoice);
-        sharedPreferences = requireContext().getSharedPreferences("loggedIn", MODE_PRIVATE);
         Bundle bundle = getArguments();
         layoutManager = new LinearLayoutManager(requireContext());
         layoutManager.setReverseLayout(true);
@@ -111,7 +110,6 @@ public class ManualInvoiceFragment extends Fragment {
             cancel.setText("Reject");
             invoiceId = bundle.getString("invoiceId");
             reportId = bundle.getString("reportId");
-            businessEmail = sharedPreferences.getString("email", "");
             invoiceViewModel.getReportedInvoice(email, businessEmail, invoiceId).observe(requireActivity(), new Observer<List<ItemPrices>>() {
                 @Override
                 public void onChanged(List<ItemPrices> itemPrices) {
@@ -131,7 +129,6 @@ public class ManualInvoiceFragment extends Fragment {
                 invoiceList.setAdapter(invoiceAdapter);
             }
         });
-
         SearchItemDialog();
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -239,6 +236,7 @@ public class ManualInvoiceFragment extends Fragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             Intent intent = new Intent(requireContext(), MainActivity.class);
                             startActivity(intent);
+                            requireActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                         }
                     });
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -332,7 +330,6 @@ public class ManualInvoiceFragment extends Fragment {
                     double utgst_total = (discount_total * (utgst_amount / 100.0));
                     double final_total = discount_total + utgst_total + cgst_total + sgst_total + igst_total;
 
-
 //                    double finalPrice = total - ;
                     if (send_btn.getText().toString().toLowerCase().equals("send")) {
                         Invoice invoice = new Invoice(invoiceAdapter.getItemPricesList(), invoiceNumber, total, businessName, description
@@ -341,7 +338,7 @@ public class ManualInvoiceFragment extends Fragment {
                         ArrayList<Invoice> invoiceList = new ArrayList<>();
                         invoiceList.add(invoice);
                         BusinessInvoices businessArray = new BusinessInvoices(businessEmail, invoiceList);
-                        if (invoice.getTitle() == null) {
+                        if (invoice.getTotalItems().size() > 0) {
                             invoiceViewModel.addInvoice(email, businessEmail, businessArray);
                             invoiceViewModel.setInvoice(new ItemPrices("", null, null, null, null));
                             invoiceViewModel.updateInvoiceNumber(businessEmail, invoiceNumber + 1).observe(requireActivity(), new Observer<Integer>() {
@@ -349,6 +346,8 @@ public class ManualInvoiceFragment extends Fragment {
                                 public void onChanged(Integer s) {
                                     invoiceNumber = s;
                                     dialog.dismiss();
+                                    startActivity(new Intent(requireActivity(), DashboardActivity.class));
+                                    requireActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                                 }
                             });
                         } else {
@@ -467,7 +466,14 @@ public class ManualInvoiceFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        sharedPreferences = requireContext().getSharedPreferences("loggedIn", MODE_PRIVATE);
+        businessEmail = sharedPreferences.getString("email", "");
         invoiceViewModel = new ViewModelProvider(this).get(InvoiceViewModel.class);
+        try {
+            invoiceViewModel.setInventory(businessEmail, new ArrayList<>());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -475,7 +481,6 @@ public class ManualInvoiceFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
 
-        businessEmail = sharedPreferences.getString("email", "");
 
 
         invoiceViewModel.getDashBoardFromDB(businessEmail).observe(getViewLifecycleOwner(), new Observer<Dashboard>() {

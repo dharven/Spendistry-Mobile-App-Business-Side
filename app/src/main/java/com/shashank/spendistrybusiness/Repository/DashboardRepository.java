@@ -75,6 +75,7 @@ public class DashboardRepository {
 
                         businessDB.dashboardDao().getDashboardData(email).observeForever(dashboard -> {
                             dashboardData.setValue(dashboard);
+
                         });
                     }
                 }
@@ -86,6 +87,8 @@ public class DashboardRepository {
     public void deleteInventory(){
         new deleteInventory(businessDB).execute();
     }
+
+    public void deleteDashboard(){ new deleteDashboard(businessDB).execute(); }
 
     public LiveData<Dashboard> getDashBoardFromDB(String email) {
         return businessDB.dashboardDao().getDashboardData(email);
@@ -110,7 +113,6 @@ public class DashboardRepository {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            Toast.makeText(application, "dashboard added", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -124,6 +126,20 @@ public class DashboardRepository {
         @Override
         protected Void doInBackground(Void... voids) {
             inventoryDao.deleteAll();
+            return null;
+        }
+    }
+
+    static class deleteDashboard extends AsyncTask<Void, Void, Void> {
+        private final dashboardDao dashboardDao;
+
+        deleteDashboard(SpendistryBusinessDB businessDB) {
+            dashboardDao = businessDB.dashboardDao();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            dashboardDao.deleteAll();
             return null;
         }
     }

@@ -27,8 +27,15 @@
         <item name="android:colorAccent">@color/mainBlue</item>
     </style>
 
+    <style name="Theme.SpendistryBusiness.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+
     <style name="cardViewTheme" parent="@style/Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/cardBlue</item>
+    </style>
+    <style name="Theme.SpendistryBusiness.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="popupMenuBackground" parent="@style/Theme.SpendistryBusiness.PopupOverlay">
+        <item name="titleEnabled">false</item>
     </style>
 
     <style name="dashBoardCard" parent="@style/Widget.MaterialComponents.CardView">

@@ -6,10 +6,14 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,13 +23,18 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shashank.spendistrybusiness.Adapters.BusinessInvoiceAdapter;
+import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InvoiceViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class BusinessInvoicesActivity extends AppCompatActivity {
     private BusinessInvoiceAdapter invoiceAdapter;
+    private TextView toolbarTitle;
+    private List<Invoice> invoiceList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +47,7 @@ public class BusinessInvoicesActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("");
         }
+        toolbarTitle = findViewById(R.id.toolbar_title);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout_issued);
         RecyclerView recyclerView = findViewById(R.id.issued_invoices);
         InvoiceViewModel invoiceViewModel = new ViewModelProvider(this).get(InvoiceViewModel.class);
@@ -71,5 +81,34 @@ public class BusinessInvoicesActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.invoice_search, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search_bar).getActionView();
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
+                   toolbarTitle.setVisibility(View.VISIBLE);
+                } else {
+                    toolbarTitle.setVisibility(View.GONE);
+                    invoiceList = invoiceAdapter.getList();
+                }
+            }
+        });
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                invoiceAdapter.searchQuery(newText, invoiceList);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
 }

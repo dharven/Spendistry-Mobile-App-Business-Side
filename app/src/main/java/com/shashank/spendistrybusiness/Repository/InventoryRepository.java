@@ -41,8 +41,9 @@ public class InventoryRepository {
         new InsertAsyncTask(businessDB).execute(itemPrices);
     }
 
-    public void setInventory(String email, ArrayList<ItemPrices> prices) {
-        Call<ItemPricesArrayList> call = api.updateInventory(email, new ItemPricesArrayList(prices));
+    public void setInventory(String email, ArrayList<ItemPrices> prices){
+        if (prices.size() > 0) {
+            Call<ItemPricesArrayList> call = api.updateInventory(email, new ItemPricesArrayList(prices));
             call.enqueue(new Callback<ItemPricesArrayList>() {
                 @Override
                 public void onResponse(Call<ItemPricesArrayList> call, Response<ItemPricesArrayList> response) {
@@ -54,39 +55,35 @@ public class InventoryRepository {
                         insertItemPrices(prices);
                     }
                 }
-                @Override
-                public void onFailure(Call<ItemPricesArrayList> call, Throwable t) {
-                }
-            });
-    }
-
-    public LiveData<List<ItemPrices>> getInventory(String email) {
-        SharedPreferences sharedPreferences = application.getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("hasData", true)) {
-            Call<ItemPricesArrayList> call = api.getInventory(email);
-            call.enqueue(new Callback<ItemPricesArrayList>() {
-                @Override
-                public void onResponse(Call<ItemPricesArrayList> call, Response<ItemPricesArrayList> response) {
-                    if (!response.isSuccessful()) {
-                        Toast.makeText(application, "notWorking: " + response.code(), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    mutableLiveData.setValue(response.body().getItemPrices());
-                    new AddAllDataAsyncTask(businessDB).execute(response.body().getItemPrices());
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("hasData", false);
-                    editor.apply();
-                }
 
                 @Override
                 public void onFailure(Call<ItemPricesArrayList> call, Throwable t) {
-
+                    Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-           return businessDB.inventoryDao().getAllItems();
+                    Call<ItemPricesArrayList> call = api.getInventory(email);
+                    call.enqueue(new Callback<ItemPricesArrayList>() {
+                        @Override
+                        public void onResponse(Call<ItemPricesArrayList> call, Response<ItemPricesArrayList> response) {
+                            if (response.body() != null) {
+                                new AddAllDataAsyncTask(businessDB).execute(response.body().getItemPrices());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ItemPricesArrayList> call, Throwable t) {
+                            if (t.getMessage().contains("Unable to resolve host")) {
+                                Toast.makeText(application, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
         }
-        return mutableLiveData;
+    }
+
+
+    public LiveData<List<ItemPrices>> getInventory(String email) {
+        return businessDB.inventoryDao().getAllItems();
     }
 
     public void deleteElement(String email, String itemId) {

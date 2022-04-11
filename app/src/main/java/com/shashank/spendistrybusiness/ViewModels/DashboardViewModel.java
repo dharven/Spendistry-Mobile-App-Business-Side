@@ -26,4 +26,8 @@ public class DashboardViewModel extends AndroidViewModel {
     public void deleteInventory(){
         dashboardRepository.deleteInventory();
     }
+
+    public void deleteDashboard(){
+        dashboardRepository.deleteDashboard();
+    }
 }

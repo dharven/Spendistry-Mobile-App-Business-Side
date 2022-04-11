@@ -226,6 +226,7 @@ public class DashboardActivity extends AppCompatActivity {
                         Intent intent = new Intent(DashboardActivity.this, BusinessInvoicesActivity.class);
                         intent.putExtra("email", email);
                         startActivity(intent);
+                        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     } else {
                         Snackbar snackbar = Snackbar.make(linearLayout, "No Invoices Available", Snackbar.LENGTH_SHORT);
                         snackbar.setTextColor(Color.WHITE);
@@ -286,6 +287,7 @@ public class DashboardActivity extends AppCompatActivity {
                 return true;
             case R.id.logout_dash:
                 dashboardViewModel.deleteInventory();
+                dashboardViewModel.deleteDashboard();
                 SharedPreferences sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
                 sharedPreferences.edit().putBoolean("loggedIn", false).apply();
                 sharedPreferences.edit().putBoolean("hasData", true).apply();

@@ -7,6 +7,7 @@ import androidx.room.Ignore;
 
 import com.google.gson.annotations.SerializedName;
 
+@SuppressWarnings("ALL")
 public class Vendor implements Parcelable {
 
     @SerializedName("fname")

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@SuppressWarnings("ALL")
 @Entity(tableName = "business_invoices")
 public class BusinessInvoices {
     @PrimaryKey

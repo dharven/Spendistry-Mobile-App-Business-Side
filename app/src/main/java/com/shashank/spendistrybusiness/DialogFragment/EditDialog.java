@@ -24,10 +24,10 @@ import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InventoryViewModel;
 
+@SuppressWarnings("ALL")
 public class EditDialog extends DialogFragment {
 
     private static final String TAG = "EditDialog";
-    private final Bundle b = new Bundle();
 
     public interface OnEditConfirmationListener {
         void sendEditConfirmation(boolean send);
@@ -69,23 +69,17 @@ public class EditDialog extends DialogFragment {
         //
         InventoryViewModel inventoryViewModel = new ViewModelProvider(requireActivity()).get(InventoryViewModel.class);
         //
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (frag.equals("scan")) {
-                    mOnSentListener.sendEditConfirmation(true);
-                }
-                inventoryViewModel.updateElement(emailString, id, new ItemPrices(id,barcodeString, emailString,itemName.getText().toString(), itemPrice.getText().toString()));
-                requireDialog().dismiss();
+        update.setOnClickListener(view -> {
+            if (frag.equals("scan")) {
+                mOnSentListener.sendEditConfirmation(true);
             }
+            inventoryViewModel.updateElement(emailString, id, new ItemPrices(id,barcodeString, emailString,itemName.getText().toString(), itemPrice.getText().toString()));
+            requireDialog().dismiss();
         });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mOnSentListener.sendEditConfirmation(true);
-                requireDialog().dismiss();
-            }
+        cancel.setOnClickListener(view -> {
+            mOnSentListener.sendEditConfirmation(true);
+            requireDialog().dismiss();
         });
 
         return rootView;

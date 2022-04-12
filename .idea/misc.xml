@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1145" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable-v24/ic_return.xml" value="0.115" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/background.xml" value="0.2405" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/background_highlighted.xml" value="0.14" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/drawable/cursor_drawable.xml" value="0.2545" />
@@ -55,6 +56,7 @@
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/scan_entry_dialog.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/searchable_listview.xml" value="0.25" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/searchable_spinner.xml" value="0.2" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/layout/user_profile.xml" value="0.25" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/menu/bottom_navigation.xml" value="0.20512820512820512" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/menu/dashboard_menu.xml" value="0.25" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/SpendistryBusiness/app/src/main/res/menu/invoice_search.xml" value="0.25" />

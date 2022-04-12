@@ -1,29 +1,24 @@
 package com.shashank.spendistrybusiness.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.motion.widget.MotionLayout;
-import androidx.constraintlayout.utils.widget.MotionLabel;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.shashank.spendistrybusiness.Constants.Constants;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.AuthViewModel;
 
-import java.net.InetAddress;
-
+@SuppressLint("CustomSplashScreen")
+@SuppressWarnings("ALL")
 public class SplashScreenActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
-    private MotionLayout motionLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +26,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
-        motionLayout = findViewById(R.id.motionLayout);
+        MotionLayout motionLayout = findViewById(R.id.motionLayout);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
@@ -87,7 +82,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     public boolean isConnected()  {
         try {
-            String command = "";
+            String command;
             command = "ping -c 1 " + Constants.URL_API.replace("https://", "").replace("/", "");
             return Runtime.getRuntime().exec(command).waitFor() == 0;
         } catch (Exception e) {

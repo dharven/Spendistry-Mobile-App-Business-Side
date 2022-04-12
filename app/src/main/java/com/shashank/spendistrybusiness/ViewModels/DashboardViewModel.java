@@ -13,14 +13,16 @@ import com.shashank.spendistrybusiness.Repository.DashboardRepository;
 
 public class DashboardViewModel extends AndroidViewModel {
     DashboardRepository dashboardRepository;
+    LiveData<Dashboard> dashboard;
 
-    public DashboardViewModel(@NonNull Application application) {
+    public DashboardViewModel(@NonNull Application application,LinearLayout linearLayout, String email) {
         super(application);
         dashboardRepository = new DashboardRepository(application);
+        dashboard = dashboardRepository.getDashboardData(linearLayout,email);
     }
 
-    public LiveData<Dashboard> getDashboardData(LinearLayout linearLayout, String email){
-        return dashboardRepository.getDashboardData(linearLayout,email);
+    public LiveData<Dashboard> getDashboardData(){
+        return dashboard;
     }
 
     public void deleteInventory(){

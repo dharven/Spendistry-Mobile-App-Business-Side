@@ -2,6 +2,7 @@ package com.shashank.spendistrybusiness.Models.CreateInvoice;
 
 import com.google.gson.annotations.SerializedName;
 
+@SuppressWarnings("ALL")
 public class InvoicePatch {
 
     @SerializedName("invoices")

@@ -16,6 +16,10 @@
         android:id="@+id/Inventory"
         android:title="Create Inventory"
         app:showAsAction="never" />
+    <item android:id="@+id/Returned"
+        android:title="Returned Invoices"
+        android:icon="@drawable/ic_return"
+        app:showAsAction="never" />
     <item
         android:id="@+id/logout_dash"
         android:title="Logout"

@@ -7,6 +7,7 @@ import com.shashank.spendistrybusiness.Models.ItemPrices;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public class Invoice {
 
     @SerializedName("_id")

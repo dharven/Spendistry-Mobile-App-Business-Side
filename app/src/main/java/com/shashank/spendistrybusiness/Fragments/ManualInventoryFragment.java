@@ -4,23 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import org.bson.types.ObjectId;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,19 +12,30 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.shashank.spendistrybusiness.Activities.SplashScreenActivity;
 import com.shashank.spendistrybusiness.Adapters.InventoryAdapter;
 import com.shashank.spendistrybusiness.DialogFragment.DeleteDialog;
 import com.shashank.spendistrybusiness.DialogFragment.EditDialog;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
+import com.shashank.spendistrybusiness.ViewModelFactory.ViewModelFactory;
 import com.shashank.spendistrybusiness.ViewModels.InventoryViewModel;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
@@ -66,9 +61,10 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
         Button addItem = rootView.findViewById(R.id.add_btn);
         itemList = rootView.findViewById(R.id.rv_inventory);
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
-        inventoryViewModel = new ViewModelProvider(requireActivity()).get(InventoryViewModel.class);
         sharedPreferences = requireActivity().getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
         email = sharedPreferences.getString("email", "");
+
+        inventoryViewModel = new ViewModelProvider(requireActivity(), (ViewModelProvider.Factory) new ViewModelFactory(requireActivity().getApplication(), email)).get(InventoryViewModel.class);
         layoutManager = new LinearLayoutManager(requireContext());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
@@ -81,52 +77,39 @@ public class ManualInventoryFragment extends Fragment implements EditDialog.OnEd
             e.printStackTrace();
         }
 
-        inventoryViewModel.getInventory(email).observe(getViewLifecycleOwner(), new Observer<List<ItemPrices>>() {
-            @Override
-            public void onChanged(List<ItemPrices> itemPrices) {
-                inventoryAdapter = new InventoryAdapter(itemPrices, requireContext(), getActivity());
-                itemList.setLayoutManager(new LinearLayoutManager(requireContext()));
-                itemList.setAdapter(inventoryAdapter);
-                itemList.setLayoutManager(layoutManager);
+        inventoryViewModel.getInventory().observe(getViewLifecycleOwner(), itemPrices -> {
+            inventoryAdapter = new InventoryAdapter(itemPrices, requireContext(), getActivity());
+            itemList.setLayoutManager(new LinearLayoutManager(requireContext()));
+            itemList.setAdapter(inventoryAdapter);
+            itemList.setLayoutManager(layoutManager);
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            sharedPreferences.edit().putBoolean("hasData", true).apply();
+            new Handler().postDelayed(() -> {
+                inventoryViewModel.getInventory();
                 swipeRefreshLayout.setRefreshing(false);
-            }
+            },1500);
+
         });
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                sharedPreferences.edit().putBoolean("hasData", true).apply();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        inventoryViewModel.getInventory(email);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                },1500);
-
-            }
-        });
-
-        addItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ObjectId id = new ObjectId();
-                if (itemPrice.getText().toString().isEmpty() || itemName.getText().toString().isEmpty()) {
-                    Snackbar snackbar = Snackbar.make(linearLayout, "Please enter all details", Snackbar.LENGTH_SHORT);
-                    snackbar.setTextColor(Color.WHITE);
-                    snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(),R.color.red));
-                    snackbar.show();
-                } else {
-                    ArrayList<ItemPrices> itemPrices = new ArrayList<>();
-                    Toast.makeText(requireContext(), email, Toast.LENGTH_SHORT).show();
-                    ItemPrices item = new ItemPrices(id.toString(), email,"",itemName.getText().toString(), itemPrice.getText().toString());
-                    itemPrices.add(item);
-                    inventoryViewModel.setInventory(email, itemPrices);
-                    itemPrice.setText("");
-                    itemName.setText("");
+        addItem.setOnClickListener(view -> {
+            ObjectId id = new ObjectId();
+            if (itemPrice.getText().toString().isEmpty() || itemName.getText().toString().isEmpty()) {
+                Snackbar snackbar = Snackbar.make(linearLayout, "Please enter all details", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(),R.color.red));
+                snackbar.show();
+            } else {
+                ArrayList<ItemPrices> itemPrices = new ArrayList<>();
+                ItemPrices item = new ItemPrices(id.toString(), email,"",itemName.getText().toString(), itemPrice.getText().toString());
+                itemPrices.add(item);
+                inventoryViewModel.setInventory(email, itemPrices);
+                itemPrice.setText("");
+                itemName.setText("");
 
 
-                }
             }
         });
 

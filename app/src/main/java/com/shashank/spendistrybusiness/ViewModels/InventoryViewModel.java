@@ -16,18 +16,20 @@ import java.util.List;
 
 public class InventoryViewModel extends AndroidViewModel {
 
-    private InventoryRepository inventoryRepository;
-    public InventoryViewModel(@NonNull Application application) {
+    private final InventoryRepository inventoryRepository;
+    private final LiveData<List<ItemPrices>> itemPricesList;
+    public InventoryViewModel(@NonNull Application application,String email) {
         super(application);
         inventoryRepository = new InventoryRepository(application);
+        itemPricesList = inventoryRepository.getInventory(email);
     }
 
     public void setInventory(String email, ArrayList<ItemPrices> itemPrices) {
        inventoryRepository.setInventory(email,itemPrices);
     }
 
-    public LiveData<List<ItemPrices>> getInventory(String email){
-        return inventoryRepository.getInventory(email);
+    public LiveData<List<ItemPrices>> getInventory(){
+        return itemPricesList;
     }
 
     public void deleteElement(String email, String itemId){

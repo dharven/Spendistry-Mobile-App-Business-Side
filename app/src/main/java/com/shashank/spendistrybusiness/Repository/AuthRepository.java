@@ -2,7 +2,6 @@ package com.shashank.spendistrybusiness.Repository;
 
 
 import android.app.Application;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,14 +10,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.shashank.spendistrybusiness.Activities.ForgotPasswordActivity;
 import com.shashank.spendistrybusiness.Activities.LoginActivity;
 import com.shashank.spendistrybusiness.Constants.Constants;
 import com.shashank.spendistrybusiness.Models.Auth;
@@ -29,12 +26,10 @@ import com.shashank.spendistrybusiness.Models.Vendor;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.SpendistryAPI.SpendistryAPI;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -42,11 +37,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Multipart;
 
+@SuppressWarnings("ALL")
 public class AuthRepository {
-    private Application application;
-    private Gson gson = new GsonBuilder().setLenient().create();
+    private final Application application;
+    private final Gson gson = new GsonBuilder().setLenient().create();
     private Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.URL_API).addConverterFactory(GsonConverterFactory.create(gson)).build();
     SpendistryAPI api = retrofit.create(SpendistryAPI.class);
 
@@ -91,63 +86,72 @@ public class AuthRepository {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-        api = new Retrofit.Builder().baseUrl(Constants.URL_API).client(client).build().create(SpendistryAPI.class);
-        retrofit2.Call<okhttp3.ResponseBody> req = api.setNewProfilePic(email,part);
-        req.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                // Do Something
-                if (!response.isSuccessful()) {
+        try {
+            api = new Retrofit.Builder().baseUrl(Constants.URL_API).client(client).build().create(SpendistryAPI.class);
+            retrofit2.Call<okhttp3.ResponseBody> req = api.setNewProfilePic(email,part);
+            req.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    // Do Something
+                    if (!response.isSuccessful()) {
+                        Snackbar snackbar = Snackbar.make(relativeLayout, "Something went wrong!!", Snackbar.LENGTH_SHORT);
+                        snackbar.setTextColor(Color.WHITE);
+                        snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
+                        snackbar.show();
+                        return;
+                    }
+                    Snackbar snackbar = Snackbar.make(relativeLayout, "Profile picture updated", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(application.getResources().getColor(R.color.cardBlue));
+                    snackbar.show();
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    t.printStackTrace();
                     Snackbar snackbar = Snackbar.make(relativeLayout, "Something went wrong!!", Snackbar.LENGTH_SHORT);
                     snackbar.setTextColor(Color.WHITE);
                     snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
                     snackbar.show();
-                    return;
                 }
-                Snackbar snackbar = Snackbar.make(relativeLayout, "Profile picture updated", Snackbar.LENGTH_SHORT);
-                snackbar.setTextColor(Color.WHITE);
-                snackbar.setBackgroundTint(application.getResources().getColor(R.color.cardBlue));
-                snackbar.show();
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
-                Snackbar snackbar = Snackbar.make(relativeLayout, "Something went wrong!!", Snackbar.LENGTH_SHORT);
-                snackbar.setTextColor(Color.WHITE);
-                snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
-                snackbar.show();
-            }
-        });
+            });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
     public void deleteProfilePic(RelativeLayout layout,String id){
         Call<String> call = api.deleteProfilePic(id);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (!response.isSuccessful()) {
-                    if (response.code() == 404) {
-                        Snackbar snackbar = Snackbar.make(layout, "Profile picture not found", Snackbar.LENGTH_SHORT);
-                        snackbar.setTextColor(Color.WHITE);
-                        snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
-                        snackbar.show();
-                    }
-                    return;
-                }
-                Snackbar snackbar = Snackbar.make(layout, "Profile picture deleted", Snackbar.LENGTH_SHORT);
-                snackbar.setTextColor(Color.WHITE);
-                snackbar.setBackgroundTint(application.getResources().getColor(R.color.cardBlue));
-                snackbar.show();
-            }
+        try {
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(application, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
-                t.printStackTrace();
-            }
-        });
+                    if (!response.isSuccessful()) {
+                        if (response.code() == 404) {
+                            Snackbar snackbar = Snackbar.make(layout, "Profile picture not found", Snackbar.LENGTH_SHORT);
+                            snackbar.setTextColor(Color.WHITE);
+                            snackbar.setBackgroundTint(application.getResources().getColor(R.color.red));
+                            snackbar.show();
+                        }
+                        return;
+                    }
+                    Snackbar snackbar = Snackbar.make(layout, "Profile picture deleted", Snackbar.LENGTH_SHORT);
+                    snackbar.setTextColor(Color.WHITE);
+                    snackbar.setBackgroundTint(application.getResources().getColor(R.color.cardBlue));
+                    snackbar.show();
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Toast.makeText(application, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public MutableLiveData<Auth> createAccount(LinearLayout linearLayout,String email, String password) {

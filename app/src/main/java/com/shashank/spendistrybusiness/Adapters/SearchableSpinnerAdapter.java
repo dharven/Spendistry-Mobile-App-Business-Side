@@ -15,6 +15,7 @@ import com.shashank.spendistrybusiness.R;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public class SearchableSpinnerAdapter extends ArrayAdapter<ItemPrices> {
 
         private ArrayList<ItemPrices> items;

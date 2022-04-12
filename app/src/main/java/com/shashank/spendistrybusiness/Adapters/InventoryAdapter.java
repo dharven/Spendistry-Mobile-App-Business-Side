@@ -1,12 +1,12 @@
 package com.shashank.spendistrybusiness.Adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,14 +16,15 @@ import com.google.android.material.snackbar.Snackbar;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
+
+@SuppressWarnings("ALL")
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.MyViewHolder> {
 
-    private List<ItemPrices> itemPricesList;
+    private final List<ItemPrices> itemPricesList;
     private Context context;
-    private Activity activity;
+    private final Activity activity;
 
     public InventoryAdapter(List<ItemPrices> itemPricesList, Context context, Activity activity) {
         this.itemPricesList = itemPricesList;
@@ -39,20 +40,19 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.MyVi
     }
 
 
+    @SuppressWarnings("deprecation")
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull InventoryAdapter.MyViewHolder holder, int position) {
             holder.itemPrice.setText("₹"+itemPricesList.get(position).getPrice());
             holder.itemName.setText(itemPricesList.get(position).getItemName());
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Snackbar snackbar = Snackbar.make(activity.findViewById(R.id.manual_invoice), "Swipe Left/Right to take action", Snackbar.LENGTH_SHORT);
-                snackbar.setTextColor(Color.WHITE);
-                snackbar.setBackgroundTint(activity.getResources().getColor(R.color.mainBlue));
-                snackbar.show();
-                return true;
-            }
+        holder.itemView.setOnLongClickListener(view -> {
+            Snackbar snackbar = Snackbar.make(activity.findViewById(R.id.manual_invoice), "Swipe Left/Right to take action", Snackbar.LENGTH_SHORT);
+            snackbar.setTextColor(Color.WHITE);
+            snackbar.setBackgroundTint(activity.getResources().getColor(R.color.mainBlue));
+            snackbar.show();
+            return true;
         });
 
     }
@@ -90,16 +90,6 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.MyVi
         return itemPricesList.get(position).getPrice();
     }
 
-    public ArrayList<ItemPrices> getItemPricesList() {
-        return (ArrayList<ItemPrices>) itemPricesList;
-    }
-
-    public ItemPrices updateItem(int position,String id,String barcode,String email ,String itemName, String price){
-        ItemPrices itemPrices = new ItemPrices(id,barcode, email ,itemName, price);
-        itemPricesList.add(position, itemPrices);
-        notifyItemInserted(position);
-        return itemPrices;
-    }
     public ItemPrices recentRemove(int position){
         ItemPrices itemPrices = itemPricesList.get(position);
         itemPricesList.remove(position);

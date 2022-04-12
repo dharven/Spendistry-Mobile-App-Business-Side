@@ -28,6 +28,7 @@ import com.shashank.spendistrybusiness.Models.CreateInvoice.UserInvoices;
 import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.Report;
+import com.shashank.spendistrybusiness.Models.User;
 import com.shashank.spendistrybusiness.Models.Vendor;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.SpendistryAPI.SpendistryAPI;
@@ -46,6 +47,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+@SuppressWarnings("ALL")
 public class InvoiceRepository {
     private Application application;
     private Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.URL_API).addConverterFactory(GsonConverterFactory.create()).build();
@@ -259,6 +261,56 @@ public class InvoiceRepository {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 mutableLiveData.setValue(null);
+            }
+        });
+        return mutableLiveData;
+    }
+
+    public MutableLiveData<ArrayList<Invoice>> getReturnedInvoices(String businessEmail){
+        MutableLiveData<ArrayList<Invoice>> mutableLiveData = new MutableLiveData<>();
+        Call<ArrayList<Invoice>> call = api.getReturnedInvoices(businessEmail);
+        call.enqueue(new Callback<ArrayList<Invoice>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Invoice>> call, Response<ArrayList<Invoice>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(application, "" + response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (response.body() != null) {
+                    mutableLiveData.setValue(response.body());
+                } else {
+                    mutableLiveData.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Invoice>> call, Throwable t) {
+                Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        return mutableLiveData;
+    }
+
+    public MutableLiveData<User> getUser(String email){
+        MutableLiveData<User> mutableLiveData = new MutableLiveData<>();
+        Call<User> call = api.getUser(email);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(application, "" + response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (response.body() != null) {
+                    mutableLiveData.setValue(response.body());
+                } else {
+                    mutableLiveData.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         return mutableLiveData;

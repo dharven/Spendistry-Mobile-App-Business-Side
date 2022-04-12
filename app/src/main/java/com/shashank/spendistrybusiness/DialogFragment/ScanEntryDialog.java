@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 public class ScanEntryDialog extends DialogFragment {
     private static final String TAG = "ScanEntryDialog";
-    private final Bundle b = new Bundle();
 
     public interface OnScanEntryDialogListener {
         void sendEntryConfirmation(boolean send);
@@ -63,28 +62,20 @@ public class ScanEntryDialog extends DialogFragment {
 
         InventoryViewModel inventoryViewModel = new ViewModelProvider(requireActivity()).get(InventoryViewModel.class);
         //
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ObjectId id = new ObjectId();
-                ArrayList<ItemPrices> itemPrices = new ArrayList<>();
-                ItemPrices item = new ItemPrices(id.toString(),barcodeString, emailString,itemName.getText().toString() , itemPrice.getText().toString());
-                itemPrices.add(item);
-                try {
-                    inventoryViewModel.setInventory(emailString,itemPrices);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                requireDialog().dismiss();
+        add.setOnClickListener(view -> {
+            ObjectId id = new ObjectId();
+            ArrayList<ItemPrices> itemPrices = new ArrayList<>();
+            ItemPrices item = new ItemPrices(id.toString(),barcodeString, emailString,itemName.getText().toString() , itemPrice.getText().toString());
+            itemPrices.add(item);
+            try {
+                inventoryViewModel.setInventory(emailString,itemPrices);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            requireDialog().dismiss();
         });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                requireDialog().dismiss();
-            }
-        });
+        cancel.setOnClickListener(view -> requireDialog().dismiss());
 
         return rootView;
     }

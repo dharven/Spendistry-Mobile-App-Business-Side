@@ -21,6 +21,7 @@ import com.shashank.spendistrybusiness.Models.ItemPrices;
 
 @Database(entities = {ItemPrices.class, Dashboard.class, BusinessInvoices.class}, version = 20, exportSchema = false)
 @TypeConverters({Converters.class})
+@SuppressWarnings("ALL")
 public abstract class SpendistryBusinessDB extends RoomDatabase {
     private static final String DATABASE_NAME = "SpendistryBusinessDB";
     public abstract InventoryDao inventoryDao();

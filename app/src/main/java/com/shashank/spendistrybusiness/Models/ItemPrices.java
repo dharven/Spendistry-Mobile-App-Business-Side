@@ -11,6 +11,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.bson.types.ObjectId;
 
+@SuppressWarnings("ALL")
 @Entity(tableName = "inventory")
 public class ItemPrices {
 

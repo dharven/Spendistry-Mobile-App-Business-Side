@@ -1,16 +1,11 @@
 package com.shashank.spendistrybusiness.Activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.ActionBar;
@@ -29,12 +24,13 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.shashank.spendistrybusiness.R;
-import com.shashank.spendistrybusiness.ViewModels.InvoiceViewModel;
+import com.shashank.spendistrybusiness.ViewModels.ScanQrViewModel;
+
 
 public class MainActivity extends AppCompatActivity {
     private CodeScanner codeScanner;
     private LinearLayout linearLayout;
-    private InvoiceViewModel invoiceViewModel;
+    private ScanQrViewModel scanQrViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +47,14 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("");
         }
-        invoiceViewModel = new ViewModelProvider(this).get(InvoiceViewModel.class);
+        scanQrViewModel = new ViewModelProvider(this).get(ScanQrViewModel.class);
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.black));
         scannerView.setOnClickListener(view -> codeScanner.startPreview());
     }
 
     private void ScanCamera() {
         codeScanner.startPreview();
-        codeScanner.setDecodeCallback(result -> runOnUiThread(() -> invoiceViewModel.verifyQR(linearLayout,result.getText()).observe(MainActivity.this, s -> {
+        codeScanner.setDecodeCallback(result -> runOnUiThread(() -> scanQrViewModel.verifyQR(linearLayout,result.getText()).observe(MainActivity.this, s -> {
                 Intent intent2 = new Intent(MainActivity.this, CreateInvoiceActivity.class);
                 intent2.putExtra("SCAN_RESULT", s);
                 startActivity(intent2);

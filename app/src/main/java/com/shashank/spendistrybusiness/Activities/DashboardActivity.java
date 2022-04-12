@@ -1,39 +1,29 @@
 package com.shashank.spendistrybusiness.Activities;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.broooapps.graphview.CurveGraphConfig;
 import com.broooapps.graphview.CurveGraphView;
@@ -42,26 +32,21 @@ import com.broooapps.graphview.models.PointMap;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.snackbar.Snackbar;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.shashank.spendistrybusiness.Constants.Constants;
 import com.shashank.spendistrybusiness.Models.Vendor;
 import com.shashank.spendistrybusiness.R;
+import com.shashank.spendistrybusiness.ViewModelFactory.ViewModelFactory;
 import com.shashank.spendistrybusiness.ViewModels.DashboardViewModel;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import ru.nikartm.support.BadgePosition;
 import ru.nikartm.support.ImageBadgeView;
 
+@SuppressWarnings("ALL")
 public class DashboardActivity extends AppCompatActivity {
-    private Toolbar toolbar;
     ImageBadgeView imageBadgeView;
     private CurveGraphView curveGraphView;
     private String email, yearlyIncome, monthlyIncome, totalIncome, issuedInvoices, roundoff;
@@ -83,7 +68,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        dashboardViewModel.getDashboardData(linearLayout, email);
+        dashboardViewModel.getDashboardData();
     }
 
 
@@ -99,13 +84,14 @@ public class DashboardActivity extends AppCompatActivity {
         sharedPreferences.edit().putBoolean("report",false).apply();
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        toolbar = findViewById(R.id.toolbar_dashboard);
+        Toolbar toolbar = findViewById(R.id.toolbar_dashboard);
         monthlyIncomeTextView = findViewById(R.id.monthly_income);
         yearlyIncomeTextView = findViewById(R.id.yearly_income);
         issuedInvoicesTextView = findViewById(R.id.issued_invoices);
@@ -149,14 +135,11 @@ public class DashboardActivity extends AppCompatActivity {
         RoundedImageView roundedImageView = findViewById(R.id.profile);
         curveGraphView = findViewById(R.id.cgv);
         imageButton.setEnabled(false);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DashboardActivity.this, EditProfileActivity.class);
-                intent.putExtra("vendorDetails", vendorDetails);
-                startActivity(intent);
-                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-            }
+        imageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, EditProfileActivity.class);
+            intent.putExtra("vendorDetails", vendorDetails);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
         pointMap = new PointMap();
         sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
@@ -164,8 +147,8 @@ public class DashboardActivity extends AppCompatActivity {
         Glide.with(this).load(Constants.URL_API+"vendorProfile/"+email+".jpeg")
                 .placeholder(R.drawable.loading).error(R.drawable.no_profile) .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
                 .apply(RequestOptions.skipMemoryCacheOf(true)).into(roundedImageView);
-        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
-        dashboardViewModel.getDashboardData(linearLayout,email).observe(this, dashboardData -> {
+        dashboardViewModel = new ViewModelProvider(this, (ViewModelProvider.Factory) new ViewModelFactory(getApplication(), linearLayout,email)).get(DashboardViewModel.class);
+        dashboardViewModel.getDashboardData().observe(this, dashboardData -> {
             if (dashboardData != null) {
                 dialog.dismiss();
                 imageButton.setEnabled(true);
@@ -210,21 +193,18 @@ public class DashboardActivity extends AppCompatActivity {
 //                        .animateLine(true)
                         .build();
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Collections.sort(arrayList);
-                        curveGraphView.setData(arrayList.size(), arrayList.get(arrayList.size()-1), gd);
-                    }
+                new Handler().postDelayed(() -> {
+                    Collections.sort(arrayList);
+                    curveGraphView.setData(arrayList.size(), arrayList.get(arrayList.size()-1), gd);
                 }, 250);
             }
 
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            cardView.setOnClickListener(view -> {
+                if (dashboardData != null) {
                     if (dashboardData.getIssuedInvoices() >0) {
                         Intent intent = new Intent(DashboardActivity.this, BusinessInvoicesActivity.class);
                         intent.putExtra("email", email);
+                        intent.putExtra("activity","issued");
                         startActivity(intent);
                         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     } else {
@@ -256,26 +236,23 @@ public class DashboardActivity extends AppCompatActivity {
         inflater.inflate(R.menu.dashboard_menu, menu);
         FrameLayout badgeLayout = (FrameLayout) menu.findItem(R.id.reports).getActionView();
         imageBadgeView = badgeLayout.findViewById(R.id.badge);
-        imageBadgeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (reportCount > 0) {
-                    Intent intent1 = new Intent(DashboardActivity.this, ReportedInvoiceActivity.class);
-                    intent1.putExtra("email", email);
-                    startActivity(intent1);
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                } else {
-                    Snackbar snackbar = Snackbar.make(linearLayout, "No Reports Available", Snackbar.LENGTH_SHORT);
-                    snackbar.setTextColor(Color.WHITE);
-                    snackbar.setBackgroundTint(getResources().getColor(R.color.red));
-                    snackbar.show();
-                }
+        imageBadgeView.setOnClickListener(view -> {
+            if (reportCount > 0) {
+                Intent intent1 = new Intent(DashboardActivity.this, ReportedInvoiceActivity.class);
+                intent1.putExtra("email", email);
+                startActivity(intent1);
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            } else {
+                Snackbar snackbar = Snackbar.make(linearLayout, "No Reports Available", Snackbar.LENGTH_SHORT);
+                snackbar.setTextColor(Color.WHITE);
+                snackbar.setBackgroundTint(getResources().getColor(R.color.red));
+                snackbar.show();
             }
         });
         return super.onCreateOptionsMenu(menu);
     }
 
-    @SuppressLint("UnsafeOptInUsageError")
+    @SuppressLint({"UnsafeOptInUsageError", "NonConstantResourceId"})
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -293,6 +270,13 @@ public class DashboardActivity extends AppCompatActivity {
                 sharedPreferences.edit().putBoolean("hasData", true).apply();
                 Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(intent);
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                return true;
+            case R.id.Returned:
+                Intent intent1 = new Intent(DashboardActivity.this, BusinessInvoicesActivity.class);
+                intent1.putExtra("email", email);
+                intent1.putExtra("activity","returned");
+                startActivity(intent1);
                 overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 return true;
             case R.id.Inventory:

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public class UserInvoices {
 
     @SerializedName("_id")

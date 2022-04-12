@@ -1,33 +1,32 @@
 package com.shashank.spendistrybusiness.Activities;
 
-import androidx.annotation.NonNull;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.FrameLayout;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.FrameLayout;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.shashank.spendistrybusiness.Constants.Global;
 import com.shashank.spendistrybusiness.Fragments.ManualInvoiceFragment;
 import com.shashank.spendistrybusiness.Fragments.ScanInvoiceFragment;
 import com.shashank.spendistrybusiness.R;
 
+@SuppressWarnings("ALL")
 public class CreateInvoiceActivity extends AppCompatActivity {
 
     private BottomNavigationView navigationView;
-    private FrameLayout frameLayout;
     private ManualInvoiceFragment manualInvoiceFragment;
     private ScanInvoiceFragment scanInvoiceFragment;
-    private String parentActivity;
 //    private PagerAdapter pagerAdapter;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +43,7 @@ public class CreateInvoiceActivity extends AppCompatActivity {
         String invoiceId = intent.getStringExtra("invoiceId");
         String reportId = intent.getStringExtra("reportId");
         navigationView = findViewById(R.id.navigationViewInvoice);
-        frameLayout = findViewById(R.id.frame);
+        FrameLayout frameLayout = findViewById(R.id.frame);
         getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.cardBlue));
         manualInvoiceFragment = new ManualInvoiceFragment();
         scanInvoiceFragment = new ScanInvoiceFragment();
@@ -60,20 +59,16 @@ public class CreateInvoiceActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().add(R.id.frame, manualInvoiceFragment).commit();
         }
 
-        navigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.page_1:
-                        fragmentManager.beginTransaction().replace(R.id.frame, manualInvoiceFragment).commit();
-                        return true;
-                    case R.id.page_2:
-                        fragmentManager.beginTransaction().remove(manualInvoiceFragment).add(R.id.frame, scanInvoiceFragment).addToBackStack("added").commit();
-
-                        return true;
-                    default:
-                        return false;
-                }
+        navigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.page_1:
+                    fragmentManager.beginTransaction().replace(R.id.frame, manualInvoiceFragment).commit();
+                    return true;
+                case R.id.page_2:
+                    fragmentManager.beginTransaction().remove(manualInvoiceFragment).add(R.id.frame, scanInvoiceFragment).addToBackStack("added").commit();
+                    return true;
+                default:
+                    return false;
             }
         });
     }

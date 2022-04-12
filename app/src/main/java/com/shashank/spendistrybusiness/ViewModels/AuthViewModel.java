@@ -18,6 +18,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Multipart;
 
+@SuppressWarnings("ALL")
 public class AuthViewModel extends AndroidViewModel {
     private AuthRepository authRepository;
     public AuthViewModel(@NonNull Application application) {

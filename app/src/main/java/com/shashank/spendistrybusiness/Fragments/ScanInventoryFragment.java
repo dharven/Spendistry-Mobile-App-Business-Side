@@ -7,21 +7,16 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.journeyapps.barcodescanner.BarcodeCallback;
-import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -29,11 +24,11 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.shashank.spendistrybusiness.Activities.SplashScreenActivity;
 import com.shashank.spendistrybusiness.DialogFragment.EditDialog;
 import com.shashank.spendistrybusiness.DialogFragment.ScanEntryDialog;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
+import com.shashank.spendistrybusiness.ViewModelFactory.ViewModelFactory;
 import com.shashank.spendistrybusiness.ViewModels.InventoryViewModel;
 
 import java.util.List;
@@ -63,13 +58,8 @@ public class ScanInventoryFragment extends Fragment implements EditDialog.OnEdit
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("loggedIn", Context.MODE_PRIVATE);
         email = sharedPreferences.getString("email", "");
         //
-        InventoryViewModel inventoryViewModel = new ViewModelProvider(requireActivity()).get(InventoryViewModel.class);
-        inventoryViewModel.getInventory(email).observe(requireActivity(), new Observer<List<ItemPrices>>() {
-            @Override
-            public void onChanged(List<ItemPrices> itemPrices) {
-                itemPricesList = itemPrices;
-            }
-        });
+        InventoryViewModel inventoryViewModel = new ViewModelProvider(requireActivity(), (ViewModelProvider.Factory) new ViewModelFactory(requireActivity().getApplication(), email)).get(InventoryViewModel.class);
+        inventoryViewModel.getInventory().observe(requireActivity(), itemPrices -> itemPricesList = itemPrices);
         Dexter.withContext(requireContext())
                 .withPermission(Manifest.permission.CAMERA).withListener(new PermissionListener() {
                     @Override
@@ -99,54 +89,43 @@ public class ScanInventoryFragment extends Fragment implements EditDialog.OnEdit
 
     private void ScanCamera() {
         barcodeView.resume();
-        barcodeView.decodeContinuous(new BarcodeCallback() {
-            @Override
-            public void barcodeResult(BarcodeResult result) {
-                barcodeView.pause();
-                barcode = result.getText();
-                boolean exists = false;
-                for (int i =0; i < itemPricesList.size(); i++) {
-                    if (itemPricesList.get(i).getBarcode().equals(barcode)) {
-                        Bundle bundle = new Bundle();
-                        exists = true;
-                        bundle.putString("barcode", barcode);
-                        bundle.putString("email", email);
-                        bundle.putString("name", itemPricesList.get(i).getItemName());
-                        bundle.putString("price", itemPricesList.get(i).getPrice());
-                        bundle.putString("frag", "scan");
-                        bundle.putString("id", itemPricesList.get(i).getId());
-                        EditDialog editDialog = new EditDialog();
-                        editDialog.setArguments(bundle);
-                        editDialog.setTargetFragment(ScanInventoryFragment.this, 1);
-                        editDialog.show(getParentFragmentManager(), "EditDialog");
-                    }
-                }
-                if (!exists) {
+        barcodeView.decodeContinuous(result -> {
+            barcodeView.pause();
+            barcode = result.getText();
+            boolean exists = false;
+            for (int i =0; i < itemPricesList.size(); i++) {
+                if (itemPricesList.get(i).getBarcode().equals(barcode)) {
                     Bundle bundle = new Bundle();
+                    exists = true;
                     bundle.putString("barcode", barcode);
                     bundle.putString("email", email);
-                    ScanEntryDialog scanEntryDialog = new ScanEntryDialog();
-                    scanEntryDialog.setArguments(bundle);
-                    scanEntryDialog.setTargetFragment(ScanInventoryFragment.this, 1);
-                    scanEntryDialog.show(getParentFragmentManager(), "scanEntryDialog");
+                    bundle.putString("name", itemPricesList.get(i).getItemName());
+                    bundle.putString("price", itemPricesList.get(i).getPrice());
+                    bundle.putString("frag", "scan");
+                    bundle.putString("id", itemPricesList.get(i).getId());
+                    EditDialog editDialog = new EditDialog();
+                    editDialog.setArguments(bundle);
+                    editDialog.setTargetFragment(ScanInventoryFragment.this, 1);
+                    editDialog.show(getParentFragmentManager(), "EditDialog");
                 }
+            }
+            if (!exists) {
+                Bundle bundle = new Bundle();
+                bundle.putString("barcode", barcode);
+                bundle.putString("email", email);
+                ScanEntryDialog scanEntryDialog = new ScanEntryDialog();
+                scanEntryDialog.setArguments(bundle);
+                scanEntryDialog.setTargetFragment(ScanInventoryFragment.this, 1);
+                scanEntryDialog.show(getParentFragmentManager(), "scanEntryDialog");
+            }
 
-            }
         });
-        barcodeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                barcodeView.resume();
-            }
-        });
+        barcodeView.setOnClickListener(view -> barcodeView.resume());
 
-        barcodeView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                barcodeView.pause();
-                barcodeView.resume();
-                return true;
-            }
+        barcodeView.setOnLongClickListener(view -> {
+            barcodeView.pause();
+            barcodeView.resume();
+            return true;
         });
     }
 

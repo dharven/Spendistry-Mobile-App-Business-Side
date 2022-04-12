@@ -1,17 +1,16 @@
 package com.shashank.spendistrybusiness.Models;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
 
 import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 @Entity(tableName = "dashboard")
 public class Dashboard {
     @PrimaryKey(autoGenerate = true)

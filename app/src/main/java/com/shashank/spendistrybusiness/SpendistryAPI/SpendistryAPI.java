@@ -1,28 +1,24 @@
 package com.shashank.spendistrybusiness.SpendistryAPI;
 
-import com.google.gson.annotations.SerializedName;
 import com.shashank.spendistrybusiness.Models.Auth;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.BusinessInvoices;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.InvoicePatch;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.OTP;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.QR;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.UserInvoices;
 import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.Models.ItemPricesArrayList;
 import com.shashank.spendistrybusiness.Models.Report;
+import com.shashank.spendistrybusiness.Models.User;
 import com.shashank.spendistrybusiness.Models.Vendor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.LongStream;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -54,6 +50,11 @@ public interface SpendistryAPI {
     @GET("pdf/{email}/{businessEmail}/{invoiceId}")
     Call<ResponseBody> getPDF(@Path("email") String email, @Path("businessEmail") String businessEmail, @Path("invoiceId") String invoiceId);
 
+    @GET("return/vendorMail/{email}")
+    Call<ArrayList<Invoice>> getReturnedInvoices(@Path("email") String email);
+
+    @GET("user/{email}")
+    Call<User> getUser(@Path("email") String email);
 
     //POST
     @POST("authBusiness/vendorLogin")

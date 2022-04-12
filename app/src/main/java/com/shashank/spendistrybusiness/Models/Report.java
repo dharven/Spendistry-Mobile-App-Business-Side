@@ -2,6 +2,7 @@ package com.shashank.spendistrybusiness.Models;
 
 import com.google.gson.annotations.SerializedName;
 
+@SuppressWarnings("ALL")
 public class Report {
     @SerializedName("_id")
     private String id;

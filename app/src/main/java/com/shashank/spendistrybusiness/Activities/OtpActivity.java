@@ -1,5 +1,13 @@
 package com.shashank.spendistrybusiness.Activities;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,21 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.kevinschildhorn.otpview.OTPView;
-import com.shashank.spendistrybusiness.Constants.Global;
-import com.shashank.spendistrybusiness.Models.Dashboard;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.AuthViewModel;
 
@@ -85,12 +80,7 @@ public class OtpActivity extends AppCompatActivity {
             return null;
         });
 
-        resend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                authViewModel.sendOTP(optLayout, email);
-            }
-        });
+        resend.setOnClickListener(view -> authViewModel.sendOTP(optLayout, email));
 
 
         //send otp to email
@@ -99,16 +89,15 @@ public class OtpActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (getSharedPreferences("loggedIn", MODE_PRIVATE).getBoolean("loggedIn", false)) {
-                    startActivity(new Intent(OtpActivity.this, DashboardActivity.class));
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                } else {
-                    startActivity(new Intent(OtpActivity.this, LoginActivity.class));
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                }
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            if (getSharedPreferences("loggedIn", MODE_PRIVATE).getBoolean("loggedIn", false)) {
+                startActivity(new Intent(OtpActivity.this, DashboardActivity.class));
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            } else {
+                startActivity(new Intent(OtpActivity.this, LoginActivity.class));
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -136,150 +136,83 @@ public class EditProfileActivity extends AppCompatActivity {
         Glide.with(this).load(Constants.URL_API+"vendorProfile/"+vendor.getVendorId()+".jpeg")
                 .placeholder(R.drawable.loading).error(R.drawable.no_profile) .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
                 .apply(RequestOptions.skipMemoryCacheOf(true)).into(profileImage);
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                profileImage.showContextMenu();
-            }
-        });
+        profileImage.setOnClickListener(view -> profileImage.showContextMenu());
 
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getStringData();
-                if (firstNameString.equals("") || lastNameString.equals("") || phoneString.equals("") ||
-                        addressString.equals("") || cityString.equals("") || stateString.equals("") ||
-                        businessNameString.equals("") || panNumberString.equals("")) {
-                    if (firstNameString.equals("")) {
-                        firstNameField.setError("First Name is required");
-                        scrollView.smoothScrollTo(0, firstNameField.getTop());
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                firstNameField.setErrorEnabled(false);
-                            }
-                        }, 1500);
-                    } else if (lastNameString.equals("")) {
-                        scrollView.smoothScrollTo(0, lastNameField.getTop());
-                        lastNameField.setError("Last Name is required");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                lastNameField.setErrorEnabled(false);
-                            }
-                        }, 1500);
-                    } else if (phoneString.equals("")) {
-                        scrollView.smoothScrollTo(0, phoneField.getTop());
-                        phoneField.setError("Phone Number is required");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                phoneField.setErrorEnabled(false);
+        update.setOnClickListener(view -> {
+            getStringData();
+            if (firstNameString.equals("") || lastNameString.equals("") || phoneString.equals("") ||
+                    addressString.equals("") || cityString.equals("") || stateString.equals("") ||
+                    businessNameString.equals("") || panNumberString.equals("")) {
+                if (firstNameString.equals("")) {
+                    firstNameField.setError("First Name is required");
+                    scrollView.smoothScrollTo(0, firstNameField.getTop());
+                    new Handler().postDelayed(() -> firstNameField.setErrorEnabled(false), 1500);
+                } else if (lastNameString.equals("")) {
+                    scrollView.smoothScrollTo(0, lastNameField.getTop());
+                    lastNameField.setError("Last Name is required");
+                    new Handler().postDelayed(() -> lastNameField.setErrorEnabled(false), 1500);
+                } else if (phoneString.equals("")) {
+                    scrollView.smoothScrollTo(0, phoneField.getTop());
+                    phoneField.setError("Phone Number is required");
+                    new Handler().postDelayed(() -> phoneField.setErrorEnabled(false), 1500);
 
-                            }
-                        }, 1500);
-
-                    } else if (addressString.equals("")) {
-                        scrollView.smoothScrollTo(0, addressField.getTop());
-                        addressField.setError("Address is required");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                addressField.setErrorEnabled(false);
-
-                            }
-                        }, 1500);
-                    } else if (cityString.equals("")) {
-                        scrollView.smoothScrollTo(0, cityField.getTop());
-                        cityField.setError("City is required");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                cityField.setErrorEnabled(false);
-
-                            }
-                        }, 1500);
-                    } else if (stateString.equals("")) {
-                        scrollView.smoothScrollTo(0, stateField.getTop());
-                        stateField.setError("State is required");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                stateField.setErrorEnabled(false);
-                            }
-                        }, 1500);
-                    } else if (businessNameString.equals("")) {
-                        scrollView.smoothScrollTo(0, businessNameField.getTop());
-                        businessNameField.setError("Business Name is required");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                businessNameField.setErrorEnabled(false);
-                            }
-                        }, 1500);
-                    } else if (panNumberString.equals("")) {
-                        scrollView.smoothScrollTo(0, panNumberField.getTop());
-                        panNumberField.setError("Pan Number is required");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                panNumberField.setErrorEnabled(false);
-                            }
-                        }, 1500);
-                    } else if (phoneString.length() != 10) {
-                        scrollView.smoothScrollTo(0, phoneField.getTop());
-                        phoneField.setError("Phone Number must be 10 digits");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                phoneField.setErrorEnabled(false);
-                            }
-                        }, 1500);
-                    }
-                } else {
-                    Vendor vendor1 = new Vendor(
-                            firstNameString,
-                            lastNameString,
-                            vendor.getVendorId(),
-                            businessNameString,
-                            phoneString,
-                            panNumberString,
-                            gstNumberString,
-                            addressString,
-                            cityString,
-                            stateString,
-                            tollFreeString,
-                            websiteString,
-                            descriptionString);
-                    authViewModel.updateProfile(layout, emailString, vendor1).observe(EditProfileActivity.this, new Observer<Vendor>() {
-                        @Override
-                        public void onChanged(Vendor vendor) {
-                            setData(vendor);
-                        }
-                    });
+                } else if (addressString.equals("")) {
+                    scrollView.smoothScrollTo(0, addressField.getTop());
+                    addressField.setError("Address is required");
+                    new Handler().postDelayed(() -> addressField.setErrorEnabled(false), 1500);
+                } else if (cityString.equals("")) {
+                    scrollView.smoothScrollTo(0, cityField.getTop());
+                    cityField.setError("City is required");
+                    new Handler().postDelayed(() -> cityField.setErrorEnabled(false), 1500);
+                } else if (stateString.equals("")) {
+                    scrollView.smoothScrollTo(0, stateField.getTop());
+                    stateField.setError("State is required");
+                    new Handler().postDelayed(() -> stateField.setErrorEnabled(false), 1500);
+                } else if (businessNameString.equals("")) {
+                    scrollView.smoothScrollTo(0, businessNameField.getTop());
+                    businessNameField.setError("Business Name is required");
+                    new Handler().postDelayed(() -> businessNameField.setErrorEnabled(false), 1500);
+                } else if (panNumberString.equals("")) {
+                    scrollView.smoothScrollTo(0, panNumberField.getTop());
+                    panNumberField.setError("Pan Number is required");
+                    new Handler().postDelayed(() -> panNumberField.setErrorEnabled(false), 1500);
+                } else if (phoneString.length() != 10) {
+                    scrollView.smoothScrollTo(0, phoneField.getTop());
+                    phoneField.setError("Phone Number must be 10 digits");
+                    new Handler().postDelayed(() -> phoneField.setErrorEnabled(false), 1500);
                 }
+            } else {
+                Vendor vendor1 = new Vendor(
+                        firstNameString,
+                        lastNameString,
+                        vendor.getVendorId(),
+                        businessNameString,
+                        phoneString,
+                        panNumberString,
+                        gstNumberString,
+                        addressString,
+                        cityString,
+                        stateString,
+                        tollFreeString,
+                        websiteString,
+                        descriptionString);
+                authViewModel.updateProfile(layout, emailString, vendor1).observe(EditProfileActivity.this, vendor -> setData(vendor));
             }
         });
 
-        change_pass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(EditProfileActivity.this, OtpActivity.class);
-                SharedPreferences sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
-                intent.putExtra("email", sharedPreferences.getString("email", ""));
-                startActivity(intent);
-                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-            }
+        change_pass.setOnClickListener(view -> {
+            Intent intent1 = new Intent(EditProfileActivity.this, OtpActivity.class);
+            SharedPreferences sharedPreferences = getSharedPreferences("loggedIn", MODE_PRIVATE);
+            intent1.putExtra("email", sharedPreferences.getString("email", ""));
+            startActivity(intent1);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
 
-        Add_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddLocationDialog addLocationDialog = new AddLocationDialog(layout,authViewModel, vendor.getVendorId());
-                addLocationDialog.setCancelable(false);
-                addLocationDialog.setCancelable(true);
-                addLocationDialog.show(getSupportFragmentManager(), "Add Location");
-            }
+        Add_location.setOnClickListener(view -> {
+            AddLocationDialog addLocationDialog = new AddLocationDialog(layout,authViewModel, vendor.getVendorId());
+            addLocationDialog.setCancelable(false);
+            addLocationDialog.setCancelable(true);
+            addLocationDialog.show(getSupportFragmentManager(), "Add Location");
         });
 
     }
@@ -383,6 +316,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -403,6 +337,7 @@ public class EditProfileActivity extends AppCompatActivity {
         String[] proj = {MediaStore.Images.Media.DATA};
         CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
         Cursor cursor = loader.loadInBackground();
+        assert cursor != null;
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         String result = cursor.getString(column_index);
@@ -410,11 +345,13 @@ public class EditProfileActivity extends AppCompatActivity {
         return result;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.new_pic: ;
+            case R.id.new_pic:
                 Dexter.withContext(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new PermissionListener() {
+                    @SuppressWarnings("deprecation")
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                         Intent intent = new Intent();
@@ -429,16 +366,13 @@ public class EditProfileActivity extends AppCompatActivity {
                         Snackbar snackbar = Snackbar.make(layout, "Please grant permission to access storage", Snackbar.LENGTH_LONG);
                         snackbar.setTextColor(Color.WHITE);
                         snackbar.setBackgroundTint(Color.RED);
-                        snackbar.setAction("Grant", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent();
-                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                intent.setData(uri);
-                                startActivity(intent);
-                                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                            }
+                        snackbar.setAction("Grant", v -> {
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                         });
                         snackbar.setActionTextColor(Color.WHITE);
                         snackbar.show();
@@ -449,16 +383,13 @@ public class EditProfileActivity extends AppCompatActivity {
                         Snackbar snackbar = Snackbar.make(layout, "Please grant permission to access storage", Snackbar.LENGTH_LONG);
                         snackbar.setTextColor(Color.WHITE);
                         snackbar.setBackgroundTint(Color.RED);
-                        snackbar.setAction("Grant", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent();
-                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                intent.setData(uri);
-                                startActivity(intent);
-                                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                            }
+                        snackbar.setAction("Grant", v -> {
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                         });
                         snackbar.setActionTextColor(Color.WHITE);
                         snackbar.show();

@@ -30,12 +30,14 @@ public class InvoiceViewModel extends AndroidViewModel {
     MutableLiveData<List<ItemPrices>> data = Global.data;
     ArrayList<ItemPrices> itemPricesArrayList = Global.itemPricesArrayList;
     DashboardRepository dashboardRepository;
+    LiveData<BusinessInvoices> invoiceList;
 
-    public InvoiceViewModel(Application application) {
+    public InvoiceViewModel(Application application, String email) {
         super(application);
         invoiceRepository = new InvoiceRepository(application);
         inventoryRepository = new InventoryRepository(application);
         dashboardRepository = new DashboardRepository(application);
+        invoiceList =  invoiceRepository.getBusinessInvoices(email);
     }
 
     public LiveData<Dashboard> getDashBoardFromDB(String email){
@@ -54,8 +56,8 @@ public class InvoiceViewModel extends AndroidViewModel {
         inventoryRepository.setInventory(email,itemPricesList);
     }
 
-    public LiveData<BusinessInvoices> getBusinessInvoices(String email){
-        return invoiceRepository.getBusinessInvoices(email);
+    public LiveData<BusinessInvoices> getBusinessInvoices(){
+        return invoiceList;
     }
 
     public void setInvoice(ItemPrices itemPrices) {
@@ -83,13 +85,7 @@ public class InvoiceViewModel extends AndroidViewModel {
         invoiceRepository.addInvoice(email, businessEmail, invoice);
     }
 
-    public MutableLiveData<List<Report>> getReportedInvoices(String email){
-        return invoiceRepository.getReportedInvoices(email);
-    }
 
-    public void deleteReportRequest(LinearLayout linearLayout, String email) {
-        invoiceRepository.deleteReportRequest(linearLayout, email);
-    }
 
     public MutableLiveData<List<ItemPrices>> getReportedInvoice(String email, String businessEmail,String invoiceNumber){
         return invoiceRepository.getReportedInvoice(email,businessEmail,invoiceNumber);
@@ -103,7 +99,5 @@ public class InvoiceViewModel extends AndroidViewModel {
         return invoiceRepository.getPDF(email,businessEmail,invoiceNumber);
     }
 
-    public MutableLiveData<String> verifyQR(LinearLayout linearLayout,String QR){
-        return invoiceRepository.verifyQR(linearLayout,QR);
-    }
+
 }

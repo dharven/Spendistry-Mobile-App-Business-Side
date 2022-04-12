@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,9 +19,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InventoryViewModel;
 
+@SuppressWarnings("ALL")
 public class DeleteDialog extends DialogFragment {
     private static final String TAG = "DeleteDialog";
-    private Bundle b = new Bundle();
+//    private final Bundle b = new Bundle();
 
     public interface OnDeleteDialogListener {
         void sendDeleteConfirmation(boolean send);
@@ -63,20 +63,14 @@ public class DeleteDialog extends DialogFragment {
         //
         InventoryViewModel inventoryViewModel = new ViewModelProvider(requireActivity()).get(InventoryViewModel.class);
         //
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inventoryViewModel.deleteElement(emailString, id);
-                requireDialog().dismiss();
-            }
+        delete.setOnClickListener(view -> {
+            inventoryViewModel.deleteElement(emailString, id);
+            requireDialog().dismiss();
         });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mOnDeleteListener.sendDeleteConfirmation(true);
-                requireDialog().dismiss();
-            }
+        cancel.setOnClickListener(view -> {
+            mOnDeleteListener.sendDeleteConfirmation(true);
+            requireDialog().dismiss();
         });
 
         return rootView;

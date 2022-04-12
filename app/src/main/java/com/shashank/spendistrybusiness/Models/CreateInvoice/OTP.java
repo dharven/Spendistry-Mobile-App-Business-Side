@@ -1,5 +1,6 @@
 package com.shashank.spendistrybusiness.Models.CreateInvoice;
 
+@SuppressWarnings("ALL")
 public class OTP {
     private int otp;
     private String email;

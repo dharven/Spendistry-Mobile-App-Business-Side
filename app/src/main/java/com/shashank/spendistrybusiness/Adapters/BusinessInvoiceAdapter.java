@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -17,48 +15,36 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.shashank.spendistrybusiness.DialogFragment.DeleteDialog;
-import com.shashank.spendistrybusiness.DialogFragment.EditDialog;
-import com.shashank.spendistrybusiness.Fragments.ManualInventoryFragment;
 import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
-import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 import com.shashank.spendistrybusiness.ViewModels.InvoiceViewModel;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
-import okhttp3.ResponseBody;
-
+@SuppressWarnings("ALL")
 public class BusinessInvoiceAdapter extends RecyclerView.Adapter<BusinessInvoiceAdapter.MyViewHolder> {
     private List<Invoice> invoiceList;
-    private Context context;
-    private Activity activity;
-    private InvoiceViewModel invoiceViewModel;
-    private LinearLayout linearLayout;
-    private LifecycleOwner lifecycleOwner;
+    private final Context context;
+    private final Activity activity;
+    private final InvoiceViewModel invoiceViewModel;
+    private final LinearLayout linearLayout;
+    private final LifecycleOwner lifecycleOwner;
+    boolean returnTrue;
 
-    public BusinessInvoiceAdapter(List<Invoice> itemPricesList, Context context, Activity activity, LifecycleOwner lifecycleOwner, LinearLayout layout, InvoiceViewModel invoiceViewModel) {
+    public BusinessInvoiceAdapter(List<Invoice> itemPricesList, Context context, Activity activity, LifecycleOwner lifecycleOwner, LinearLayout layout, InvoiceViewModel invoiceViewModel, boolean returnTrue) {
         itemPricesList.sort(Comparator.comparingInt(Invoice::getInvoiceNumber).reversed());
         //convert to data
         for (Invoice invoice : itemPricesList) {
@@ -73,6 +59,7 @@ public class BusinessInvoiceAdapter extends RecyclerView.Adapter<BusinessInvoice
         this.linearLayout = layout;
         this.lifecycleOwner = lifecycleOwner;
         this.invoiceViewModel = invoiceViewModel;
+        this.returnTrue = returnTrue;
     }
 
     @NonNull
@@ -83,6 +70,7 @@ public class BusinessInvoiceAdapter extends RecyclerView.Adapter<BusinessInvoice
     }
 
 
+    @SuppressWarnings("deprecation")
     @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     @Override
     public void onBindViewHolder(@NonNull BusinessInvoiceAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
@@ -123,84 +111,68 @@ public class BusinessInvoiceAdapter extends RecyclerView.Adapter<BusinessInvoice
         holder.subRecyclerView.setLayoutManager(layoutManager);
         holder.subRecyclerView.setAdapter(invoiceAdapter);
 
-        holder.download.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (returnTrue) {
+            holder.download.setVisibility(View.GONE);
+        }
 
-                invoiceViewModel.getPDF(invoice.getSentTo(), invoice.getSentBy(), invoice.getInvoiceId()).observe(lifecycleOwner, new Observer<ResponseBody>() {
-                    @Override
-                    public void onChanged(ResponseBody responseBody) {
-                        try {
-                            File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                                    "SpendistryBusiness");
-                            if (!f.exists()) {
-                                f.mkdirs();
-                            }
-                            File f1 = new File(f,  invoice.getTitle());
-                            if (!f1.exists()) {
-                                f1.mkdirs();
-                            }
-                                File file = new File(f1, invoice.getTitle() + "_"+invoice.getRoundOff()+"_"
-                                        + Calendar.getInstance().getTime().getDate()
-                                        +Calendar.getInstance().getTime().getHours()
-                                        +Calendar.getInstance().getTime().getMinutes()
-                                        +Calendar.getInstance().getTime().getSeconds()
-                                        + ".pdf");
-                                //write response to file
-                                if (!file.exists()) {
-                                    InputStream inputStream = responseBody.byteStream();
-                                    FileOutputStream stream = new FileOutputStream(file);
-                                    byte[] buffer = new byte[1024];
-                                    int len;
-                                    while ((len = inputStream.read(buffer)) != -1) {
-                                        stream.write(buffer, 0, len);
-                                    }
-                                    Snackbar snackbar = Snackbar.make(linearLayout, "Invoice saved in DOWNLOADS", Snackbar.LENGTH_SHORT);
-                                    snackbar.setTextColor(Color.WHITE);
-                                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.mainBlue));
-                                    snackbar.show();
-                                    stream.close();
-                                    inputStream.close();
-                                } else {
-                                    Snackbar snackbar = Snackbar.make(linearLayout, "Already Downloaded", Snackbar.LENGTH_SHORT);
-                                    snackbar.setTextColor(Color.WHITE);
-                                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.mainBlue));
-                                    snackbar.show();
-                                }
-
-                        } catch (Exception e) {
-                            Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        holder.download.setOnClickListener(view -> invoiceViewModel.getPDF(invoice.getSentTo(), invoice.getSentBy(), invoice.getInvoiceId()).observe(lifecycleOwner, responseBody -> {
+            try {
+                File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                        "SpendistryBusiness");
+                if (!f.exists()) {
+                    f.mkdirs();
+                }
+                File f1 = new File(f,  invoice.getTitle());
+                if (!f1.exists()) {
+                    f1.mkdirs();
+                }
+                    File file = new File(f1, invoice.getTitle() + "_"+invoice.getRoundOff()+"_"
+                            + Calendar.getInstance().getTime().getDate()
+                            +Calendar.getInstance().getTime().getHours()
+                            +Calendar.getInstance().getTime().getMinutes()
+                            +Calendar.getInstance().getTime().getSeconds()
+                            + ".pdf");
+                    //write response to file
+                    if (!file.exists()) {
+                        InputStream inputStream = responseBody.byteStream();
+                        FileOutputStream stream = new FileOutputStream(file);
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = inputStream.read(buffer)) != -1) {
+                            stream.write(buffer, 0, len);
                         }
+                        Snackbar snackbar = Snackbar.make(linearLayout, "Invoice saved in DOWNLOADS", Snackbar.LENGTH_SHORT);
+                        snackbar.setTextColor(Color.WHITE);
+                        snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.mainBlue));
+                        snackbar.show();
+                        stream.close();
+                        inputStream.close();
+                    } else {
+                        Snackbar snackbar = Snackbar.make(linearLayout, "Already Downloaded", Snackbar.LENGTH_SHORT);
+                        snackbar.setTextColor(Color.WHITE);
+                        snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.mainBlue));
+                        snackbar.show();
                     }
-                });
+
+            } catch (Exception e) {
+                Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
+        }));
 
 
-        holder.subRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                view.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
+        holder.subRecyclerView.setOnTouchListener((view, motionEvent) -> {
+            view.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
         });
         //on click
         holder.bind(invoice);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean expanded = invoice.isExpanded();
-                invoice.setExpanded(!expanded);
-                notifyItemChanged(position);
-            }
+        holder.itemView.setOnClickListener(view -> {
+            boolean expanded = invoice.isExpanded();
+            invoice.setExpanded(!expanded);
+            notifyItemChanged(position);
         });
 
 
-    }
-
-
-    public boolean getExpanded(int position) {
-        return invoiceList.get(position).isExpanded();
     }
 
 

@@ -1,10 +1,8 @@
 package com.shashank.spendistrybusiness.Models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
 
+@SuppressWarnings("ALL")
 public class Auth{
 
     @SerializedName("_id")

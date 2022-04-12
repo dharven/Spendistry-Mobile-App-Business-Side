@@ -9,7 +9,6 @@ import com.shashank.spendistrybusiness.Models.Vendor;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Converters {
     //convert ArrayList<Integer> to String

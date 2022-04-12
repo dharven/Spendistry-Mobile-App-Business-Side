@@ -13,18 +13,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.shashank.spendistrybusiness.Models.CreateInvoice.Invoice;
 import com.shashank.spendistrybusiness.Models.ItemPrices;
 import com.shashank.spendistrybusiness.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHolder> {
 
-    private List<ItemPrices> itemPricesList;
+    private final List<ItemPrices> itemPricesList;
     private Context context;
-    private Activity activity;
+    private final Activity activity;
 
     public InvoiceAdapter(List<ItemPrices> itemPricesList, Context context, Activity activity) {
         this.itemPricesList = itemPricesList;
@@ -71,17 +71,6 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHo
         return itemPricesList.size();
     }
 
-    public void searchQuery(String query, List<ItemPrices> pricesList) {
-        List<ItemPrices> newList = new ArrayList<>();
-        for (ItemPrices itemPrice : pricesList) {
-            if (itemPrice.getItemName().toLowerCase().contains(query.toLowerCase())) {
-                newList.add(itemPrice);
-            }
-        }
-        this.itemPricesList = newList;
-        notifyDataSetChanged();
-    }
-
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -108,16 +97,8 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHo
         return itemPricesList.get(position).getBarcode();
     }
 
-    public String getItemName(int position){
-        return itemPricesList.get(position).getItemName();
-    }
-
     public String getPrice(int position){
         return itemPricesList.get(position).getPrice();
-    }
-
-    public String getQuantity(int position){
-        return itemPricesList.get(position).getQuantity();
     }
 
     public String getTotal(int position){
@@ -128,10 +109,9 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHo
         return (ArrayList<ItemPrices>) itemPricesList;
     }
 
-    public ItemPrices updateItem(int position,ItemPrices itemPrices){
+    public void updateItem(int position, ItemPrices itemPrices){
         itemPricesList.add(position, itemPrices);
         notifyItemInserted(position);
-        return itemPrices;
     }
     public ItemPrices recentRemove(int position){
         ItemPrices itemPrices = itemPricesList.get(position);
